@@ -1,0 +1,195 @@
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Dancing+Script&family=Lato&family=Lobster&family=Nunito&family=Open+Sans&family=Pacifico&family=Poppins&family=Playfair+Display&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Dancing+Script&family=Lato&family=Lobster&family=Nunito&family=Open+Sans&family=Pacifico&family=Poppins&family=Playfair+Display&display=swap"); */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+/* Removed @plugin directive as it is not valid in CSS */
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@theme {
+  --font-body1: "Open Sans", sans-serif;
+  --font-body2: "Pacifico", cursive;
+  /* --font-body3: "Lobster", cursive; */
+  /* --font-body4: "Raleway", sans-serif; */
+  --font-body5: "Dancing Script", cursive;
+  --font-body6: "Playfair Display", serif;
+  --font-body7: "Nunito", sans-serif;
+  --font-body8: "Poppins", sans-serif;
+  --font-body9: "Lato", sans-serif;
+  --font-body3: "Montserrat", "sans-serif";
+  --font-body4: "Great Vibes", serif;
+  --font-display3: "Orbitron", sans-serif;
+
+  --color-cream: #fff5e4;
+  --color-butter: #fff1c1;
+  --color-choco: #6b4226;
+  --color-caramel: #d9a066;
+  /* --color-peach: #ffd1ba;
+  --color-rose: #f8bbd0;
+  --color-coral: #ff6f61; */
+  --color-mint: #c8e6c9;
+  --color-cocoa: #c39b77;
+  /* --color-vanilla: #f3e5ab;
+  --color-berry: #ffabab; */
+  --color-fondo: #f9f5f0;
+  --color-oscuro: #231a0e;
+  --color-dorado: #FFD700;
+  --color-fondo-dark: #0c0905;
+
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-in: slide-in 0.3s ease-out;
+  --animate-slide-in-left: slide-in-left 0.3s ease-out;
+  --animate-spin: spin 3s linear infinite;
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-in {
+    0% {
+      transform: translateX(100%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-in-left {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+:root {
+  font-family: var(--font-body3);
+}
+
+.icon:hover {
+  background: radial-gradient(circle at 33% 100%,
+      #fed373 4%,
+      #f15245 30%,
+      #d92e7f 62%,
+      #9b36b7 85%,
+      #515ecf);
+  transition: 1s ease-in-out;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.number {
+  text-shadow: 0 0 15px rgba(197, 225, 255, 0.9);
+}
+
+
+@media (min-width: 1400px) {
+  :root {
+    --entry-animation: -100px;
+    --cover-animation: 100px;
+  }
+}
+
+#theater,
+#trophies-text h1,
+#trophies-text p {
+  animation: cover-animation linear both;
+  animation-timeline: view();
+}
+
+#theater-text h1,
+#theater-text p,
+#trophies {
+  animation: entry-animation linear both;
+  animation-timeline: view();
+}
+
+#theater {
+  animation-range: entry 10% cover 40%;
+}
+
+#theater-text h1 {
+  animation-range: entry 10% cover 30%;
+}
+
+#theater-text p {
+  animation-range: entry 10% cover 20%;
+}
+
+#trophies {
+  animation-range: entry 30% cover 50%;
+}
+
+#trophies-text h1 {
+  animation-range: entry 30% cover 40%;
+}
+
+#trophies-text p {
+  animation-range: entry 20% cover 30%;
+}
+
+@keyframes entry-animation {
+  0% {
+    opacity: 0;
+    translate: var(--entry-animation) 0;
+  }
+
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes cover-animation {
+  0% {
+    opacity: 0;
+    translate: var(--cover-animation) 0;
+  }
+
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* CLASES PERSONALIZADAS */
+.btn-paginacion {
+@apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-base font-semibold w-[140px] bg-choco/90 text-cream hover:bg-choco dark:bg-cream/70 dark:text-choco dark:hover:bg-cream transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cocoa focus:ring-offset-2 active:scale-[0.98];
+}
+
+/* .btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-white bg-cyan-600 shadow-sm hover:bg-cyan-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-1 transition-all duration-200 active:scale-[0.98];
+} */

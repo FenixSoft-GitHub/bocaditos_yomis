@@ -1,0 +1,16 @@
+export const sponsors = [
+  "/logos/LogoSponsor.avif",
+  "/logos/Cup1.avif",
+  "/logos/Cup2.avif",
+  "/logos/Cup3.avif",
+  "/logos/Cup4.avif",
+  "/logos/Cup5.avif",
+  "/logos/Cup6.avif",
+  "/logos/Cup7.avif",
+  "/logos/Cup8.avif",
+  "/logos/Cup9.avif",
+  "/logos/Cup10.avif",
+  "/logos/Cup11.avif",
+  "/logos/Cup12.avif",
+  "/logos/Cup13.avif",
+];
