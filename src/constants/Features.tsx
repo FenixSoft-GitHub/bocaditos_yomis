@@ -1,31 +1,29 @@
-import { BiWorld } from "react-icons/bi";
-import { FaHammer } from "react-icons/fa6";
-import { HiMiniReceiptRefund } from "react-icons/hi2";
-import { MdLocalShipping } from "react-icons/md";
+import { Cake, Truck, Gift, MessageCircleHeart } from "lucide-react";
 
 
 export const features = [
-  {
-    icon: <MdLocalShipping size={40} />,
-    title: "Envío gratis",
-    description: "En todos nuestros productos - ciertas condiciones aplican",
+    {
+    icon: <Cake className="size-8" />,
+    title: "Delicias artesanales recién horneadas",
+    description:
+      "Cada producto es elaborado con ingredientes frescos y naturales, cuidando cada detalle para ofrecerte un sabor único y auténtico.",
   },
   {
-    icon: <HiMiniReceiptRefund size={40} />,
-    title: "Devoluciones",
+    icon: <Truck className="size-8" />,
+    title: "Envíos rápidos y frescos a domicilio",
     description:
-      "Devuelve el equipo si no te satisface la compra dentro de 72 horas - ciertas condiciones aplican",
+      "Entregamos en tiempo récord para que disfrutes tus postres y panes como recién salidos del horno. ¡Frescura garantizada!",
   },
   {
-    icon: <FaHammer size={40} />,
-    title: "Soporte 24/7",
+    icon: <Gift className="size-8" />,
+    title: "Personalización para eventos especiales",
     description:
-      "Soporte técnico en cualquier momento - ciertas condiciones aplican",
+      "Pasteles, cupcakes y dulces personalizados para cumpleaños, bodas y celebraciones. ¡Haz tu pedido a la medida de tu ocasión!",
   },
   {
-    icon: <BiWorld size={40} />,
-    title: "Garantía",
+    icon: <MessageCircleHeart className="size-8" />,
+    title: "Atención dulce y personalizada",
     description:
-      "Garantía de 1 año en todos los equipos - ciertas condiciones aplican",
+      "¿Tienes dudas o necesitas ayuda con tu pedido? Nuestro equipo está siempre listo para atenderte con cariño y rapidez.",
   },
 ];

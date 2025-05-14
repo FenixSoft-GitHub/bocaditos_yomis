@@ -70,7 +70,7 @@ const BlogPostCard = ({ post }: { post: BlogPost }) => {
         <div className="mt-3">
           <Link
             to={`/blog/${post.slug}`}
-            className="inline-flex items-center gap-2 text-oscuro dark:text-mint dark:hover:text-dorado hover:underline font-medium"
+            className="inline-flex items-center gap-2 bg-cocoa/20 px-3 py-1 rounded-md text-sm text-oscuro dark:text-amber-400 dark:hover:text-dorado hover:underline font-medium hover:scale-105 transform-all ease-in-out duration-300"
           >
             Leer más
             <FaArrowRight className="w-3.5 h-3.5" />

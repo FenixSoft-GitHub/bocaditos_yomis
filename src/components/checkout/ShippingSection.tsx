@@ -10,8 +10,10 @@ interface ShippingSectionProps {
         id: string;
         name: string;
         price: number;
+        created_at: string | null;
+        estimated_time: string | null;
       }>
-    | undefined; // Adjust the type according to your delivery options structure
+    | null | undefined; // Adjust the type according to your delivery options structure
 }
 
 // En components/checkout/ShippingSection.tsx

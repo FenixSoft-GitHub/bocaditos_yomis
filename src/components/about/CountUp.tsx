@@ -12,5 +12,4 @@ export const CountUp = (
   }, [final])
 
   return <span> {count} </span>
-
 }

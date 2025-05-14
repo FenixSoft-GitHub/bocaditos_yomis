@@ -9,7 +9,7 @@ const getTagColor = (content: TagType) => {
   if (lowerContent === "nuevo")
     return "bg-cyan-300 text-black outline-cyan-300";
   if (lowerContent === "agotado")
-    return "bg-red-500 text-white outline-red-500";
+    return "bg-red-500/70 text-white outline-red-500/70";
 
   return "bg-gray-500";
 };

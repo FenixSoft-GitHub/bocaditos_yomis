@@ -1,14 +1,11 @@
-// src/pages/BlogPostPage.tsx
 import React from "react";
 import { useParams } from "react-router-dom";
-import { getPostBySlug } from "@/utils/getPosts"; // Importamos la función para obtener un post
-import { IoReturnUpBack } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { getPostBySlug } from "@/utils/getPosts"; 
+import { BackButton } from "@/components/shared/BackButton";
 
 const BlogPostPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>(); // Obtiene el slug de la URL
-  console.log("Slug:", slug); // Verifica el slug en la consola
-  
+    
   // Busca el post usando el slug
   const post = slug ? getPostBySlug(slug) : undefined;
 
@@ -48,13 +45,7 @@ const BlogPostPage: React.FC = () => {
           <div dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
         </div>
         <div className="flex items-center gap-2 group justify-end">
-          <Link
-            to={"/blog"}
-            className="inline-flex items-center gap-2 text-oscuro dark:text-mint dark:hover:text-dorado hover:underline font-medium mb-6"
-          >
-            Regresar
-            <IoReturnUpBack className="w-6 h-6 group-hover:translate-x-1 transition-all" />
-          </Link>
+          <BackButton />
         </div>
       </div>
     </div>

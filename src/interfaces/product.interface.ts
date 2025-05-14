@@ -30,3 +30,14 @@ export interface ProductCategory {
   stock: number | null;
   updated_at: string | null;
 }
+
+export interface ProductInput {
+  name: string;
+  price: number;
+  stock: number;
+  category_id: string;
+  description: string;
+  images: File[];
+  slug: string;
+}
+

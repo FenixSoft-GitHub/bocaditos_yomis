@@ -1,19 +1,8 @@
-// export * from '@pages/HomePage';
-// export * from '@pages/AboutPage';
-// export * from '@pages/blog/BlogPages';
-// export * from '@pages/blog/BlogPostsList';
-// export * from '@pages/NuestraHistoriaPage';
-// export * from '@pages/ContactUsPage';
-// export * from '@pages/product/ProductsPage';
-// export * from '@pages/product/ProductPage';
-// export * from '@pages/authentication/LoginPage';
-// export * from '@pages/authentication/RegisterPage';
-
 export { default as HomePage } from "@pages/HomePage";
 export { default as AboutPage } from "@pages/AboutPage";
 export { default as BlogPages } from "@pages/blog/BlogPages";
 export { default as BlogPostsList } from "@pages/blog/BlogPostsList";
-export { default as NuestraHistoriaPage } from "@pages/NuestraHistoriaPage";
+export { default as NuestraHistoriaPage } from "@/pages/informations/NuestraHistoriaPage";
 export { default as ContactUsPage } from "@pages/ContactUsPage";
 export { default as ProductsPage } from "@pages/product/ProductsPage";
 export { default as ProductPage } from "@pages/product/ProductPage";
@@ -23,7 +12,17 @@ export { default as OrdersUserPage } from "@pages/orders/OrdersUserPage";
 export { default as OrderUserPage } from "@pages/orders/OrderUserPage";
 export { default as CheckoutPage } from "@pages/checkout/CheckoutPage";
 export { default as ThankyouPage } from "@pages/checkout/ThankyouPage";
-
-
-
-
+export { default as DashboardProductsPage } from "@pages/dashboard/DashboardProductsPage";
+export { default as DashboardDeliverysPage } from "@pages/dashboard/DashboardDeliverysPage";
+export { default as DashboardPromoPage } from "@pages/dashboard/DashboardPromoPage";
+export { default as DashboardCategoriesPage } from "@pages/dashboard/DashboardCategoriesPage";
+export { default as DashboardOrdersPage } from "@pages/dashboard/DashboardOrdersPage";
+export { default as DashboardOrderPage } from "@pages/dashboard/DashboardOrderPage";
+export { default as DashboardProductUpdatePage } from "@/pages/dashboard/DashboardProductUpdatePage";
+export { default as DashboardCategoryUpdatePage } from "@/pages/dashboard/DashboardCategoryUpdatePage";
+export { default as DashboardDeliverysUpdatePage } from "@pages/dashboard/DashboardDeliverysUpdatePage";
+export { default as DashboardPromoUpdatePage } from "@pages/dashboard/DashboardPromoUpdatePage";
+export { default as Policies } from "@/pages/informations/Policies";
+export { default as Soporte } from "@/pages/informations/Soporte";
+export { default as TermsOfUsers } from "@/pages/informations/TermsOfUsers";
+export { default as Condiciones } from "@/pages/informations/Condiciones";

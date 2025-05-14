@@ -94,6 +94,12 @@ export const Footer = () => {
               >
                 Términos de uso
               </Link>
+              <Link
+                to="/conditions"
+                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
+              >
+                Condiciones Personalizadas
+              </Link>
             </nav>
           </div>
 

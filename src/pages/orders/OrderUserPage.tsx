@@ -5,7 +5,7 @@ import { IoChevronBack } from "react-icons/io5";
 import { formatDateLong, formatPrice } from "@/helpers";
 
 const tableHeaders = ["Producto", "Cantidad", "Precio Unit.", "Importe"];
-
+  
 const OrderUserPage = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();

@@ -7,6 +7,7 @@ import { Loader } from "@/components/shared/Loader";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoLogOutOutline } from "react-icons/io5";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
+import ScrollToTop from "@/components/shared/ScrollToTop";
 
 const ClientLayout = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const ClientLayout = () => {
         <NavLink
           to="/account/pedidos"
           className={({ isActive }) =>
-            `${buttonClass} ${ isActive ? "underline" : ""} group`
+            `${buttonClass} ${isActive ? "underline" : ""} group`
           }
         >
           Pedidos <LiaFileInvoiceDollarSolid size={18} />
@@ -58,6 +59,7 @@ const ClientLayout = () => {
 
       {/* Contenido */}
       <main className="flex-1 w-full max-w-6xl mx-auto p-4 rounded-lg">
+        <ScrollToTop />
         <Outlet />
       </main>
     </div>

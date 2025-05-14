@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { TableOrders } from "@/components/orders/TableOrders";
 
 const OrdersUserPage = () => {
-  const { data: orders, isLoading } = useOrders();
-
+  const { data: orders, isLoading } = useOrders();   
+  
   if (isLoading || !orders) return <Loader size={60} />;
 
   return (
@@ -18,15 +18,15 @@ const OrdersUserPage = () => {
           {orders.length}
         </span>
       </div>
-
+ 
       {orders.length === 0 ? (
         <>
-          <p className="text-slate-600 text-[13px]">
+          <p className="text-[13px]">
             Todavía no has hecho ningún pedido
           </p>
           <Link
             to="/products/"
-            className="uppercase font-semibold tracking-widest text-xs py-4 rounded-full px-8 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 mt-4 outline-2 outline-offset-2 outline-gray-600"
+            className="mt-4 bg-amber-600 hover:bg-amber-500 text-oscuro text-sm font-semibold py-3 px-6 rounded-md shadow-sm transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-600"
           >
             Empezar a comprar
           </Link>

@@ -23,11 +23,11 @@
   --color-cream: #fff5e4;
   --color-butter: #fff1c1;
   --color-choco: #6b4226;
-  --color-caramel: #d9a066;
+  /* --color-caramel: #d9a066; */
   /* --color-peach: #ffd1ba;
   --color-rose: #f8bbd0;
   --color-coral: #ff6f61; */
-  --color-mint: #c8e6c9;
+  /* --color-mint: #c8e6c9; */
   --color-cocoa: #c39b77;
   /* --color-vanilla: #f3e5ab;
   --color-berry: #ffabab; */
@@ -187,9 +187,41 @@
 
 /* CLASES PERSONALIZADAS */
 .btn-paginacion {
-@apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-base font-semibold w-[140px] bg-choco/90 text-cream hover:bg-choco dark:bg-cream/70 dark:text-choco dark:hover:bg-cream transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cocoa focus:ring-offset-2 active:scale-[0.98];
+@apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-base font-semibold w-[140px] bg-choco/90 text-cream hover:bg-choco dark:bg-cream/30 dark:text-cream dark:hover:bg-cream/90 dark:hover:text-choco transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cocoa focus:ring-offset-2 active:scale-[0.98];
 }
 
-/* .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-white bg-cyan-600 shadow-sm hover:bg-cyan-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-1 transition-all duration-200 active:scale-[0.98];
-} */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-choco/90 text-cream hover:bg-choco dark:bg-cream/30 dark:text-cream dark:hover:bg-cream/90 dark:hover:text-choco transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cocoa focus:ring-offset-2 active:scale-[0.98]
+}
+
+select,
+::picker(select) {
+  appearance: base-select;
+}
+
+::picker(select) {
+  border-radius: 6px;
+  background: #4d4c4c;
+  color: var(--color-cream);
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+/* Ocultar flechas en inputs tipo number */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

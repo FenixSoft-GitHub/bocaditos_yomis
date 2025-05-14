@@ -9,8 +9,10 @@ const AboutPage = () => {
       {/* Hero Section */}
       <div className="relative w-full h-screen flex justify-end items-center">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat h-full bg-[url('/img/about/about.avif')]"
-          style={{ maskImage: "linear-gradient(black 50%, transparent)" }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat h-full bg-[url('/img/about/about.avif')] dark:mask-image-[linear-gradient(to_bottom,_black_80%,_transparent)] light:mask-image-[linear-gradient(to_bottom,_white_80%,_transparent)]"
+          style={{
+            maskImage: "linear-gradient(to bottom, black 80%, transparent)",
+          }}
         />
         <div className="absolute inset-0 bg-black opacity-20" />
 
@@ -57,7 +59,7 @@ const AboutPage = () => {
           </p>
           <Link
             to={"/about/nuestra-historia"}
-            className="inline-flex items-center gap-2 text-oscuro dark:text-mint dark:hover:text-dorado hover:underline font-medium"
+            className="inline-flex items-center gap-2 bg-cocoa/20 px-3 py-1 rounded-md text-sm text-oscuro dark:text-amber-400 dark:hover:text-dorado hover:underline font-medium hover:scale-105 transform-all ease-in-out duration-300"
           >
             Leer más
             <FaArrowRight className="w-3.5 h-3.5" />

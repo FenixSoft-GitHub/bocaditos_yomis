@@ -277,7 +277,7 @@ export const getOrderByIdAdmin = async (id: string) => {
   const { data: order, error } = await supabase
     .from("orders")
     .select(
-      "*, addresses(*), users(full_name, email), order_items(quantity, unit_price, subtotal, products(name, image_url))"
+      "*, addresses(*), users(full_name, email), order_items(quantity, unit_price, subtotal, products(name, image_url)), delivery_options(name)"
     )
     .eq("id", id)
     .single();
@@ -309,21 +309,7 @@ export const getOrderByIdAdmin = async (id: string) => {
       productName: item.products?.name,
       productImage: item.products?.image_url[0],
     })),
+    delivery_options: order.delivery_options?.name
   };
 };
 
-export const getDeliveryOptions = async () => {
-  const { data: delivery, error } = await supabase
-    .from("delivery_options")
-    .select("id, name, price");
-  if (error) throw new Error(error.message);
-  return delivery || [];
-};
-
-export const getPromoCodes = async () => {
-  const { data: promoCodes, error } = await supabase
-    .from("promo_codes")
-    .select("id, code, discount_percent");
-  if (error) throw new Error(error.message);
-  return promoCodes || [];
-};

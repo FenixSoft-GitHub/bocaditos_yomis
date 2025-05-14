@@ -47,7 +47,7 @@ export const TableOrders = ({ orders }: Props) => {
                     navigate(`/account/pedidos/${order.id}`, {
                       state: { orderIndex: index + 1 },
                     })
-                  }
+                  } 
                 >
                   <td className="px-6 py-4 font-medium">{index + 1}</td>
                   <td className="px-6 py-4">

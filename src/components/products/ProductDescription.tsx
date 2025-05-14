@@ -6,7 +6,7 @@ interface Props {
     content: JSONContent | Json
 }
 
-export const ProductDescription = ({content}: Props) => {
+export const ProductDescription = ({ content }: Props) => {
 
     const editor = useEditor({
         extensions: [StarterKit],
@@ -17,11 +17,11 @@ export const ProductDescription = ({content}: Props) => {
                 class: 'prose prose-sm max-w-none sm:prose-base dark:prose-invert prose-p:text-choco dark:prose-p:text-cream'
             }
         }
-      })
+    })
 
-  return (
-    <div className="px-4">
-        <EditorContent editor={editor} />
-    </div>
-  )
+    return (
+        <div className="px-4">
+            <EditorContent editor={editor} />
+        </div>
+    )
 }

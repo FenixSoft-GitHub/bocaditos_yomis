@@ -1,11 +1,10 @@
 import { CardProduct } from "@/components/products/CardProduct";
-// import { useProduct } from "@/hooks";
 import { useState } from "react";
-import { useCategories } from "@/hooks/products/useCategories";
-import { CategoriesFilter } from "@/components/products/CategoriesFilter";
+import { useCategories } from "@/hooks/categories/useCategories";
 import { useFilteredProducts } from "@/hooks/products/useFilteredProducts";
 import { Pagination } from "@/components/shared/Pagination";
 import { Loader } from "@/components/shared/Loader";
+import { SelectFilter } from "@/components/shared/SelectFilter";
 
 const ProductsPage = () => {
   const [page, setPage] = useState(1);
@@ -52,12 +51,13 @@ const ProductsPage = () => {
             Artículos
           </h1>
 
-          {/* Usa el componente BrandFilter */}
-          <CategoriesFilter
-            categories={categoriesSelect.map((c) => c.name)}
-            onCategoryChange={handleCategoryChange}
-            onResetFilter={handleResetFilter}
-            initialCategory={selectedCategories}
+          <SelectFilter
+            label="Filtrar por Categorías:"
+            options={categoriesSelect.map((c) => c.name)}
+            selectedValue={selectedCategories}
+            onChange={handleCategoryChange}
+            onReset={handleResetFilter}
+            placeholder="Todas las categorías"
           />
         </div>
 
@@ -69,8 +69,13 @@ const ProductsPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product, index) => (
-                <CardProduct key={index} product={product} />
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="keen-slider__slide shrink-0 min-w-0 transition-transform duration-200"
+                >
+                  <CardProduct product={product} />
+                </div>
               ))}
             </div>
           )}

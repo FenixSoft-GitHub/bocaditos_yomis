@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { AddressFormValues, addressSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ItemsCheckout } from "./ItemsCheckout";
-import { useCreateOrder, useDelivery } from "@/hooks";
+import { useCreateOrder, useDeliverys } from "@/hooks";
 import { useCartStore } from "@/store/cart.store";
 import { Separator } from "@/components/shared/Separator";
 import { Loader } from "@/components/shared/Loader";
@@ -19,7 +19,7 @@ export const FormCheckout = () => {
     handleSubmit,
   } = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
-  });
+  });  
 
   const { mutate: createOrder, isPending } = useCreateOrder();
   const cleanCart = useCartStore((state) => state.cleanCart);
@@ -28,8 +28,10 @@ export const FormCheckout = () => {
 
   const navigate = useNavigate();
 
-  const { data: deliveryOptions, isLoading: loadingDelivery } = useDelivery();
+  const { deliverys: deliveryOptions, isLoading: loadingDelivery } = useDeliverys();
   // const { data: promoCodes, isLoading: loadingPromo } = usePromoCode();
+
+  
 
   const onSubmit = handleSubmit((data) => {
     const orderInput = {

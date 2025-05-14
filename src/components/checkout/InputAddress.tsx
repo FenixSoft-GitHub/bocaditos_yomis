@@ -19,18 +19,13 @@ export const InputAddress = ({
 }: Props) => {
   return (
     <>
-      {/* <div
-        className={`text-choco dark:text-cream bg-cream dark:bg-fondo-dark border border-cocoa/30 dark:border-cream/30 rounded-md overflow-hidden py-2 ${
-          errors[name] && "border-red-500"
-        } ${className}`}
-      > */}
-        <input
-          type="text"
-          className={`w-full p-3 text-sm focus:outline-none border border-cocoa/30 dark:border-cream/30 rounded-lg focus:border-choco dark:focus:border-cream/70  transition-colors focus:ring-1 duration-300 ${className}`}
-          placeholder={placeholder}
-          {...register(name)}
-        />
-      {/* </div> */}
+      <input
+        type="text"
+        className={`w-full p-3 text-sm focus:outline-none border border-cocoa/30 dark:border-cream/30 rounded-lg focus:border-choco dark:focus:border-cream/70  transition-colors focus:ring-1 duration-300 ${className}`}
+        placeholder={placeholder}
+        {...register(name)}
+      />
+
       {errors[name] && (
         <p className="text-red-500 text-xs">{errors[name].message}</p>
       )}

@@ -37,7 +37,13 @@ export const NavBar = memo(() => {
     pathname === "/products" ||
     pathname.startsWith("/products/") ||
     pathname === "/account/pedidos" ||
-    pathname.startsWith("/account/pedidos/")
+    pathname.startsWith("/account/pedidos/") ||
+    pathname === "/conditions" ||
+    pathname === "/soporte" ||
+    pathname === "/policies"||
+    pathname === "/terms-of-use" ||
+    pathname === "/register" ||
+    pathname === "/login"
       ? "bg-oscuro/30 backdrop-blur-md shadow-md"
       : "bg-transparent text-cream";
 

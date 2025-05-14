@@ -34,8 +34,6 @@ const ThankyouPage = () => {
             src="/img/misc/checked.avif"
             alt="Imagen de Check"
           />
-          {/* <CiCircleCheck size={40} /> */}
-
           <p className="text-4xl">¡Gracias, {data.user.full_name}!</p>
         </div>
 

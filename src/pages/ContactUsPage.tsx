@@ -10,8 +10,10 @@ const ContactUsPage = () => {
       {/* Hero Section */}
       <div className="relative w-full h-screen flex justify-end items-center">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat h-full bg-[url('/img/contactus/contactanos.avif')]"
-          style={{ maskImage: "linear-gradient(black 50%, transparent)" }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat h-full bg-[url('/img/contactus/contactanos.avif')] dark:mask-image-[linear-gradient(to_bottom,_black_80%,_transparent)] light:mask-image-[linear-gradient(to_bottom,_white_80%,_transparent)]"
+          style={{
+            maskImage: "linear-gradient(to bottom, black 80%, transparent)",
+          }}
         />
         <div className="absolute inset-0 bg-black opacity-20" />
 

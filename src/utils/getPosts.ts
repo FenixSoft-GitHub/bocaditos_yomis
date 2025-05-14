@@ -1,10 +1,7 @@
-// src/lib/blog.ts
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
-// Eliminamos remarkFrontmatter, ya no lo usaremos para extraer
-// import remarkFrontmatter from "remark-frontmatter"; // <-- Eliminar o comentar esta l\u00EDnea
 import yaml from "js-yaml";
 
 // Definimos los tipos para el frontmatter y el post completo

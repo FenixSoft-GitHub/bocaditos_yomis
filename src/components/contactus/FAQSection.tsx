@@ -21,11 +21,11 @@ export const FAQSection = () => {
           return (
             <div
               key={index}
-              className="bg-cream dark:bg-oscuro border border-cocoa/50 dark:border-choco/70 rounded-2xl shadow-sm transition-all"
+              className="bg-cream dark:bg-oscuro border border-cocoa/50 dark:border-cream/20 rounded-2xl shadow-sm transition-all"
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full flex items-center justify-between p-4 text-left font-medium text-choco dark:text-cream hover:bg-butter dark:hover:bg-choco/50 focus:outline-none focus:ring-2 focus:ring-cocoa/80 rounded-2xl transition"
+                className="w-full flex items-center justify-between p-4 text-left font-medium text-choco dark:bg-fondo-dark dark:text-cream hover:bg-butter dark:hover:bg-cream/10 focus:outline-none focus:ring-2 focus:ring-cocoa/80 rounded-2xl transition"
                 aria-expanded={isOpen}
                 aria-controls={`faq-${index}`}
               >

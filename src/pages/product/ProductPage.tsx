@@ -5,22 +5,21 @@ import Tag from "@/components/shared/Tag";
 import { formatPrice } from "@/helpers";
 import { useProduct } from "@/hooks";
 import { useEffect, useState } from "react";
-// import { LuMinus, LuPlus } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { BsChatLeftText } from "react-icons/bs";
-import { LuMinus, LuPlus } from "react-icons/lu";
 import { ProductDescription } from "@/components/products/ProductDescription";
 import { useCounterStore } from "@/store/counter.store";
 import { useCartStore } from "@/store/cart.store";
 import toast from "react-hot-toast";
+import InputNumber from "@/components/shared/InputNumber";
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [currentSlug, setCurrentSlug] = useState(slug);
   const { product, isLoading, isError } = useProduct(currentSlug || "");
-  const { count, increment, decrement, reset } = useCounterStore();
+  const { count, reset, setCount } = useCounterStore();
   const addItem = useCartStore((state) => state.addItem);
   const navigate = useNavigate();
 
@@ -31,7 +30,6 @@ const ProductPage = () => {
   }, [slug, reset]);
 
   const isOutOfStock = product?.stock === 0 || false;
-  // const stock = product?.stock || 0;
 
   // Función para añadir al carrito
   const addToCart = () => {
@@ -63,7 +61,7 @@ const ProductPage = () => {
         price: product?.price || 0,
         quantity: count,
       });
-      
+
       navigate("/checkout");
     }
   };
@@ -102,27 +100,17 @@ const ProductPage = () => {
           <div className="flex flex-col gap-3">
             <p className="text-sm font-medium">Descripción del producto</p>
 
-            <div className="flex gap-3 h-24">
+            <div className="flex gap-3 h-12 lg:h-24">
               <ProductDescription content={product.description} />
             </div>
-
-            {/* este bloque no pase a este sitio estaba en el de abajo */}
-
             <div className="space-y-3 mb-3 lg:mb-6 flex flex-col items-center lg:items-start">
               <p className="text-xs font-medium">Cantidad:</p>
-              <div className="flex justify-between gap-8 px-5 py-3 border border-cocoa/70 dark:border-cream/60 rounded-full w-1/2 lg:w-1/4 text-sm font-medium dark:bg-cream/20 bg-cocoa/10">
-                <button
-                  onClick={decrement}
-                  disabled={count === 1}
-                  className="cursor-pointer"
-                >
-                  <LuMinus size={18} />
-                </button>
-                <span>{count}</span>
-                <button onClick={increment} className="cursor-pointer">
-                  <LuPlus size={18} />
-                </button>
-              </div>
+              <InputNumber
+                value={count}
+                min={1}
+                max={product?.stock || 99}
+                onChange={(val) => setCount(val)} 
+              />
             </div>
           </div>
 
@@ -139,7 +127,7 @@ const ProductPage = () => {
                 onClick={addToCart}
                 className="w-full md:w-1/2 bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
               >
-                Añadir al carrito 
+                Añadir al carrito
               </button>
             )}
 

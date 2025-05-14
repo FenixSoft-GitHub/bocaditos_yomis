@@ -6,14 +6,32 @@ interface Props {
 
 const GridImages = ({ images }: Props) => {
   const [activeImage, setActiveImage] = useState(images[0]);
+  const [zoomImage, setZoomImage] = useState<string | null>(null);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [showZoom, setShowZoom] = useState(false);
 
   const handleImageClick = (image: string) => {
     setActiveImage(image);
   };
 
+  const handleMouseEnter = (image: string) => {
+    setZoomImage(image);
+    setShowZoom(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setZoomPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const handleMouseLeave = () => {
+    setShowZoom(false);
+    setZoomImage(null);
+  };
+
   return (
     <div className="flex flex-col md:flex-row relative gap-4">
-      {/* Imagen principal: se muestra primero en desktop, segundo en móvil */}
+      {/* Imagen principal */}
       <div className="order-1 md:order-2 bg-cocoa/20 lg:w-[550px] lg:h-[500px] max-w-[550px] max-h-[500px] mx-auto flex items-center justify-center p-4 rounded-lg dark:bg-cream/10">
         <img
           src={activeImage}
@@ -22,25 +40,41 @@ const GridImages = ({ images }: Props) => {
         />
       </div>
 
-      {/* Miniaturas: se muestran después en desktop, primero en móvil */}
-      <div className="order-2 md:order-1 flex md:flex-col gap-2">
+      {/* Miniaturas */}
+      <div className="order-2 md:order-1 flex md:flex-col gap-2 relative">
         {images.map((image) => {
           const isActive = activeImage === image;
           return (
             <button
               key={image}
               onClick={() => handleImageClick(image)}
-              aria-pressed={isActive}
-              role="tab"
+              onMouseEnter={() => handleMouseEnter(image)}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
               className={`w-16 h-16 border ${
                 isActive ? "border-cocoa/70" : "border-transparent"
-              } rounded-lg hover:border-oscuro hover:dark:border-cream/80 focus:outline-none transition-all cursor-pointer`}
+              } rounded-lg hover:border-oscuro hover:dark:border-cream/80 focus:outline-none transition-all cursor-pointer relative`}
             >
               <img
                 src={image}
                 alt="Miniatura del producto"
                 className="w-full h-full object-cover rounded-lg aspect-square"
               />
+
+              {/* Zoom flotante */}
+              {showZoom && zoomImage === image && (
+                <div
+                  className="absolute z-50 border border-gray-300 shadow-lg rounded-lg pointer-events-none overflow-hidden"
+                  style={{
+                    top: zoomPosition.y + 20,
+                    left: zoomPosition.x + 20,
+                    width: 250,
+                    height: 250,
+                    background: `url(${zoomImage}) no-repeat center`,
+                    backgroundSize: "cover",
+                  }}
+                ></div>
+              )}
             </button>
           );
         })}
@@ -50,49 +84,3 @@ const GridImages = ({ images }: Props) => {
 };
 
 export default GridImages;
-
-// import { useState } from "react"
-
-// interface Props {
-//   images: string[]
-// }
-
-// const GridImages = ({ images }: Props) => {
-//   const [activeImage, setActiveImage] = useState(images[0])
-
-//   const handleImageClick = (image: string) => {
-//     setActiveImage(image)
-//   }
-
-//   return (
-//     <div className="flex flex-1 flex-col md:flex-row relative gap-2">
-//       <div className="flex justify-center gap-2">
-//         {images.map((image, index) => (
-//           <button
-//             key={image}
-//             onClick={() => handleImageClick(image)}
-//             className={`w-16 h-16 border ${
-//               activeImage === image ? "border-cocoa/70" : "border-transparent"
-//             } rounded-lg hover:border-oscuro hover:dark:border-cream/80 focus:outline-none`}
-//           >
-//             <img
-//               src={image}
-//               alt={`Thumbnail ${index + 1}`}
-//               className="w-full h-full rounded-lg object-cover"
-//             />
-//           </button>
-//         ))}
-//       </div>
-
-//       <div className="bg-gray-200 lg:w-[550px] lg:h-[500px] max-w-[550px] max-h-[500px] mx-auto flex items-center justify-center p-4 rounded-lg dark:bg-cream/10">
-//         <img
-//           src={activeImage}
-//           alt="Imagen del producto"
-//           className="h-full w-auto max-w-full object-contain rounded-lg"
-//         />
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default GridImages

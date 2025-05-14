@@ -17,15 +17,6 @@ export interface OrderInput {
   promo_code_id?: string;
 }
 
-// address_id: string;
-// created_at: string;
-// delivery_option_id: string | null;
-// id: string;
-// promo_code_id: string | null;
-// status: string;
-// total_amount: number;
-// user_id: string;
-
 export interface OrderItemSingle {
 	created_at: string;
 	id: string;

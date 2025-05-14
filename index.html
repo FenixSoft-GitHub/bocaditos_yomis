@@ -1,6 +1,20 @@
 <!doctype html>
 <html lang="es">
   <head>
+    <script>
+      (function () {
+        const theme = localStorage.getItem("theme");
+        if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+    <style>
+      html.dark body {
+        background-color: #0c0905;
+        color: #fff5e4;
+      }
+    </style>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/LogoBocaditosYomisSF.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

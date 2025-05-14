@@ -35,7 +35,7 @@ export const Pagination = ({ totalItems, page, setPage }: Props) => {
       </p>
       <div className="flex gap-6 items-center">
         <button
-          className="btn-paginacion"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition"
           onClick={handlePrevPage}
           disabled={page === 1}
         >
@@ -44,7 +44,7 @@ export const Pagination = ({ totalItems, page, setPage }: Props) => {
         </button>
 
         <button
-          className="btn-paginacion"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition"
           onClick={handleNextPage}
           disabled={isLastPage}
         >

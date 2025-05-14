@@ -11,23 +11,32 @@ export const formatPrice = (price: number) => {
 
 // Función para formatear la fecha a formato 3 de enero de 2022
 export const formatDateLong = (date: string): string => {
-	const dateObject = new Date(date);
+  const dateObject = new Date(date);
+  // Corrige la diferencia horaria
+  const correctedDate = new Date(
+    dateObject.getTime() + dateObject.getTimezoneOffset() * 60000
+  );
 
-	return dateObject.toLocaleDateString('es-ES', {
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric',
-	});
+  return correctedDate.toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 };
 
 // Función para formatear la fecha a formato dd/mm/yyyy
 export const formatDate = (date: string): string => {
-	const dateObject = new Date(date);
-	return dateObject.toLocaleDateString('es-ES', {
-		year: 'numeric',
-		month: '2-digit',
-		day: 'numeric',
-	});
+  const dateObject = new Date(date.split("T")[0]);
+  // Corrige la diferencia horaria
+  const correctedDate = new Date(
+    dateObject.getTime() + dateObject.getTimezoneOffset() * 60000
+  );
+
+  return correctedDate.toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "2-digit",
+    day: "numeric",
+  });
 };
 
 // Función para obtener el estado del pedido en español
@@ -55,15 +64,24 @@ export const generateSlug = (name: string): string => {
 };
 
 // Función para extraer el path relativo al bucket de una URL
-export const extractFilePath = (url: string) => {
-	const parts = url.split(
-		'/storage/v1/object/public/product-images/'
-	);
-	// EJEMPLO PARTS: ['/storage/v1/ object/public/product-images/', '02930920302302030293023-iphone-12-pro-max.jpg']
-
-	if (parts.length !== 2) {
-		throw new Error(`URL de imagen no válida: ${url}`);
-	}
-
-	return parts[1];
+export const extractFilePath = (url: string): string => {
+  const match = url.match(/\/storage\/v1\/object\/public\/product-image\/(.+)$/);
+  if (!match || !match[1]) {
+    throw new Error(`URL de imagen no válida: ${url}`);
+  }
+  return match[1];
 };
+
+
+// export const extractFilePath = (url: string) => {
+// 	const parts = url.split(
+// 		'/storage/v1/object/public/product-image/'
+// 	);
+// 	// EJEMPLO PARTS: ['/storage/v1/ object/public/product-images/', '02930920302302030293023-iphone-12-pro-max.jpg']
+
+// 	if (parts.length !== 2) {
+// 		throw new Error(`URL de imagen no válida: ${url}`);
+// 	}
+
+// 	return parts[1];
+// };

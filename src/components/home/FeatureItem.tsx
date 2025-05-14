@@ -8,11 +8,13 @@ interface FeatureItemProps {
 
 export const FeatureItem = memo(
   ({ icon, title, description }: FeatureItemProps) => (
-    <div className=" bg-cream border border-caramel/60 shadow-md flex items-center gap-6 px-4 py-2 transition-all duration-300 rounded-lg hover:bg-butter hover:border-cream text-choco dark:text-cream/80 dark:bg-oscuro dark:border-choco/60 dark:hover:bg-oscuro/60 dark:hover:text-white">
-      <div>{icon}</div>
-      <div className="space-y-1">
-        <p className="font-semibold">{title}</p>
-        <p className="text-sm">{description}</p>
+    <div className=" bg-cream border border-cocoa/50 shadow-md flex flex-col items-center gap-3 px-4 py-2 transition-all duration-300 rounded-lg hover:bg-butter/50 hover:border-cocoa/80 text-choco dark:text-cream/80 dark:bg-oscuro dark:border-cream/30 dark:hover:border-cream/80 dark:hover:bg-oscuro/60 dark:hover:text-white">
+      <div className="mx-auto flex justify-between items-center gap-4">
+        <div>{icon}</div>
+        <p className="font-semibold text-center">{title}</p>
+      </div>
+      <div>
+        <p className="text-[12px]">{description}</p>
       </div>
     </div>
   )

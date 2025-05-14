@@ -15,11 +15,14 @@ export const useCreateOrder = () => {
 			});
 			navigate(`/checkout/${data.id}/thank-you`);
 		},
-		onError: error => {
-			toast.error(error.message, {
-				position: 'bottom-right',
-			});
-		},
+		onError: (error: unknown) => {
+      const message =
+        error instanceof Error ? error.message : "Error desconocido";
+
+      toast.error(`Error al actualizar: ${message}`, {
+        position: "bottom-right",
+      });
+    },
 	});
 
 	return {

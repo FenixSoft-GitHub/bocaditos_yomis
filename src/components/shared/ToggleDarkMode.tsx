@@ -1,35 +1,18 @@
-import { useEffect, useState } from "react";
-import { Expand } from "@theme-toggles/react";
+import { useTheme } from "@/hooks/useTheme";
+import { Moon, Sun } from "lucide-react";
 
 export const ToggleDarkMode = () => {
-  const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
-  });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDark]);
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <button className="w-10 h-10 flex justify-center items-center rounded-md bg-transparent hover:bg-cream/20 transition-all duration-400 cursor-pointer">
-      <Expand
-        duration={450}
-        toggled={isDark}
-        toggle={setIsDark}
+    <div className="w-10 h-10 flex justify-center items-center rounded-md bg-transparent hover:bg-cream/20 transition-all duration-400 cursor-pointer">
+      <button
+        onClick={toggleTheme}
+        className="p-2 rounded-md transition"
         aria-label="Cambiar tema"
-        title="Alternar tema"
-        placeholder=""
-        onPointerEnterCapture={() => {}}
-        onPointerLeaveCapture={() => {}}
-        className="text-xl"
-      />
-    </button>
+      >
+        {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+      </button>
+    </div>
   );
 };

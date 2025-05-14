@@ -11,6 +11,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^5.0.1
     version: 5.0.1(react-hook-form@7.56.1)
+  '@number-flow/react':
+    specifier: ^0.5.9
+    version: 0.5.9(react-dom@19.1.0)(react@19.1.0)
   '@supabase/supabase-js':
     specifier: ^2.49.4
     version: 2.49.4
@@ -23,9 +26,6 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^5.74.7
     version: 5.74.7(react@19.1.0)
-  '@theme-toggles/react':
-    specifier: ^4.1.0
-    version: 4.1.0(react-dom@19.1.0)(react@19.1.0)
   '@tiptap/pm':
     specifier: ^2.11.9
     version: 2.11.9
@@ -737,6 +737,18 @@ packages:
       fastq: 1.19.1
     dev: true
 
+  /@number-flow/react@0.5.9(react-dom@19.1.0)(react@19.1.0):
+    resolution: {integrity: sha512-cletUjLUIV6NoNg36z4CR4khIff3fb4RWzuNx8TOZVw34pUpZlgWpnDpJb4UG8B2QyYAFbptVunW0RiqoHVCDA==}
+    peerDependencies:
+      react: ^18 || ^19
+      react-dom: ^18 || ^19
+    dependencies:
+      esm-env: 1.2.2
+      number-flow: 0.5.7
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+    dev: false
+
   /@popperjs/core@2.11.8:
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
     dev: false
@@ -1246,16 +1258,6 @@ packages:
     dependencies:
       '@tanstack/query-core': 5.74.7
       react: 19.1.0
-    dev: false
-
-  /@theme-toggles/react@4.1.0(react-dom@19.1.0)(react@19.1.0):
-    resolution: {integrity: sha512-h3SuJMsej8DfelHt5fjNIlaMfJOK52Vku4pPDVoHaTwjAcoTr4fn8hzeur2oiqWBYFYfKugvv1RdQaBFXaiPKg==}
-    peerDependencies:
-      react: ^16 || ^17 || ^18
-      react-dom: ^16 || ^17 || ^18
-    dependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
     dev: false
 
   /@tiptap/core@2.11.9(@tiptap/pm@2.11.9):
@@ -2409,6 +2411,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /esm-env@1.2.2:
+    resolution: {integrity: sha512-Epxrv+Nr/CaL4ZcFGPJIYLWFom+YeV1DqMLHJoEd9SYRxNbaFruBwfEX/kkHUJf55j2+TUbmDcmuilbP1TmXHA==}
+    dev: false
 
   /espree@10.3.0:
     resolution: {integrity: sha512-0QYC8b24HWY8zjRnDTL6RiHfDbAWn63qb4LMj1Z4b076A4une81+z03Kg7l7mn/48PUTqoLptSXez8oknU8Clg==}
@@ -3674,6 +3680,12 @@ packages:
     dependencies:
       whatwg-url: 5.0.0
     dev: true
+
+  /number-flow@0.5.7:
+    resolution: {integrity: sha512-P83Y9rBgN3Xpz5677YDNtuQHZpIldw6WXeWRg0+edrfFthhV7QqRdABas5gtu07QPLvbA8XhfO69rIvbKRzYIg==}
+    dependencies:
+      esm-env: 1.2.2
+    dev: false
 
   /optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
