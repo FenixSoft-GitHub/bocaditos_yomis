@@ -1,16 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Dancing+Script&family=Lato&family=Lobster&family=Nunito&family=Open+Sans&family=Pacifico&family=Poppins&family=Playfair+Display&display=swap");
-/* @import url("https://fonts.googleapis.com/css2?family=Dancing+Script&family=Lato&family=Lobster&family=Nunito&family=Open+Sans&family=Pacifico&family=Poppins&family=Playfair+Display&display=swap"); */
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-/* Removed @plugin directive as it is not valid in CSS */
 @custom-variant dark (&:where(.dark, .dark *));
-
 
 @theme {
   --font-body1: "Open Sans", sans-serif;
   --font-body2: "Pacifico", cursive;
-  /* --font-body3: "Lobster", cursive; */
-  /* --font-body4: "Raleway", sans-serif; */
   --font-body5: "Dancing Script", cursive;
   --font-body6: "Playfair Display", serif;
   --font-body7: "Nunito", sans-serif;
@@ -23,14 +18,7 @@
   --color-cream: #fff5e4;
   --color-butter: #fff1c1;
   --color-choco: #6b4226;
-  /* --color-caramel: #d9a066; */
-  /* --color-peach: #ffd1ba;
-  --color-rose: #f8bbd0;
-  --color-coral: #ff6f61; */
-  /* --color-mint: #c8e6c9; */
   --color-cocoa: #c39b77;
-  /* --color-vanilla: #f3e5ab;
-  --color-berry: #ffabab; */
   --color-fondo: #f9f5f0;
   --color-oscuro: #231a0e;
   --color-dorado: #FFD700;

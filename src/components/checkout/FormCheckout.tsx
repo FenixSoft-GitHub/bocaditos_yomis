@@ -29,10 +29,7 @@ export const FormCheckout = () => {
   const navigate = useNavigate();
 
   const { deliverys: deliveryOptions, isLoading: loadingDelivery } = useDeliverys();
-  // const { data: promoCodes, isLoading: loadingPromo } = usePromoCode();
-
   
-
   const onSubmit = handleSubmit((data) => {
     const orderInput = {
       address: data,
@@ -45,7 +42,6 @@ export const FormCheckout = () => {
       })),
       totalAmount,
       delivery_option_id: data.delivery_option_id,
-      // promo_code_id: data.promo_code_id,
     };
 
     createOrder(orderInput, {

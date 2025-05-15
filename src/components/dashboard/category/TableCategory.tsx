@@ -64,9 +64,9 @@ export const TableCategory = () => {
               {tableHeaders.map((header, index) => (
                 <th
                   key={index}
-                  className={`px-2 sm:px-4 py-2 font-semibold text-center ${index === 0 ? "rounded-l-md" : ""
-                    } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""
-                    }`}
+                  className={`px-2 sm:px-4 py-2 font-semibold text-center ${
+                    index === 0 ? "rounded-l-md" : ""
+                  } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""}`}
                 >
                   {header}
                 </th>
@@ -108,9 +108,7 @@ export const TableCategory = () => {
                     <td className="relative">
                       <DropdownMenu
                         onEdit={() =>
-                          navigate(
-                            `/dashboard/category/edit/${category.id}`
-                          )
+                          navigate(`/dashboard/category/edit/${category.id}`)
                         }
                         onDelete={() => deleteCat(category.id)}
                       />

@@ -12,6 +12,5 @@ export const useProductPages = ({ page = 1 }: {page?: number}) => {
     error,
     isLoading,
     totalProducts: data?.count ?? 0,
-    // totalPages: Math.ceil((data?.count || 0) / 8), // Assuming 8 items per page
   };
 };

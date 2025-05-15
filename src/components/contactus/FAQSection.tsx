@@ -15,7 +15,7 @@ export const FAQSection = () => {
       <h2 className="text-3xl font-bold text-center mb-8 drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
         Preguntas Frecuentes
       </h2>
-      <div className="space-y-4">
+      <div className="space-y-4 text-sm">
         {faqs.map((item, index) => {
           const isOpen = openIndex === index;
           return (

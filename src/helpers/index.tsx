@@ -71,17 +71,3 @@ export const extractFilePath = (url: string): string => {
   }
   return match[1];
 };
-
-// const extractFilePath = (url: string) => url.split("/").slice(-2).join("/");
-// export const extractFilePath = (url: string) => {
-// 	const parts = url.split(
-// 		'/storage/v1/object/public/product-image/'
-// 	);
-// 	// EJEMPLO PARTS: ['/storage/v1/ object/public/product-images/', '02930920302302030293023-iphone-12-pro-max.jpg']
-
-// 	if (parts.length !== 2) {
-// 		throw new Error(`URL de imagen no válida: ${url}`);
-// 	}
-
-// 	return parts[1];
-// };

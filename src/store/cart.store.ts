@@ -24,24 +24,7 @@ const storeApi: StateCreator<CartState> = (set) => ({
         (i) => i.productId === item.productId
       );
 
-      // let updatedItems;
-
       const updatedItems = [...state.items];
-
-      // if (existingItemIndex >= 0) {
-        // Si el item ya existe en el carrito, actualizamos la cantidad
-      //   updatedItems = state.items.map((i, index) =>
-      //     index === existingItemIndex
-      //       ? {
-      //           ...i,
-      //           quantity: i.quantity + item.quantity,
-      //         }
-      //       : i
-      //   );
-      // } else {
-        // Si el item no existe en el carrito, lo añadimos
-      //   updatedItems = [...state.items, item];
-      // }
 
       if (existingItemIndex >= 0) {
         updatedItems[existingItemIndex].quantity += item.quantity;
