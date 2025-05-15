@@ -2,6 +2,7 @@ import { extractFilePath } from "@/helpers";
 import { ProductFormValues } from "@/lib/validators";
 import { supabase } from "@/supabase/client";
 import { ProductInput } from "@/interfaces/product.interface";
+import slugify from "slugify";
 
 // Obtener todos los productos
 export const getProducts = async () => {
@@ -202,37 +203,25 @@ export const getByIdProduct = async (id: string) => {
 
 export const createProduct = async (values: ProductInput) => {
   try {
-    const payload = {
-      name: values.name,
-      price: values.price,
-      stock: values.stock,
-      category_id: values.category_id,
-      description: values.description ?? "",
-      image_url: [],
-      slug: values.slug ?? values.name.toLowerCase().replace(/\s+/g, "-"),
-    };
-
-    const { data: product, error: productError } = await supabase
-      .from("products")
-      .insert(payload)
-      .select()
-      .single();
-
-    if (productError)
-      throw new Error(`Error al cargar el producto ${productError.message}`);
-
-    // Validamos antes del map
+    // Validar imágenes
     if (!values.images || !Array.isArray(values.images)) {
       throw new Error("Las imágenes del producto no son válidas");
     }
 
-    const folderName = product.id;
+    // Generar slug
+    const slug =
+      values.slug ?? slugify(values.name, { lower: true, strict: true });
+   
+    const folderName = crypto.randomUUID(); // Nombre único si aún no hay ID
 
+    // Subir imágenes
     const uploadedImages = await Promise.all(
       values.images.map(async (image) => {
         const { data, error } = await supabase.storage
           .from("product-image")
-          .upload(`${folderName}/${image.name}`, image);
+          .upload(`${folderName}/${image.name}`, image, {
+            upsert: true,
+          });
 
         if (error) throw new Error(`Error al subir imagen: ${error.message}`);
         if (!data?.path)
@@ -250,16 +239,25 @@ export const createProduct = async (values: ProductInput) => {
       })
     );
 
-    // Actualizar el producto con las imágenes
-    const { error: updatedError } = await supabase
-      .from("products")
-      .update({
-        image_url: uploadedImages,
-      })
-      .eq("id", product.id);
+    // Crear el producto con las imágenes ya subidas
+    const payload = {
+      name: values.name,
+      price: values.price,
+      stock: values.stock,
+      category_id: values.category_id,
+      description: values.description ?? "",
+      image_url: uploadedImages,
+      slug,
+    };
 
-    if (updatedError)
-      throw new Error(`Error al actualizar imagenes ${updatedError.message}`);
+    const { data: product, error: productError } = await supabase
+      .from("products")
+      .insert(payload)
+      .select()
+      .single();
+
+    if (productError)
+      throw new Error(`Error al crear el producto: ${productError.message}`);
 
     return product;
   } catch (error) {
@@ -268,8 +266,12 @@ export const createProduct = async (values: ProductInput) => {
   }
 };
 
+// const extractFilePath = (url: string) => url.split("/").slice(-2).join("/");
+
 export const deleteProduct = async (productId: string) => {
-  // 2. Obtener las imágenes del producto antes de eliminarlo
+  if (!productId) throw new Error("ID de producto no válido");
+
+  // 1. Obtener imágenes del producto
   const { data: productImages, error: productImagesError } = await supabase
     .from("products")
     .select("image_url")
@@ -278,29 +280,30 @@ export const deleteProduct = async (productId: string) => {
 
   if (productImagesError) throw new Error(productImagesError.message);
 
+  const imageUrls = productImages.image_url || [];
+
+  // 2. Eliminar imágenes del bucket si existen
+  if (imageUrls.length > 0) {
+    const paths = imageUrls.map(extractFilePath);
+
+    const { error: storageError } = await supabase.storage
+      .from("product-image")
+      .remove(paths);
+
+    if (storageError)
+      throw new Error("Error al eliminar imágenes: " + storageError.message);
+  }
+
   // 3. Eliminar el producto
   const { error: productDeleteError } = await supabase
     .from("products")
     .delete()
     .eq("id", productId);
 
-  if (productDeleteError) throw new Error(productDeleteError.message);
-
-  // 4. Eliminar las imágenes del bucket
-  if (productImages.image_url.length > 0) {
-    const folderName = productId;
-
-    const paths = productImages.image_url.map((image) => {
-      const fileName = image.split("/").pop();
-      return `${folderName}/${fileName}`;
-    });
-
-    const { error: storageError } = await supabase.storage
-      .from("product-image")
-      .remove(paths);
-
-    if (storageError) throw new Error(storageError.message);
-  }
+  if (productDeleteError)
+    throw new Error(
+      "Error al eliminar producto: " + productDeleteError.message
+    );
 
   return true;
 };
@@ -310,6 +313,15 @@ export const updateProduct = async (
   productId: string,
   productInput: ProductFormValues
 ) => {
+  if (!productId) throw new Error("ID de producto no válido");
+  if (!Array.isArray(productInput.image_url))
+    throw new Error("Imágenes inválidas");
+
+  const slug =
+    productInput.slug ??
+    slugify(productInput.name, { lower: true, strict: true });
+
+  // Obtener imágenes actuales
   const { data: currentProduct, error: currentProductError } = await supabase
     .from("products")
     .select("image_url")
@@ -320,7 +332,10 @@ export const updateProduct = async (
 
   const existingImages = currentProduct.image_url || [];
 
-  const validImages = productInput.image_url.filter(Boolean) as (string | File)[];
+  const validImages = productInput.image_url.filter(Boolean) as (
+    | string
+    | File
+  )[];
   const imagesToDelete = existingImages.filter(
     (image) => !validImages.includes(image)
   );
@@ -332,22 +347,30 @@ export const updateProduct = async (
       .from("product-image")
       .remove(filesToDelete);
 
-      if (deleteError) throw new Error(deleteError.message);
-    
+    if (deleteError) throw new Error(deleteError.message);
   }
 
   const uploadedImages = await Promise.all(
     validImages.map(async (image) => {
       if (image instanceof File) {
+        const filePath = `${productId}/${crypto.randomUUID()}-${image.name}`;
         const { data, error } = await supabase.storage
           .from("product-image")
-          .upload(`${productId}/${Date.now()}-${image.name}`, image);
+          .upload(filePath, image, { upsert: true });
+
         if (error) throw new Error(error.message);
-        return supabase.storage
+
+        const { data: publicUrlData } = supabase.storage
           .from("product-image")
-          .getPublicUrl(data.path).data.publicUrl;
+          .getPublicUrl(data.path);
+
+        if (!publicUrlData?.publicUrl) {
+          throw new Error("No se pudo obtener la URL pública de la imagen");
+        }
+
+        return publicUrlData.publicUrl;
       } else {
-        return image;
+        return image; // URL existente
       }
     })
   );
@@ -357,7 +380,7 @@ export const updateProduct = async (
     .update({
       name: productInput.name,
       stock: productInput.stock,
-      slug: productInput.slug,
+      slug,
       price: productInput.price,
       description: productInput.description,
       category_id: productInput.category_id,
@@ -371,99 +394,3 @@ export const updateProduct = async (
 
   return updatedProduct;
 };
-
-// export const updateProduct = async (
-//   productId: string,
-//   productInput: ProductFormValues
-// ) => {
-//   // 1. Obtener las imágenes actuales del producto
-//   const { data: currentProduct, error: currentProductError } = await supabase
-//     .from("products")
-//     .select("image_url")
-//     .eq("id", productId)
-//     .single();
-
-//   if (currentProductError) throw new Error(currentProductError.message);
-
-//   const existingImages = currentProduct.image_url || [];
-
-//   // 2. Actualizar la información individual del producto
-//   const { data: updatedProduct, error: productError } = await supabase
-//     .from("products")
-//     .update({
-//       name: productInput.name,
-//       stock: productInput.stock,
-//       slug: productInput.slug,
-//       price: productInput.price,
-//       description: productInput.description,
-//       category_id: productInput.category_id,
-//     })
-//     .eq("id", productId)
-//     .select()
-//     .single();
-
-//   if (productError) throw new Error(productError.message);
-
-//   // 3. Manejo de imágenes (SUBIR NUEVAS y ELIMINAR ANTIGUAS SI ES NECESARIO)
-//   const folderName = productId;
-
-//   const validImages = productInput.image_url.filter((image) => image) as [
-//     File | string
-//   ];
-
-//   // 3.1 Identificar las imágenes que han sido eliminadas
-//   const imagesToDelete = existingImages.filter(
-//     (image) => !validImages.includes(image)
-//   );
-
-//   // 3.2 Obtener los paths de los archivos a eliminar
-//   const filesToDelete = imagesToDelete.map(extractFilePath);
-
-//   // 3.3 Eliminar las imágenes del bucket
-//   if (filesToDelete.length > 0) {
-//     const { error: deleteImagesError } = await supabase.storage
-//       .from("product-image")
-//       .remove(filesToDelete);
-
-//     if (deleteImagesError) {
-//       console.log(deleteImagesError);
-//       throw new Error(deleteImagesError.message);
-//     } else {
-//       console.log(`Imagenes eliminadas: ${filesToDelete.join(", ")}`);
-//     }
-//   }
-
-//   // 3.4 Subir las nuevas imágenes y construir el array de imágenes actualizado
-//   const uploadedImages = await Promise.all(
-//     validImages.map(async (image) => {
-//       if (image instanceof File) {
-//         // Si la imagen no es una URL (es un archivo), entonces subela al bucket
-//         const { data, error } = await supabase.storage
-//           .from("product-image")
-//           .upload(`${folderName}/${productId}-${image.name}`, image);
-
-//         if (error) throw new Error(error.message);
-
-//         const imageUrl = supabase.storage
-//           .from("product-image")
-//           .getPublicUrl(data.path).data.publicUrl;
-
-//         return imageUrl;
-//       } else if (typeof image === "string") {
-//         return image;
-//       } else {
-//         throw new Error("Tipo de imagen no soportado");
-//       }
-//     })
-//   );
-
-//   // 4. Actualizar el productos con las imagenes actualizadas
-//   const { error: updateImagesError } = await supabase
-//     .from("products")
-//     .update({ image_url: uploadedImages })
-//     .eq("id", productId);
-
-//   if (updateImagesError) throw new Error(updateImagesError.message);
-
-//   return updatedProduct;
-// };

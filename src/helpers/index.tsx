@@ -72,7 +72,7 @@ export const extractFilePath = (url: string): string => {
   return match[1];
 };
 
-
+// const extractFilePath = (url: string) => url.split("/").slice(-2).join("/");
 // export const extractFilePath = (url: string) => {
 // 	const parts = url.split(
 // 		'/storage/v1/object/public/product-image/'
