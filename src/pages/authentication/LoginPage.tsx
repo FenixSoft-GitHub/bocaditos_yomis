@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useLogin, useUser } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
+import { MdOutlineAlternateEmail } from "react-icons/md";
+import { TbLockPassword } from "react-icons/tb";
+import { Logo } from "@/components/shared/Logo";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -19,11 +22,14 @@ const LoginPage = () => {
   if (session) return <Navigate to="/" />;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-fonfo text-choco dark:bg-fondo-dark dark:text-cream mt-14">
+    <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-fonfo text-choco dark:bg-fondo-dark dark:text-cream mt-8">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
+          <Logo className="mx-auto" />
           <h1 className="text-3xl font-bold tracking-tight">Iniciar sesión</h1>
-          <p className="text-muted-foreground text-sm">¡Qué bueno tenerte de vuelta!</p>
+          <p className="text-muted-foreground text-sm">
+            ¡Qué bueno tenerte de vuelta!
+          </p>
         </div>
 
         {isPending ? (
@@ -37,29 +43,36 @@ const LoginPage = () => {
               <label htmlFor="email" className="text-sm font-medium">
                 Correo electrónico
               </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="ejemplo@correo.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
-              />
+
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="ejemplo@correo.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pr-10 pl-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
+                />
+                <MdOutlineAlternateEmail className="absolute right-3 top-1/2 size-6 transform -translate-y-1/2 text-choco/60 dark:text-cream/60 pointer-events-none" />
+              </div>
             </div>
 
             {/* Contraseña */}
             <div className="space-y-1">
               <label htmlFor="password" className="text-sm font-medium">
-                Contraseña
+                Password
               </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
+                />
+                <TbLockPassword className="absolute right-3 top-1/2 size-6 transform -translate-y-1/2 text-choco/60 dark:text-cream/60 pointer-events-none" />
+              </div>
             </div>
 
             {/* Botón */}
@@ -75,7 +88,10 @@ const LoginPage = () => {
         {/* Enlace a registro */}
         <p className="text-center text-sm text-muted-foreground">
           ¿No tienes una cuenta?
-          <Link to="/register" className="ml-1 underline font-semibold hover:text-cocoa">
+          <Link
+            to="/register"
+            className="ml-1 underline font-semibold hover:text-cocoa"
+          >
             Regístrate
           </Link>
         </p>

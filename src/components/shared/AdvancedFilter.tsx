@@ -85,22 +85,30 @@ export const AdvancedFilter = ({
       {onDateChange && dateRange && (
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:flex-1 min-w-[220px]">
           <div className="flex flex-col text-sm text-choco dark:text-cream flex-1 w-1/3 min-w-[220px] sm:min-w-[110px] sm:w-full">
-            <label htmlFor={fromId} className="mb-1">Desde</label>
+            <label htmlFor={fromId} className="mb-1">
+              Desde
+            </label>
             <input
               id={fromId}
               type="date"
               value={dateRange.from}
-              onChange={(e) => onDateChange({ ...dateRange, from: e.target.value })}
+              onChange={(e) =>
+                onDateChange({ ...dateRange, from: e.target.value })
+              }
               className="rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent px-3 py-2 text-sm focus:ring-2 focus:ring-cocoa/50 dark:focus:ring-cream/70"
             />
           </div>
           <div className="flex flex-col text-sm text-choco dark:text-cream flex-1 w-1/3 min-w-[220px] sm:min-w-[110px] sm:w-full">
-            <label htmlFor={toId} className="mb-1">Hasta</label>
+            <label htmlFor={toId} className="mb-1">
+              Hasta
+            </label>
             <input
               id={toId}
               type="date"
               value={dateRange.to}
-              onChange={(e) => onDateChange({ ...dateRange, to: e.target.value })}
+              onChange={(e) =>
+                onDateChange({ ...dateRange, to: e.target.value })
+              }
               className="rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent px-3 py-2 text-sm focus:ring-2 focus:ring-cocoa/50 dark:focus:ring-cream/70"
             />
           </div>
@@ -109,13 +117,13 @@ export const AdvancedFilter = ({
 
       {/* Botón limpiar */}
       {isFilterActive && (
-        <div className="w-full sm:w-auto flex ml-2 ">
+        <div className="w-full sm:w-auto flex ml-2 items-end">
           <button
             onClick={onClear}
-            className="text-cream dark:text-choco hover:scale-110 transition-all duration-300 flex items-center gap-2 cursor-pointer rounded-full bg-choco p-2 dark:bg-cream/70"
+            className="text-cream dark:text-choco hover:scale-110 transition-all duration-300 flex items-center justify-center cursor-pointer rounded-full bg-choco w-10 h-10 dark:bg-cream/70"
             title="Limpiar filtro"
           >
-            <GrPowerReset className="w-5 h-5" />
+            <GrPowerReset className="size-5" />
           </button>
         </div>
       )}

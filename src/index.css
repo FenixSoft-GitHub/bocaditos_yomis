@@ -213,3 +213,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .dark input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
+
+
+/* El fondo de los input */
+/* Modo claro (clase por defecto) */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fef6e4 inset !important; /* Usa bg-cream (#fef6e4) */
+  -webkit-text-fill-color: #4b2e2e !important; /* Usa text-choco */
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Modo oscuro (cuando el padre tiene clase .dark) */
+.dark input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px rgba(139, 69, 19, 0.1) inset !important; /* bg-cocoa/10 */
+  -webkit-text-fill-color: #fef6e4 !important; /* text-cream */
+  transition: background-color 9999s ease-in-out 0s;
+}

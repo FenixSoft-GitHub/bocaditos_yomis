@@ -4,6 +4,10 @@ import { Link, Navigate } from "react-router-dom";
 import { useRegister, useUser } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
 import { UserRegisterFormValues, userRegisterSchema } from "@/lib/validators";
+import { FaRegUser } from "react-icons/fa6";
+import { GiSmartphone } from "react-icons/gi";
+import { MdOutlineAlternateEmail } from "react-icons/md";
+import { TbLockPassword } from "react-icons/tb";
 
 const RegisterPage = () => {
   const {
@@ -53,15 +57,21 @@ const RegisterPage = () => {
               <label htmlFor="fullName" className="text-sm font-medium">
                 Nombre completo
               </label>
-              <input
-                id="fullName"
-                type="text"
-                {...register("fullName")}
-                placeholder="Juan Pérez"
-                className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
-              />
+
+              <div className="relative">
+                <input
+                  id="fullName"
+                  type="text"
+                  {...register("fullName")}
+                  placeholder="Juan Pérez"
+                  className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
+                />
+                <FaRegUser className="absolute right-3 top-1/2 size-5 transform -translate-y-1/2 text-choco/60 dark:text-cream/60 pointer-events-none" />
+              </div>
               {errors.fullName && (
-                <p className="text-red-500 text-xs">{errors.fullName.message}</p>
+                <p className="text-red-500 text-xs">
+                  {errors.fullName.message}
+                </p>
               )}
             </div>
 
@@ -70,13 +80,17 @@ const RegisterPage = () => {
               <label htmlFor="phone" className="text-sm font-medium">
                 Celular
               </label>
-              <input
-                id="phone"
-                type="text"
-                {...register("phone")}
-                placeholder="0414-1234567"
-                className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
-              />
+
+              <div className="relative">
+                <input
+                  id="phone"
+                  type="text"
+                  {...register("phone")}
+                  placeholder="0414-1234567"
+                  className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
+                />
+                <GiSmartphone className="absolute right-3 top-1/2 size-5 transform -translate-y-1/2 text-choco/60 dark:text-cream/60 pointer-events-none" />
+              </div>
               {errors.phone && (
                 <p className="text-red-500 text-xs">{errors.phone.message}</p>
               )}
@@ -87,13 +101,17 @@ const RegisterPage = () => {
               <label htmlFor="email" className="text-sm font-medium">
                 Correo electrónico
               </label>
-              <input
-                id="email"
-                type="email"
-                {...register("email")}
-                placeholder="ejemplo@correo.com"
-                className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
-              />
+
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  {...register("email")}
+                  placeholder="ejemplo@correo.com"
+                  className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
+                />
+                <MdOutlineAlternateEmail className="absolute right-3 top-1/2 size-5 transform -translate-y-1/2 text-choco/60 dark:text-cream/60 pointer-events-none" />
+              </div>
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
               )}
@@ -104,15 +122,21 @@ const RegisterPage = () => {
               <label htmlFor="password" className="text-sm font-medium">
                 Contraseña
               </label>
-              <input
-                id="password"
-                type="password"
-                {...register("password")}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
-              />
+
+              <div className="relative">
+                <input
+                  id="password"
+                  type="password"
+                  {...register("password")}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
+                />
+                <TbLockPassword className="absolute right-3 top-1/2 size-5 transform -translate-y-1/2 text-choco/60 dark:text-cream/60 pointer-events-none" />
+              </div>
               {errors.password && (
-                <p className="text-red-500 text-xs">{errors.password.message}</p>
+                <p className="text-red-500 text-xs">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -129,7 +153,10 @@ const RegisterPage = () => {
         {/* Link de inicio de sesión */}
         <p className="text-center text-sm text-muted-foreground">
           ¿Ya tienes una cuenta?
-          <Link to="/login" className="ml-1 underline font-semibold hover:text-cocoa">
+          <Link
+            to="/login"
+            className="ml-1 underline font-semibold hover:text-cocoa"
+          >
             Inicia sesión
           </Link>
         </p>

@@ -65,7 +65,7 @@ export const ShippingSection = ({ register, errors, deliveryOptions }: ShippingS
     >
       <option value="">Selecciona método de entrega</option>
       {deliveryOptions?.map((option) => (
-        <option key={option.id} value={option.id} className="dark:bg-cream/30">
+        <option key={option.id} value={option.id}>
           {option.name} - {option.price > 0 ? `$${option.price}` : "Gratis"}
         </option>
       ))}
