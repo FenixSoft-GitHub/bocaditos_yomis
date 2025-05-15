@@ -1,5 +1,5 @@
 import NumberFlow from '@number-flow/react'
-import clsx from 'clsx/lite'
+import clsx from 'clsx'
 import { Minus, Plus } from 'lucide-react'
 import * as React from 'react'
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
 	min?: number
 	max?: number
 	onChange?: (value: number) => void
-}
+} 
 export default function InputNumber({ value = 0, min = -Infinity, max = Infinity, onChange }: Props) {
 	const defaultValue = React.useRef(value)
 	const inputRef = React.useRef<HTMLInputElement>(null)
