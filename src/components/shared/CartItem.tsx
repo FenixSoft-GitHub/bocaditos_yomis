@@ -1,7 +1,9 @@
-import { LuMinus, LuPlus } from "react-icons/lu";
+// import { LuMinus, LuPlus } from "react-icons/lu";
 import { formatPrice } from "@/helpers";
 import { useCartStore } from "@/store/cart.store";
 import { Trash } from "lucide-react";
+import InputNumber from "./InputNumber";
+
 
 export interface ICartItem {
   productId: string;
@@ -9,6 +11,7 @@ export interface ICartItem {
   price: number;
   quantity: number;
   image_url: string[];
+  stock: number | null;
 }
 
 interface Props {
@@ -18,16 +21,13 @@ interface Props {
 export const CartItem = ({ item }: Props) => {
   const removeItem = useCartStore((state) => state.removeItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
-
-  const increment = () => {
-    updateQuantity(item.productId, item.quantity + 1);
+  // Función para manejar el cambio de cantidad desde InputNumber
+  const handleQuantityChange = (newQuantity: number) => {
+    updateQuantity(item.productId, newQuantity);
   };
 
-  const decrement = () => {
-    if (item.quantity > 1) {
-      updateQuantity(item.productId, item.quantity - 1);
-    }
-  };
+  // Calcular el importe total para este artículo (precio * cantidad)
+  const itemTotal = item.price * item.quantity;
 
   return (
     <li className="flex justify-between items-center gap-5">
@@ -45,24 +45,29 @@ export const CartItem = ({ item }: Props) => {
           <p className="text-sm font-medium">{formatPrice(item.price)}</p>
         </div>
 
-        <div className="flex gap-4">
-          <div className="flex items-center justify-between gap-5 px-2 py-1 border border-cocoa/70 dark:border-cream/60 dark:bg-cream/20 bg-cocoa/10 rounded-full w-1/2 lg:w-1/3">
-            <button onClick={decrement} disabled={item.quantity === 1}>
-              <LuMinus size={15} />
-            </button>
-            <span className="text-sm">{item.quantity}</span>
-            <button onClick={increment}>
-              <LuPlus size={15} />
+        {/* Nueva sección para mostrar el subtotal del artículo */}
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex items-center justify-between gap-1 w-fit">
+            <InputNumber
+              value={item.quantity}
+              min={1}
+              max={item?.stock !== null ? item.stock : 999}
+              onChange={handleQuantityChange}
+              className="w-25 text-sm"
+              classNameIcon="size-3"
+            />
+            <button
+              className="flex gap-1 justify-center items-center hover:bg-cocoa/20 rounded-lg px-3 py-1 underline font-medium text-[10px] text-red-500 hover:text-red-600 transition-colors"
+              onClick={() => removeItem(item.productId)}
+            >
+              <Trash size={15} />
+              Eliminar
             </button>
           </div>
-
-          <button
-            className="flex gap-1 justify-center items-center hover:bg-cocoa/20 rounded-lg px-3 py-1 underline font-medium text-[10px]"
-            onClick={() => removeItem(item.productId)}
-          >
-            <Trash size={15} />
-            Eliminar
-          </button>
+          {/* Muestra el subtotal del artículo */}
+          <p className="text-sm font-semibold text-choco dark:text-cream">
+            Valor total: {formatPrice(itemTotal)}
+          </p>
         </div>
       </div>
     </li>

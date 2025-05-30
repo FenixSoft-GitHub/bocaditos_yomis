@@ -15,7 +15,7 @@ const MarkdownPage = ({ markdown, imageSrc, imageAlt }: MarkdownPageProps) => {
   }
 
   return (
-    <div className="container mx-auto p-2 prose lg:prose-xl dark:prose-invert text-choco dark:text-cream">
+    <div className="container mx-auto p-2 prose lg:prose-2xl dark:prose-invert text-choco dark:text-cream bg-fondo dark:bg-fondo-dark">
       <div className="flex items-center gap-2 pt-24 w-full h-screen">
         <img
           className="rounded-xl w-full h-3/4 object-cover"
@@ -24,9 +24,11 @@ const MarkdownPage = ({ markdown, imageSrc, imageAlt }: MarkdownPageProps) => {
         />
       </div>
 
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
+      <div className="prose prose-lg max-w-none mb-8 dark:prose-invert">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
+      </div>
 
-      <div className="flex items-center gap-2 group justify-end">
+      <div className="flex items-center gap-2 group justify-end py-10">
         <BackButton />
       </div>
     </div>

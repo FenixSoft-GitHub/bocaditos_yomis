@@ -3,9 +3,13 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductGridSkeleton } from "@/components/products/ProductGridSkeleton";
 import { useHomeProducts } from "@/hooks";
 import { SponsorCarousel } from "@/components/home/SponsorCarousel";
+import { ImGift } from "react-icons/im";
+import { IoMdPricetags } from "react-icons/io";
+import { AiOutlineProduct } from "react-icons/ai";
 
 const HomePage = () => {
-  const { recentProducts, popularProducts, isLoading } = useHomeProducts();
+  const { recentProducts, popularProducts, discountedProducts, isLoading } =
+    useHomeProducts();
 
   return (
     <section className="container text-choco bg-fondo dark:text-cream dark:bg-fondo-dark">
@@ -18,6 +22,7 @@ const HomePage = () => {
             title="Nuevos Productos"
             products={recentProducts}
             showNavigation={true}
+            icon={<IoMdPricetags />}
           />
         )}
 
@@ -29,7 +34,24 @@ const HomePage = () => {
             title="Productos Destacados"
             products={popularProducts}
             showNavigation={true}
+            icon={<AiOutlineProduct />}
           />
+        )}
+
+        {/* Nueva Sección de Productos en Oferta */}
+        {isLoading ? (
+          <ProductGridSkeleton numberOfProducts={4} />
+        ) : (
+          discountedProducts &&
+          discountedProducts.length > 0 && (
+            <ProductGrid
+              key="discounted"
+              title="¡Productos en Oferta!"
+              products={discountedProducts}
+              showNavigation={true}
+              icon={<ImGift />}
+            />
+          )
         )}
 
         <FeatureGrid />

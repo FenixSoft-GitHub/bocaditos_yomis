@@ -7,15 +7,34 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdAddCircleOutline } from "react-icons/md";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 
 const tableHeaders = ["Nombre", "Descripción", "Fecha de creación", ""];
 
 export const TableCategory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
   const { categories, isLoading } = useCategories();
   const { mutate: deleteCat, isPending } = useDeleteCategory();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
+  // Funciones
+  const handleOpenModal = (id: string, name: string) => {
+    setSelectedCategory({ id, name });
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedCategory) {
+      deleteCat(selectedCategory.id);
+      setIsModalOpen(false);
+    }
+  };
 
   if (!categories || isLoading || isPending) return <Loader size={60} />;
 
@@ -110,7 +129,9 @@ export const TableCategory = () => {
                         onEdit={() =>
                           navigate(`/dashboard/category/edit/${category.id}`)
                         }
-                        onDelete={() => deleteCat(category.id)}
+                        onDelete={() =>
+                          handleOpenModal(category.id, category.name)
+                        }
                       />
                     </td>
                   </tr>
@@ -120,6 +141,22 @@ export const TableCategory = () => {
           )}
         </table>
       </div>
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="¿Eliminar categoria?"
+        message={
+          <>
+            ¿Estás seguro de que deseas eliminar la categoria:{" "}
+            <strong className="text-amber-600">{selectedCategory?.name}</strong>
+            ?
+          </>
+        }
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+        isConfirming={isPending}
+      />
     </div>
   );
 };

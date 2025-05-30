@@ -6,10 +6,11 @@ import { CartItem } from "@/components/shared/CartItem";
 import { useCartStore } from "@/store/cart.store";
 import { FiShoppingCart } from "react-icons/fi";
 import { Separator } from "./Separator";
+import { formatPrice } from "@/helpers";
 
 export const Cart = () => {
   const closeSheet = useGlobalStore((state) => state.closeSheet);
-
+  const { totalAmount } = useCartStore();
   const cartItems = useCartStore((state) => state.items);
   const cleanCart = useCartStore((state) => state.cleanCart);
   const totalItemsInCart = useCartStore((state) => state.totalItemsInCart);
@@ -43,8 +44,31 @@ export const Cart = () => {
 
             <Separator />
 
+            {/* Columna de Resumen del Pedido */}
+            <div className="lg:col-span-1 bg-cream dark:bg-fondo-dark p-3 rounded-lg shadow-md h-fit sticky top-24">
+              <h2 className="text-lg font-semibold mb-3">Resumen del Pedido</h2>
+
+              <div className="flex justify-between items-center text-base font-medium mb-4 border-b pb-4 border-cocoa/20 dark:border-cream/20">
+                <div className="flex gap-2">
+                  <span>Total Items:</span>
+                  <span># {totalItemsInCart}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span>Subtotal:</span>
+                  <span>{formatPrice(totalAmount)}</span>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center text-2xl font-bold mt-2">
+                <span>Total a Pagar:</span>
+                <span className="text-amber-600 dark:text-amber-500">
+                  {formatPrice(totalAmount)}
+                </span>
+              </div>
+            </div>
+
             {/* BOTONES ACCIÓN */}
-            <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 w-full px-4 text-sm mt-6">
+            <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 w-full px-4 pb-18 text-sm mt-6">
               <Link
                 to="/checkout"
                 onClick={closeSheet}

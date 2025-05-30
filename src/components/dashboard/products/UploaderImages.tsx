@@ -12,9 +12,10 @@ interface Props {
   setValue: UseFormSetValue<ProductFormValues>;
   watch: UseFormWatch<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
+  disabled: boolean;
 }
 
-export const UploaderImages = ({ setValue, errors, watch }: Props) => {
+export const UploaderImages = ({ setValue, errors, watch, disabled }: Props) => {
   const [images, setImages] = useState<ImagePreview[]>([]);
   // Verificar si hay errores con las imágenes
   const formImages = watch("image_url");
@@ -74,8 +75,9 @@ export const UploaderImages = ({ setValue, errors, watch }: Props) => {
         accept="image/*"
         multiple
         onChange={handleImageChange}
+        disabled={disabled}
         className="block w-full text-sm text-choco border border-cocoa/50 dark:border-cream/30 rounded-md dark:bg-fondo-dark dark:text-cream file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-choco/70 file:text-cream dark:file:bg-cream/30 dark:file:text-cream hover:file:bg-choco/80 dark:hover:file:bg-cream/50"
-      />
+      /> 
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 dark:bg-cream/10 dark:text-gray-100">
         {images.map((image, index) => (

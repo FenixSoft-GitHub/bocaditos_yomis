@@ -71,3 +71,17 @@ export const extractFilePath = (url: string): string => {
   }
   return match[1];
 };
+
+export const formatToTwoDecimals = (value: number): string => {
+  const num = value;
+
+  if (isNaN(num)) {
+    console.warn(
+      `Valor inválido proporcionado a formatToTwoDecimals: ${value}. Devolviendo "0,00".`
+    );
+    return "0,00";
+  }
+  const formattedWithDot = num.toFixed(2);
+  const formattedWithComma = formattedWithDot.replace(".", ",");
+  return formattedWithComma;
+}

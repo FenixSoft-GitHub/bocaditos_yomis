@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useOrder, useUser } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
-import { formatPrice } from "@/helpers";
+import { formatPrice, formatToTwoDecimals } from "@/helpers";
 import { supabase } from "@/supabase/client";
 import { useEffect } from "react";
 import { RiSecurePaymentLine } from "react-icons/ri";
@@ -112,7 +112,7 @@ const ThankyouPage = () => {
 
                   {/* Precio unitario */}
                   <p className="text-xs font-medium text-right sm:justify-self-end">
-                    {formatPrice(item.quantity)}
+                    {formatToTwoDecimals(item.quantity)}
                   </p>
 
                   {/* Subtotal */}

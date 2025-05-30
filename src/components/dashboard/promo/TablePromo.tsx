@@ -8,6 +8,7 @@ import { MdAddCircleOutline } from "react-icons/md";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { useChangeStatusPromo } from "@/hooks/promo/useChangeStatusPromo";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 
 const tableHeaders = [
   "Nombre",
@@ -22,11 +23,30 @@ const tableHeaders = [
 export const TablePromo = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
   const { promotions, isLoading } = usePromo();
   const { mutate: deletePromo, isPending } = useDeletePromo();
-
   const { mutate } = useChangeStatusPromo();
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPromo, setSelectedPromo] = useState<{
+    id: string;
+    code: string;
+  } | null>(null);
+
+
+  // Funciones
+  const handleOpenModal = (id: string, code: string) => {
+    setSelectedPromo({ id, code });
+    setIsModalOpen(true);
+  };
+  
+  const handleConfirmDelete = () => {
+    if (selectedPromo) {
+      deletePromo(selectedPromo.id);
+      setIsModalOpen(false);
+    }
+  };
+
 
   const handleStatusChange = useCallback(
     (id: string, is_active: boolean) => {
@@ -102,8 +122,9 @@ export const TablePromo = () => {
               {tableHeaders.map((header, index) => (
                 <th
                   key={index}
-                  className={`px-2 sm:px-4 py-2 font-semibold text-center ${index === 0 ? "rounded-l-md" : ""
-                    } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""}`}
+                  className={`px-2 sm:px-4 py-2 font-semibold text-center ${
+                    index === 0 ? "rounded-l-md" : ""
+                  } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""}`}
                 >
                   {header}
                 </th>
@@ -166,7 +187,9 @@ export const TablePromo = () => {
                         onEdit={() =>
                           navigate(`/dashboard/promotions/edit/${promotion.id}`)
                         }
-                        onDelete={() => deletePromo(promotion.id)}
+                        onDelete={() =>
+                          handleOpenModal(promotion.id, promotion.code)
+                        }
                       />
                     </td>
                   </tr>
@@ -176,6 +199,21 @@ export const TablePromo = () => {
           )}
         </table>
       </div>
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="¿Eliminar promoción?"
+        message={
+          <>
+            ¿Estás seguro de que deseas eliminar la promoción <br />
+            <strong className="text-amber-600">{selectedPromo?.code}</strong>?
+          </>
+        }
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+        isConfirming={isPending}
+      />
     </div>
   );
 };

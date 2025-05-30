@@ -27,19 +27,6 @@ export const Mylocation = () => {
             title="Mapa de ubicación de Bocaditos Yomi's"
           />
         </div>
-
-        {/* <div className="overflow-hidden rounded-lg shadow-md border border-gray-200 dark:border-gray-700 ">
-          <iframe
-            src={Maps_EMBED_URL}
-            width="100%"
-            height="450"
-            style={{ border: 0 }}
-            allowFullScreen={true}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Mapa de ubicación de Fenix Technology"
-          ></iframe>
-        </div> */}
       </div>
     </div>
   );

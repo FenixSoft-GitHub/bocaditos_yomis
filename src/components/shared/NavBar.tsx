@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { navbarLinks } from "@/constants/NavBarLinks";
+import { NavbarLinks } from "@/constants/NavBarLinks";
 import { Logo } from "@components/shared/Logo";
 import { memo, useEffect, useState } from "react";
 import { ToggleDarkMode } from "./ToggleDarkMode";
@@ -40,10 +40,11 @@ export const NavBar = memo(() => {
     pathname.startsWith("/account/pedidos/") ||
     pathname === "/conditions" ||
     pathname === "/soporte" ||
-    pathname === "/policies"||
+    pathname === "/policies" ||
     pathname === "/terms-of-use" ||
     pathname === "/register" ||
-    pathname === "/login"
+    pathname === "/login" ||
+    pathname.startsWith("/blog/")
       ? "bg-oscuro/30 backdrop-blur-md shadow-md"
       : "bg-transparent text-cream";
 
@@ -59,7 +60,7 @@ export const NavBar = memo(() => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-4">
-            {navbarLinks.map((link) => (
+            {NavbarLinks.map((link) => (
               <NavLink
                 key={link.id}
                 to={link.href}

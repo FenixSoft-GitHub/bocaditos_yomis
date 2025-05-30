@@ -1,7 +1,8 @@
 import { BsTagsFill } from "react-icons/bs";
 import { TbTruckDelivery } from "react-icons/tb";
-import { FaBoxOpen, FaCartShopping } from "react-icons/fa6";
+import { FaBlog, FaBoxOpen, FaCartShopping, FaUserCheck } from "react-icons/fa6";
 import { MdCategory } from "react-icons/md";
+import { IoBarChartSharp } from "react-icons/io5";
 
 export const DashboardLinks = [
   {
@@ -33,5 +34,23 @@ export const DashboardLinks = [
     title: "Delivery",
     href: "/dashboard/deliverys",
     icon: <TbTruckDelivery size={25} />,
+  },
+  {
+    id: 6,
+    title: "Blog",
+    href: "/dashboard/blog",
+    icon: <FaBlog size={25} />,
+  },
+  {
+    id: 7,
+    title: "Usuarios",
+    href: "/dashboard/users",
+    icon: <FaUserCheck size={25} />,
+  },
+  {
+    id: 8,
+    title: "Gráficos",
+    href: "/dashboard/charts",
+    icon: <IoBarChartSharp size={25} />,
   },
 ];

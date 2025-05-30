@@ -4,7 +4,7 @@ import MarkdownPage from "@/components/shared/MarkdownPage";
 const NuestraHistoriaPage = () => (
   <MarkdownPage
     markdown={markdownContent}
-    imageSrc="/img/blog/blog1.avif"
+    imageSrc="/img/blog/nuestra-historia.avif"
     imageAlt="Imagen de Macarrones con una Rosa"
   />
 );

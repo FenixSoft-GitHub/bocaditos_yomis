@@ -1,6 +1,7 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { ProductFormValues } from "@/lib/validators";
 
+
 interface Props {
   className?: string;
 
@@ -9,9 +10,12 @@ interface Props {
   type: string;
   step?: string;
   name: keyof ProductFormValues;
+  // name: FieldPath<ProductFormValues>;
+
   register: UseFormRegister<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export const InputForm = ({
@@ -24,9 +28,10 @@ export const InputForm = ({
   register,
   errors,
   required,
+  disabled,
 }: Props) => {
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
+    <div className={`flex flex-col gap-1 ${className}`}>
       <div className="flex justify-between items-center">
         <label
           htmlFor={name}
@@ -56,6 +61,7 @@ export const InputForm = ({
           placeholder={placeholder}
           id={name}
           step={step}
+          disabled={disabled}
           className={`py-2 text-sm px-3 font-medium tracking-tighter w-full border border-cocoa/70 dark:border-cream/30 rounded-md placeholder:font-normal focus:outline-none text-choco bg-cream dark:bg-fondo-dark dark:text-cream dark:focus:border-cream/50 focus:border-cocoa/90 focus:border-2 outline-none transition-all duration-300 ease-in-out ${className}`}
           autoComplete="off"
           {...register(name)}

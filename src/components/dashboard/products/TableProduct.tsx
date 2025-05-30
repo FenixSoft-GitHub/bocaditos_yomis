@@ -8,6 +8,7 @@ import { CellTableProduct } from "@/components/dashboard";
 import { MdAddCircleOutline } from "react-icons/md";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
+import { getDiscountedPrice, isDiscountActive } from "@/lib/discount";
 
 const tableHeaders = [
   "Imagen",
@@ -23,21 +24,34 @@ export const TableProduct = () => {
   const [filters, setFilters] = useState({ name: "", category: "" });
 
   const navigate = useNavigate();
-  
+
   const [page, setPage] = useState(1);
   const { products, isLoading, totalProducts } = useProductPages({ page });
   const { productsAll, isLoading: isLoadingAll } = useProductsAll();
   const { mutate: deleteProduct, isPending } = useDeleteProduct();
 
-  if (!products || isLoading || !totalProducts || isLoadingAll || !productsAll || isPending)
+  if (
+    !products ||
+    isLoading ||
+    !totalProducts ||
+    isLoadingAll ||
+    !productsAll ||
+    isPending
+  )
     return <Loader size={60} />;
 
   const shouldFilter = filters.name !== "" || filters.category !== "";
-  const filteredProducts = (shouldFilter ? productsAll : products).filter((product) => {
-    const nameMatch = product.name.toLowerCase().includes(filters.name.toLowerCase());
-    const categoryMatch = product.categories.name.toLowerCase().includes(filters.category.toLowerCase());
-    return nameMatch && categoryMatch;
-  });
+  const filteredProducts = (shouldFilter ? productsAll : products).filter(
+    (product) => {
+      const nameMatch = product.name
+        .toLowerCase()
+        .includes(filters.name.toLowerCase());
+      const categoryMatch = product.categories.name
+        .toLowerCase()
+        .includes(filters.category.toLowerCase());
+      return nameMatch && categoryMatch;
+    }
+  );
 
   return (
     <div className="flex flex-col h-full min-h-[500px] bg-fondo dark:bg-fondo-dark text-choco dark:text-cream border border-cocoa/30 dark:border-cream/30 rounded-lg px-3 py-2 gap-3">
@@ -63,18 +77,21 @@ export const TableProduct = () => {
         <div className="w-full sm:max-w-sm relative">
           <AdvancedFilter
             searchValue={filters.name}
-            onSearchChange={(value) => setFilters((prev) => ({ ...prev, name: value }))}
+            onSearchChange={(value) =>
+              setFilters((prev) => ({ ...prev, name: value }))
+            }
             selects={[
               {
                 label: "Filtrar por categoría",
                 value: filters.category,
-                onChange: (value) => setFilters((prev) => ({ ...prev, category: value })),
+                onChange: (value) =>
+                  setFilters((prev) => ({ ...prev, category: value })),
                 options: Array.from(
-                new Set(productsAll.map((p) => p.categories.name))).map((cat) => 
-                  ({
-                      label: cat,
-                      value: cat,
-                  })),
+                  new Set(productsAll.map((p) => p.categories.name))
+                ).map((cat) => ({
+                  label: cat,
+                  value: cat,
+                })),
               },
             ]}
             onClear={() => setFilters({ name: "", category: "" })}
@@ -139,10 +156,37 @@ export const TableProduct = () => {
                       content={product.categories.name}
                       className="text-left"
                     />
-                    <CellTableProduct
+                    {/* <CellTableProduct
                       className="text-right"
                       content={formatPrice(product?.price)}
-                    />
+                    /> */}
+
+                    {/* <CellTableProduct className="text-right"> */}
+
+                    {isDiscountActive(product.discounts[0]) ? (
+                      <td className="table-cell px-4 py-2 font-medium tracking-tighter text-right align-middle">
+                        <div className="flex flex-col items-end justify-center">
+                          <span className="line-through text-xs text-gray-500 dark:text-gray-400">
+                            {formatPrice(product.price)}
+                          </span>
+                          <span className="text-amber-500 font-bold">
+                            {formatPrice(
+                              getDiscountedPrice(
+                                product.price,
+                                product.discounts[0]
+                              )
+                            )}
+                          </span>
+                        </div>
+                      </td>
+                    ) : (
+                      <td className="px-4 py-2 font-medium tracking-tighter text-right align-middle">
+                        <span>{formatPrice(product.price)}</span>
+                      </td>
+                    )}
+
+                    {/* </CellTableProduct> */}
+
                     <CellTableProduct
                       className={
                         product.stock === 0
@@ -173,7 +217,8 @@ export const TableProduct = () => {
 
       {/* Footer fijo con paginación */}
 
-      {(filteredProducts.length > 8 || (!filters.name && !filters.category)) && (
+      {(filteredProducts.length > 8 ||
+        (!filters.name && !filters.category)) && (
         <div className="mt-auto pt-2 border-t border-cocoa/50 dark:border-cream/30">
           <Pagination
             page={page}

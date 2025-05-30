@@ -7,8 +7,10 @@ type Props = {
 	min?: number
 	max?: number
 	onChange?: (value: number) => void
+	className?: string
+	classNameIcon?: string
 } 
-export default function InputNumber({ value = 0, min = -Infinity, max = Infinity, onChange }: Props) {
+export default function InputNumber({ value = 0, min = -Infinity, max = Infinity, onChange, className, classNameIcon }: Props) {
 	const defaultValue = React.useRef(value)
 	const inputRef = React.useRef<HTMLInputElement>(null)
 	const [animated, setAnimated] = React.useState(true)
@@ -37,7 +39,7 @@ export default function InputNumber({ value = 0, min = -Infinity, max = Infinity
 		onChange?.(newVal)
 	}
 	return (
-		<div className="group w-30 flex justify-between items-stretch rounded-md text-xl font-semibold ring ring-cocoa/90 transition-[box-shadow] focus-within:ring-2 focus-within:ring-amber-500 dark:ring-cream/50">
+		<div className={`group flex justify-between items-stretch rounded-md font-semibold ring ring-cocoa/90 transition-[box-shadow] focus-within:ring-2 focus-within:ring-amber-500 dark:ring-cream/50 ${className}`}>
 			<button
 				aria-hidden="true"
 				tabIndex={-1}
@@ -45,7 +47,7 @@ export default function InputNumber({ value = 0, min = -Infinity, max = Infinity
 				disabled={min != null && value <= min}
 				onPointerDown={handlePointerDown(-1)}
 			>
-				<Minus className="size-4" absoluteStrokeWidth strokeWidth={3.5} />
+				<Minus className={classNameIcon} absoluteStrokeWidth strokeWidth={3.5} />
 			</button>
 			<div className="relative grid items-center justify-items-center text-center [grid-template-areas:'overlap'] *:[grid-area:overlap]">
 				<input
@@ -84,7 +86,7 @@ export default function InputNumber({ value = 0, min = -Infinity, max = Infinity
 				disabled={max != null && value >= max}
 				onPointerDown={handlePointerDown(1)}
 			>
-				<Plus className="size-4" absoluteStrokeWidth strokeWidth={3.5} />
+				<Plus className={classNameIcon} absoluteStrokeWidth strokeWidth={3.5} />
 			</button>
 		</div>
 	)

@@ -3,7 +3,7 @@ import { Loader } from "@/components/shared/Loader";
 import { Separator } from "@/components/shared/Separator";
 import Tag from "@/components/shared/Tag";
 import { formatPrice } from "@/helpers";
-import { useProduct } from "@/hooks";
+import { useGetReviewsByProduct, useProduct } from "@/hooks";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -14,6 +14,11 @@ import { useCounterStore } from "@/store/counter.store";
 import { useCartStore } from "@/store/cart.store";
 import toast from "react-hot-toast";
 import InputNumber from "@/components/shared/InputNumber";
+import { ReviewSection } from "@/components/reviews/ReviewSection";
+import { StarRating } from "@/components/reviews/StarRating";
+import { FaCartPlus } from "react-icons/fa6";
+import { RiSecurePaymentLine } from "react-icons/ri";
+import { getDiscountedPrice, getDiscountPercentage, isDiscountActive } from "@/lib/discount";
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -22,6 +27,7 @@ const ProductPage = () => {
   const { count, reset, setCount } = useCounterStore();
   const addItem = useCartStore((state) => state.addItem);
   const navigate = useNavigate();
+  
 
   // Resetear el slug actual cuando cambia en la URL
   useEffect(() => {
@@ -31,6 +37,10 @@ const ProductPage = () => {
 
   const isOutOfStock = product?.stock === 0 || false;
 
+  const activeDiscount = product?.discounts?.find(isDiscountActive);
+  const hasDiscount = !!activeDiscount;
+  const discountedPrice = getDiscountedPrice(product?.price || 0, activeDiscount);
+
   // Función para añadir al carrito
   const addToCart = () => {
     if ((product?.stock ?? 0) > 0) {
@@ -38,8 +48,9 @@ const ProductPage = () => {
         productId: product?.id || "",
         name: product?.name || "",
         image_url: product?.image_url || [],
-        price: product?.price || 0,
+        price: discountedPrice,
         quantity: count,
+        stock: product?.stock || 0, 
       });
       toast.success("Producto añadido al carrito", {
         position: "bottom-right",
@@ -58,13 +69,25 @@ const ProductPage = () => {
         productId: product?.id || "",
         name: product?.name || "",
         image_url: product?.image_url || [],
-        price: product?.price || 0,
+        price: discountedPrice,
         quantity: count,
+        stock: product?.stock || 0,
       });
 
       navigate("/checkout");
     }
   };
+
+  const { data: reviews } = useGetReviewsByProduct(product?.id);
+
+  if(!reviews) return <p>No existe Reviews</p>
+
+  const validRatings = reviews.filter((r) => r.rating !== null);
+  const averageRating =
+    validRatings.length > 0
+      ? validRatings.reduce((sum, r) => sum + r.rating!, 0) /
+        validRatings.length
+      : 0;
 
   if (isLoading) {
     return <Loader size={60} />;
@@ -87,11 +110,35 @@ const ProductPage = () => {
           <h1 className="text-3xl font-bold tracking-tight">{product?.name}</h1>
 
           <div className="flex gap-5 items-center">
-            <span className="text-lg tracking-wide font-semibold">
-              {formatPrice(product?.price || 0)}
-            </span>
+            <div className="flex items-center gap-4">
+              {hasDiscount ? (
+                <div className="flex justify-center items-center gap-3">
+                  <span className="text-2xl font-bold text-amber-500">
+                    {formatPrice(discountedPrice)}
+                  </span>
+                  <span className="line-through">
+                    {formatPrice(product.price)}
+                  </span>
+                  <span className="text-xs bg-red-100 text-red-600 font-semibold px-2 py-0.5 rounded-full">
+                    -{getDiscountPercentage(product.price, activeDiscount)}%
+                  </span>
+                </div>
+              ) : (
+                <span className="text-2xl font-semibold">
+                  {formatPrice(product.price)}
+                </span>
+              )}
+            </div>
+
             <div className="relative bg-cream/80 cursor-not-allowed p-1 transition-all duration-300 ease-in-out hover:scale-105 rounded-full">
               {isOutOfStock && <Tag contentTag="agotado" />}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <StarRating rating={averageRating} />
+              <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                {averageRating.toFixed(1)} / 5 ({reviews.length} reseñas)
+              </span>
             </div>
           </div>
 
@@ -103,13 +150,16 @@ const ProductPage = () => {
             <div className="flex gap-3 h-12 lg:h-24">
               <ProductDescription content={product.description} />
             </div>
+
             <div className="space-y-3 mb-3 lg:mb-6 flex flex-col items-center lg:items-start">
               <p className="text-xs font-medium">Cantidad:</p>
               <InputNumber
                 value={count}
                 min={1}
                 max={product?.stock || 99}
-                onChange={(val) => setCount(val)} 
+                onChange={(val) => setCount(val)}
+                className="w-30 text-xl"
+                classNameIcon="size-4"
               />
             </div>
           </div>
@@ -125,16 +175,18 @@ const ProductPage = () => {
             ) : (
               <button
                 onClick={addToCart}
-                className="w-full md:w-1/2 bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
+                className="w-full flex gap-5.5 items-center justify-center md:w-1/2 bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
               >
+                <FaCartPlus className="size-5" />
                 Añadir al carrito
               </button>
             )}
 
             <button
               onClick={buyNow}
-              className="w-full md:w-1/2 bg-oscuro text-cream dark:bg-fondo dark:text-choco hover:bg-neutral-800 dark:hover:bg-neutral-300 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
+              className="w-full flex gap-5.5 items-center justify-center md:w-1/2 bg-oscuro text-cream dark:bg-fondo dark:text-choco hover:bg-neutral-800 dark:hover:bg-neutral-300 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
             >
+              <RiSecurePaymentLine className="size-5" />
               Comprar ahora
             </button>
           </div>
@@ -157,6 +209,7 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+      <div>{product?.id && <ReviewSection productId={product.id} />}</div>
     </>
   );
 };

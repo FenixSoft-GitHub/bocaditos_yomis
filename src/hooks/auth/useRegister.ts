@@ -14,7 +14,7 @@ export const useRegister = () => {
 			navigate('/');
 		},
 		onError: err => {
-			toast.error(err.message, {
+			toast.error(`Aqui ${err.message}`, {
 				position: 'bottom-right',
 			});
 		},

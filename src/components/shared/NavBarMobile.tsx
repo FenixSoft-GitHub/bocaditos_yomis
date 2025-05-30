@@ -1,7 +1,7 @@
 import { IoMdClose } from "react-icons/io";
 import { useGlobalStore } from "@/store/global.store";
 import { Link, NavLink } from "react-router-dom";
-import { navbarLinks } from "@/constants/NavBarLinks";
+import { NavbarLinks } from "@/constants/NavBarLinks";
 import { Logo } from "./Logo";
 
 export const NavbarMobile = () => {
@@ -29,7 +29,7 @@ export const NavbarMobile = () => {
         </Link>
 
         <nav className="flex flex-col w-full gap-4">
-          {navbarLinks.map((item) => (
+          {NavbarLinks.map((item) => (
             <NavLink
               key={item.id}
               to={item.href}

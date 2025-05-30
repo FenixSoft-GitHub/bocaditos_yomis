@@ -8,16 +8,34 @@ import { MdAddCircleOutline } from "react-icons/md";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { useDeleteDelivery } from "@/hooks/deliverys/useDeleteDelivery";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
-
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 
 const tableHeaders = ["Nombre", "Precio", "Tiempo", "Fecha de creación", ""];
 
 export const TableDeliverys = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
   const { deliverys, isLoading } = useDeliverys();
   const { mutate: deleteDelivery, isPending } = useDeleteDelivery();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDelivery, setSelectedDelivery] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
+  // Funciones
+  const handleOpenModal = (id: string, name: string) => {
+    setSelectedDelivery({ id, name });
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedDelivery) {
+      deleteDelivery(selectedDelivery.id);
+      setIsModalOpen(false);
+    }
+  };
 
   if (!deliverys || isLoading || isPending) return <Loader size={60} />;
 
@@ -66,8 +84,9 @@ export const TableDeliverys = () => {
               {tableHeaders.map((header, index) => (
                 <th
                   key={index}
-                  className={`px-2 sm:px-4 py-2 font-semibold text-center ${index === 0 ? "rounded-l-md" : ""
-                    } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""}`}
+                  className={`px-2 sm:px-4 py-2 font-semibold text-center ${
+                    index === 0 ? "rounded-l-md" : ""
+                  } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""}`}
                 >
                   {header}
                 </th>
@@ -115,7 +134,9 @@ export const TableDeliverys = () => {
                         onEdit={() =>
                           navigate(`/dashboard/deliverys/edit/${delivery.id}`)
                         }
-                        onDelete={() => deleteDelivery(delivery.id)}
+                        onDelete={() =>
+                          handleOpenModal(delivery.id, delivery.name)
+                        }
                       />
                     </td>
                   </tr>
@@ -125,6 +146,22 @@ export const TableDeliverys = () => {
           )}
         </table>
       </div>
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="¿Eliminar delivery?"
+        message={
+          <>
+            ¿Estás seguro de que deseas eliminar el delivery:{" "}
+            <strong className="text-amber-600">{selectedDelivery?.name}</strong>
+            ?
+          </>
+        }
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+        isConfirming={isPending}
+      />
     </div>
   );
 };

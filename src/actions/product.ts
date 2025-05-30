@@ -1,15 +1,15 @@
 import { extractFilePath } from "@/helpers";
 import { ProductFormValues } from "@/lib/validators";
 import { supabase } from "@/supabase/client";
-import { ProductInput } from "@/interfaces/product.interface";
+import { Product, ProductInput, SupabaseRawProductWithRelations } from "@/interfaces/product.interface";
 import slugify from "slugify";
+import { isDiscountActive } from "@/lib/discount";
 
-// Obtener todos los productos
 export const getProducts = async () => {
   try {
     const { data: products, error } = await supabase
       .from("products")
-      .select("*, categories(*)")
+      .select("*, categories(*), discounts(*)")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -37,7 +37,7 @@ export const getProductsPages = async (page: number) => {
       count,
     } = await supabase
       .from("products")
-      .select("*, categories(*)", { count: "exact" })
+      .select("*, categories(*), discounts(*)", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(from, to);
 
@@ -54,48 +54,79 @@ export const getProductsPages = async (page: number) => {
 };
 
 // Obtener productos recientes
-export const getRecentProducts = async () => {
+// Helper para transformar la respuesta cruda de Supabase a la interfaz Product deseada
+const transformProductData = (rawProduct: SupabaseRawProductWithRelations): Product => {
+  const transformedCategories = rawProduct.categories || null; 
+
+  // Encuentra el descuento activo (si hay varios, toma el primero activo)
+  const activeDiscount = rawProduct.discounts
+    ? rawProduct.discounts.find(isDiscountActive) || null
+    : null;
+
+  return {
+    id: rawProduct.id,
+    name: rawProduct.name,
+    description: rawProduct.description,
+    price: rawProduct.price,
+    image_url: rawProduct.image_url,
+    stock: rawProduct.stock,
+    slug: rawProduct.slug,
+    category_id: rawProduct.category_id,
+    created_at: rawProduct.created_at,
+    updated_at: rawProduct.updated_at,
+    categories: transformedCategories, // Ahora es singular o null
+    discount: activeDiscount,         // Ahora es singular activo o null
+  };
+};
+
+// Obtener productos recientes
+export const getRecentProducts = async (): Promise<Product[]> => {
   try {
-    const { data: products, error } = await supabase
+    const { data, error } = await supabase
       .from("products")
-      .select("*, categories(*)")
+      .select("*, categories(*), discounts(*)")
       .order("created_at", { ascending: false })
       .limit(10);
 
     if (error) {
-      console.log(error.message);
+      console.error("Error al obtener productos recientes:", error.message);
       throw new Error(error.message);
     }
 
-    return products;
+    if (!data) return [];
+
+    return (data as SupabaseRawProductWithRelations[]).map(transformProductData);
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error("Error fetching recent products:", error);
     throw error;
   }
 };
 
-// Obtener productos populares
-export const getRandomProducts = async () => {
+// Obtener productos populares (aleatorios)
+export const getRandomProducts = async (): Promise<Product[]> => {
   try {
-    const { data: products, error } = await supabase
+    const { data, error } = await supabase
       .from("products")
-      .select("*, categories(*)")
+      .select("*, categories(*), discounts(*)")
       .order("created_at", { ascending: false })
-      .limit(24); // obtén más para tener margen
+      .limit(24);
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("Error al obtener productos aleatorios:", error.message);
+      throw new Error(error.message);
+    }
 
-    if (!products) return [];
+    if (!data) return [];
 
-    // Filtrar productos válidos
-    const filtered = products.filter(
+    const transformedProducts = (data as SupabaseRawProductWithRelations[]).map(transformProductData);
+
+    const filtered = transformedProducts.filter(
       (p) => p?.image_url?.length > 0 && p?.name
     );
 
-    // Mezclar aleatoriamente en el cliente
     const randomProducts = filtered
       .sort(() => 0.5 - Math.random())
-      .slice(0, 12); // devolver 12 aleatorios
+      .slice(0, 12);
 
     return randomProducts;
   } catch (error) {
@@ -104,44 +135,108 @@ export const getRandomProducts = async () => {
   }
 };
 
+// Obtener productos con descuentos activos
+export const getDiscountedProducts = async (): Promise<Product[]> => {
+  try {
+    const now = new Date().toISOString();
+
+    const { data, error } = await supabase
+      .from("products")
+      .select("*, categories(*), discounts(*)")
+      .not("discounts", "is", null)
+      .lte("discounts.starts_at", now)
+      .gte("discounts.ends_at", now)
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    if (error) {
+      console.error("Error al obtener productos con descuento:", error.message);
+      throw new Error(error.message);
+    }
+
+    if (!data) return [];
+
+    const transformedProducts = (data as SupabaseRawProductWithRelations[]).map(transformProductData);
+
+    // Filtra para asegurar que solo se devuelvan productos con un descuento activo válido
+    return transformedProducts.filter(p => p.discount !== null);
+  } catch (error) {
+    console.error("Error fetching discounted products:", error);
+    return [];
+  }
+};
+
+// Función para obtener un producto por ID, incluyendo sus relaciones.
+// Retorna un objeto Product (la interfaz unificada) o null.
+export const getByIdProduct = async (id: string): Promise<Product | null> => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*, categories(*), discounts(*)") // Asegúrate de seleccionar categories y discounts
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") { // "No rows found"
+      return null;
+    }
+    console.error("Error al obtener producto con descuento:", error);
+    throw new Error(error.message);
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  // Realizamos el casting a la interfaz cruda que Supabase devuelve
+  const rawProductData = data as SupabaseRawProductWithRelations;
+
+  // Luego transformamos esa data cruda a nuestra interfaz 'Product' unificada
+  // para que el frontend siempre trabaje con un tipo consistente.
+  return transformProductData(rawProductData);
+};
+
+//Función para obtener productos por categoría (o todos si no se especifica categoría)
 export const getProductsByCategory = async ({
   page = 1,
   category = "",
+  search = "",
 }: {
   page: number;
   category: string;
-}) => {
-  try {
-    page = Number(page) || 1;
-    const itemsPerPage = 8;
-    const from = (page - 1) * itemsPerPage;
-    const to = from + itemsPerPage - 1;
+  search: string;
+}): Promise<{ products: Product[]; count: number }> => {
+  page = Number(page) || 1;
+  const itemsPerPage = 8;
+  const from = (page - 1) * itemsPerPage;
+  const to = from + itemsPerPage - 1;
 
-    const baseQuery = supabase
-      .from("products")
-      .select("*, categories!inner(name)", { count: "exact" })
-      .range(from, to)
-      .order("name", { ascending: true });
+  let query = supabase
+    .from("products")
+    .select("*, categories!inner(id, name), discounts(*)", { count: "exact" })
+    .range(from, to)
+    .order("name", { ascending: true });
 
-    const query = category
-      ? baseQuery.eq("categories.name", category)
-      : baseQuery;
-
-    const { data: products, error, count } = await query;
-
-    if (error) {
-      console.error("Error fetching filtered products:", error.message);
-      throw new Error(`Error fetching products: ${error.message}`);
-    }
-
-    return {
-      products,
-      count: count ?? 0,
-    };
-  } catch (error) {
-    console.error("Error fetching filtered products:", error);
-    throw error;
+  if (category) {
+    query = query.eq("categories.name", category);
   }
+
+  if (search && search.trim().length >= 2) {
+    query = query.ilike("name", `%${search}%`);
+  }
+  
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    console.error("Error fetching filtered products:", error.message);
+    throw new Error(`Error fetching products: ${error.message}`);
+  }
+
+  const transformedProducts: Product[] = (
+    data as SupabaseRawProductWithRelations[]
+  ).map(transformProductData);
+
+  return { products: transformedProducts, count: count ?? 0 };
 };
 
 export const getProductBySlug = async (slug: string) => {
@@ -149,7 +244,7 @@ export const getProductBySlug = async (slug: string) => {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("*, categories(*)")
+      .select("*, categories(*), discounts(*)")
       .eq("slug", slug)
       .limit(1)
       .maybeSingle();
@@ -166,11 +261,11 @@ export const getProductBySlug = async (slug: string) => {
   }
 };
 
-export const searchProducts = async (searchTerm: string) => {
+export const searchProducts = async (searchTerm: string): Promise<Product[]> => {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("*, categories(*)")
+      .select("*, categories(*), discounts(*)")
       .ilike("name", `%${searchTerm}%`)
       .order("created_at", { ascending: false });
 
@@ -179,22 +274,21 @@ export const searchProducts = async (searchTerm: string) => {
       throw new Error(error.message);
     }
 
-    return data;
+    if (!data) {
+      return []; // Si no hay datos, devuelve un array vacío
+    }
+    
+    // Mapea la data cruda de Supabase a la interfaz Product unificada
+    const transformedProducts: Product[] = (
+      data as SupabaseRawProductWithRelations[]
+    ).map(transformProductData);
+
+
+    return transformedProducts;
   } catch (error) {
     console.error("Error searching products:", error);
     throw error;
   }
-};
-
-export const getByIdProduct = async (id: string) => {
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error) throw new Error(error.message);
-  return data;
 };
 
 /* ********************************** */

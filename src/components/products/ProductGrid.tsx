@@ -1,17 +1,23 @@
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import { Product } from "@/interfaces";
+import { Product } from "@/interfaces/product.interface"; 
 import { CardProduct } from "@/components/products/CardProduct";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { useState } from "react";
 
 interface Props {
   title: string;
-  products: Product[];
+  products: Product[]; 
   showNavigation?: boolean;
+  icon?: React.ReactNode;
 }
 
-export const ProductGrid = ({ title, products, showNavigation = true }: Props) => {
+export const ProductGrid = ({
+  title,
+  products,
+  showNavigation = true,
+  icon,
+}: Props) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [maxSlide, setMaxSlide] = useState(0);
 
@@ -33,24 +39,35 @@ export const ProductGrid = ({ title, products, showNavigation = true }: Props) =
     },
     created(s) {
       let perView = 1;
-    
+
       const slidesOption = s.options.slides;
-      if (typeof slidesOption === "object" && slidesOption !== null && "perView" in slidesOption) {
+      if (
+        typeof slidesOption === "object" &&
+        slidesOption !== null &&
+        "perView" in slidesOption
+      ) {
         const rawPerView = slidesOption.perView;
         if (typeof rawPerView === "number") {
           perView = rawPerView;
         }
       }
-    
+
       setMaxSlide(s.track.details.slides.length - perView);
-    }
+    },
   });
 
   return (
     <div className="py-8 relative">
-      <h2 className="text-3xl font-semibold text-center mb-8 md:text-4xl lg:text-5xl drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)]">
-        {title}
-      </h2>
+      <div className="flex items-center justify-center gap-2 md:gap-6 mb-8">
+        {icon && (
+          <div className="text-2xl font-semibold text-center md:text-4xl lg:text-5xl drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)]">
+            {icon}
+          </div>
+        )}
+        <h2 className="text-2xl font-semibold text-center md:text-4xl lg:text-5xl drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)]">
+          {title}
+        </h2>
+      </div>
 
       <div ref={sliderRef} className="keen-slider">
         {products.map((product) => (

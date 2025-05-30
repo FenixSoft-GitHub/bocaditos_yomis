@@ -1,5 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Layout } from "@layout/Layout";
+import ClientLayout from "@/layout/ClientLayout";
+import DashboardLayout from "@/layout/DashboardLayout";
 import {
   AboutPage,
   CheckoutPage,
@@ -24,14 +26,17 @@ import {
   Soporte,
   Policies,
   Condiciones,
+  DashboardChartsPage,
+  DashboardUsersPage,
+  BlogDashboardPage,
+  NewBlogPostPage,
+  EditBlogPostPage,
+  BlogPostDetailPage,
+  BlogPublicListPage,
+  NuestraHistoriaPage,
+  ContactUsPage,
+  ProductsPage,
 } from "@/pages";
-import BlogPages from "@/pages/blog/BlogPages";
-import BlogPostsList from "@/pages/blog/BlogPostsList";
-import NuestraHistoriaPage from "@/pages/informations/NuestraHistoriaPage";
-import ContactUsPage from "@/pages/ContactUsPage";
-import ProductsPage from "@/pages/product/ProductsPage";
-import ClientLayout from "@/layout/ClientLayout";
-import DashboardLayout from "@/layout/DashboardLayout";
 
 export const AppRoutes = createBrowserRouter([
   {
@@ -43,8 +48,9 @@ export const AppRoutes = createBrowserRouter([
       { path: "/products/:slug", element: <ProductPage /> },
       { path: "/about", element: <AboutPage /> },
       { path: "/about/nuestra-historia", element: <NuestraHistoriaPage /> },
-      { path: "/blog", element: <BlogPostsList /> },
-      { path: "/blog/:slug", element: <BlogPages /> },
+      // Rutas de blog públicas
+      { path: "/blog", element: <BlogPublicListPage /> },
+      { path: "/blog/:slug", element: <BlogPostDetailPage /> },
       { path: "/contact-us", element: <ContactUsPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/register", element: <RegisterPage /> },
@@ -116,7 +122,7 @@ export const AppRoutes = createBrowserRouter([
       {
         path: "deliverys/edit/:id",
         element: <DashboardDeliverysUpdatePage />,
-      }, 
+      },
       {
         path: "promotions",
         element: <DashboardPromoPage />,
@@ -128,6 +134,27 @@ export const AppRoutes = createBrowserRouter([
       {
         path: "promotions/edit/:id",
         element: <DashboardPromoUpdatePage />,
+      },
+      {
+        path: "users",
+        element: <DashboardUsersPage />,
+      },
+      {
+        path: "charts",
+        element: <DashboardChartsPage />,
+      },
+      // === NUEVAS RUTAS DE ADMINISTRACIÓN DEL BLOG ===
+      {
+        path: "blog", // Ruta para la lista de posts del dashboard
+        element: <BlogDashboardPage />, // Usamos BlogDashboardPage aquí
+      },
+      {
+        path: "blog/new", // Ruta para crear un nuevo post
+        element: <NewBlogPostPage />, // Usamos NewBlogPostPage aquí
+      },
+      {
+        path: "blog/edit/:id", // Ruta para editar un post existente
+        element: <EditBlogPostPage />, // Usamos EditBlogPostPage aquí
       },
     ],
   },

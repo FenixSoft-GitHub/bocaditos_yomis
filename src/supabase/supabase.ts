@@ -78,6 +78,51 @@ export type Database = {
           },
         ]
       }
+      blog_posts: {
+        Row: {
+          author_id: string
+          content_markdown: string
+          created_at: string
+          display_author_name: string
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          published_at: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content_markdown: string
+          created_at?: string
+          display_author_name?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content_markdown?: string
+          created_at?: string
+          display_author_name?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string | null
@@ -122,6 +167,44 @@ export type Database = {
           price?: number
         }
         Relationships: []
+      }
+      discounts: {
+        Row: {
+          created_at: string
+          discount_type: string
+          ends_at: string
+          id: string
+          product_id: string
+          starts_at: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          discount_type: string
+          ends_at: string
+          id?: string
+          product_id: string
+          starts_at: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          discount_type?: string
+          ends_at?: string
+          id?: string
+          product_id?: string
+          starts_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discounts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_items: {
         Row: {
@@ -345,25 +428,25 @@ export type Database = {
           comment: string | null
           created_at: string | null
           id: string
-          product_id: string | null
+          product_id: string
           rating: number | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           comment?: string | null
           created_at?: string | null
           id?: string
-          product_id?: string | null
+          product_id: string
           rating?: number | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           comment?: string | null
           created_at?: string | null
           id?: string
-          product_id?: string | null
+          product_id?: string
           rating?: number | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -393,7 +476,7 @@ export type Database = {
           created_at?: string
           id?: number
           role?: string
-          user_id?: string
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -435,7 +518,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

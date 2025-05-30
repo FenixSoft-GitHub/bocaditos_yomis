@@ -1,4 +1,4 @@
-type TagType = "nuevo" | "agotado";
+type TagType = "nuevo" | "agotado" | "descuento" | string;
 
 interface Props {
   contentTag: TagType;
@@ -10,8 +10,14 @@ const getTagColor = (content: TagType) => {
     return "bg-cyan-300 text-black outline-cyan-300";
   if (lowerContent === "agotado")
     return "bg-red-500/70 text-white outline-red-500/70";
+  if (
+    lowerContent === "descuento" ||
+    lowerContent.includes("off") ||
+    lowerContent.includes("%")
+  )
+    return "bg-amber-600 text-white outline-amber-600";
 
-  return "bg-gray-500";
+    return "bg-gray-500 text-white outline-gray-500";
 };
 
 const Tag = ({ contentTag }: Props) => {
@@ -21,7 +27,7 @@ const Tag = ({ contentTag }: Props) => {
         contentTag
       )}`}
     >
-      <p className="uppercase text-xs font-semibold px-3 py-1">{contentTag}</p>
+      <p className="uppercase text-xs font-semibold px-3.5 py-1.5">{contentTag}</p>
     </div>
   );
 };

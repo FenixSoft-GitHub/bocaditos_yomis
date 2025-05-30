@@ -1,5 +1,9 @@
 import { useQueries } from "@tanstack/react-query";
-import { getRandomProducts, getRecentProducts } from "@/actions";
+import {
+  getRandomProducts,
+  getRecentProducts,
+  getDiscountedProducts,
+} from "@/actions"; 
 
 export const useHomeProducts = () => {
   const results = useQueries({
@@ -12,18 +16,33 @@ export const useHomeProducts = () => {
         queryKey: ["popularProducts"],
         queryFn: getRandomProducts,
       },
+      {
+        queryKey: ["discountedProducts"],
+        queryFn: getDiscountedProducts,
+      },
     ],
   });
 
-  const [recentProductsResult, popularProductsResult] = results; // [resultadoQuery1, resultadoQuery2]
+  const [
+    recentProductsResult,
+    popularProductsResult,
+    discountedProductsResult,
+  ] = results;
 
-  // Combinar los estados de las consultas
-  const isLoading = recentProductsResult.isLoading || popularProductsResult.isLoading;
-  const isError = recentProductsResult.isError || popularProductsResult.isError;
+  const isLoading =
+    recentProductsResult.isLoading ||
+    popularProductsResult.isLoading ||
+    discountedProductsResult.isLoading;
+
+  const isError =
+    recentProductsResult.isError ||
+    popularProductsResult.isError ||
+    discountedProductsResult.isError;
 
   return {
     recentProducts: recentProductsResult.data || [],
     popularProducts: popularProductsResult.data || [],
+    discountedProducts: discountedProductsResult.data || [],
     isLoading,
     isError,
   };

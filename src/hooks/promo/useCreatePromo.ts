@@ -15,4 +15,4 @@ export const useCreatePromo = () => {
       queryClient.invalidateQueries({ queryKey: ["promo"] }); // Opcional: recarga la lista
     },
   });
-};
+}; 

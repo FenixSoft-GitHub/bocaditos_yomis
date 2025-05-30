@@ -1,7 +1,5 @@
 export { default as HomePage } from "@pages/HomePage";
 export { default as AboutPage } from "@pages/AboutPage";
-export { default as BlogPages } from "@pages/blog/BlogPages";
-export { default as BlogPostsList } from "@pages/blog/BlogPostsList";
 export { default as NuestraHistoriaPage } from "@/pages/informations/NuestraHistoriaPage";
 export { default as ContactUsPage } from "@pages/ContactUsPage";
 export { default as ProductsPage } from "@pages/product/ProductsPage";
@@ -22,6 +20,16 @@ export { default as DashboardProductUpdatePage } from "@/pages/dashboard/Dashboa
 export { default as DashboardCategoryUpdatePage } from "@/pages/dashboard/DashboardCategoryUpdatePage";
 export { default as DashboardDeliverysUpdatePage } from "@pages/dashboard/DashboardDeliverysUpdatePage";
 export { default as DashboardPromoUpdatePage } from "@pages/dashboard/DashboardPromoUpdatePage";
+export { default as DashboardChartsPage } from "@pages/dashboard/DashboardChartsPage";
+export { default as DashboardUsersPage } from "@pages/dashboard/DashboardUsersPage";
+// Agrega estas importaciones
+export { default as BlogDashboardPage } from "@pages/dashboard/blog/BlogDashboardPage";
+export { default as NewBlogPostPage } from "@pages/dashboard/blog/NewBlogPostPage";
+export { default as EditBlogPostPage } from "@pages/dashboard/blog/EditBlogPostPage";
+// Tus páginas de blog públicas si las tienes
+export { default as BlogPostDetailPage } from "@pages/blog/BlogPostDetailPage"; // Detalle de un post público
+export { default as BlogPublicListPage } from "@pages/blog/BlogPublicListPage"; // Lista de posts públicos
+//Páginas de información
 export { default as Policies } from "@/pages/informations/Policies";
 export { default as Soporte } from "@/pages/informations/Soporte";
 export { default as TermsOfUsers } from "@/pages/informations/TermsOfUsers";

@@ -40,6 +40,42 @@ export const addressSchema = z.object({
 
 export type AddressFormValues = z.infer<typeof addressSchema>;
 
+// Define el esquema para un descuento
+export const discountSchema = z.object({
+  id: z.string().uuid().optional(),
+  // Estos campos NO deben ser optional() si la DB no acepta null
+  discount_type: z.enum(["percentage", "fixed"], {
+    message:
+      "El tipo de descuento es requerido y debe ser 'percentage' o 'fixed'",
+  }), // ¡QUITADO .optional()!
+  value: z.coerce
+    .number()
+    .nonnegative("El valor del descuento no puede ser negativo")
+    .min(0.01, "El valor debe ser mayor a 0"), // ¡QUITADO .optional()!
+  starts_at: z.coerce.date({
+    errorMap: (issue, ctx) => {
+      if (issue.code === z.ZodIssueCode.invalid_date) {
+        return { message: "La fecha de inicio es requerida" };
+      }
+      return { message: ctx.defaultError };
+    },
+  }), // ¡QUITADO .nullable().optional()! Ahora es obligatorio cuando discount está presente
+  ends_at: z.coerce
+    .date({
+      errorMap: (issue, ctx) => {
+        if (issue.code === z.ZodIssueCode.invalid_date) {
+          return { message: "La fecha de fin es requerida" };
+        }
+        return { message: ctx.defaultError };
+      },
+    })
+    .refine((data) => data > new Date(), {
+      message: "La fecha de fin debe ser posterior a la actual.",
+    }), // ¡QUITADO .nullable().optional()! Ahora es obligatorio cuando discount está presente
+});
+
+export type DiscountFormValues = z.infer<typeof discountSchema>;
+
 export const productSchema = z.object({
   id: z.string().uuid().optional(), // Se genera automáticamente
   category_id: z.string().uuid({ message: "Categoría inválida" }),
@@ -59,7 +95,14 @@ export const productSchema = z.object({
     .string()
     .min(1, "El slug del producto es obligatorio")
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug inválido"),
-});
+
+  // Nuevo campo para el descuento, opcional
+  discount: discountSchema.optional(), // Un producto puede o no tener un descuento
+
+  // Campo adicional para manejar si el descuento está activo o no en el formulario
+  // Esto es para la UI, no directamente para la base de datos de 'discounts'
+  has_discount: z.boolean().optional(),
+}); 
 
 export type ProductFormValues = z.infer<typeof productSchema>;
 
@@ -124,3 +167,20 @@ export const promoCodeSchema = z.object({
   );
 
   export type PromoCodeFormValues = z.infer<typeof promoCodeSchema>;
+
+  export const reviewSchema = z.object({
+    product_id: z.string().uuid({ message: "ID del producto inválido" }),
+    user_id: z.string().uuid({ message: "ID del usuario inválido" }),
+    rating: z
+      .number({
+        invalid_type_error: "Debes proporcionar una calificación numérica",
+      })
+      .min(1, { message: "La calificación mínima es 1" })
+      .max(5, { message: "La calificación máxima es 5" }),
+    comment: z
+      .string()
+      .min(5, { message: "El comentario debe tener al menos 5 caracteres" })
+      .max(1000, { message: "El comentario es demasiado largo" }), // opcional
+  });
+
+  export type ReviewFormValues = z.infer<typeof reviewSchema>;

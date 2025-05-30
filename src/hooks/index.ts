@@ -43,6 +43,23 @@ export * from "./categories/useDeleteCategory"
 export * from "./categories/useUpdateCategory"
 export * from "./categories/useCategoryById"
 
+//Reviews
+export * from "./reviews/useCreateReview"
+export * from "./reviews/useGetReviewsByProduct"
+
+//Discounts
+export * from "./discounts/useCreateDiscount"
+export * from "./discounts/useUpdateDiscount"
+export * from "./discounts/useDeleteDiscount"
+
+
+export * from "./charts/useSalesData"
+
+export * from "./users/useUserData"
+
+export * from "./blog/useBlogData"
+
+
 
 
 
