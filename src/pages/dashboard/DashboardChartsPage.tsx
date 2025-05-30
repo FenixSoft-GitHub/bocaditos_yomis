@@ -20,7 +20,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { formatPrice, formatToTwoDecimals } from "@/helpers"; // Tu función de formato de precio
+import { formatToTwoDecimals } from "@/helpers"; // Tu función de formato de precio
 import { D3PieChartWithLabels } from "@/components/charts/D3PieChartWithLabels"; // Asegúrate de la ruta correcta
 
 const DashboardChartsPage: React.FC = () => {
