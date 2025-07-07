@@ -231,3 +231,29 @@ input:-webkit-autofill {
   -webkit-text-fill-color: #fef6e4 !important; /* text-cream */
   transition: background-color 9999s ease-in-out 0s;
 }
+
+/* Tus estilos @apply para el prose, SIN el bloque <style is:global> en BlogPost.astro */
+/* Mueve estos estilos de BlogPost.astro a este archivo global.css */
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  @apply font-bold mt-8 mb-4;
+}
+.prose h1 { @apply text-3xl md:text-4xl; }
+.prose h2 { @apply text-2xl md:text-3xl; }
+.prose p {
+  @apply leading-relaxed mb-4;
+}
+.prose ul, .prose ol {
+  @apply list-inside mb-4 pl-4;
+}
+.prose li {
+  @apply mb-2;
+}
+.prose a {
+  @apply text-indigo-600 hover:underline dark:text-indigo-400;
+}
+.prose pre {
+  @apply bg-gray-100 dark:bg-gray-700 p-4 rounded-md overflow-x-auto;
+}
+.prose code {
+  @apply bg-gray-100 dark:bg-gray-700 px-1 rounded-sm text-sm;
+}

@@ -13,7 +13,7 @@ const BlogPublicListPage: React.FC = () => {
     blogPosts: posts,
     isLoadingBlogPosts: isLoading,
     blogPostsError: isError,
-  } = useBlogPosts(); // Asumo que este hook ahora trae display_author_name directamente
+  } = useBlogPosts(); 
 
   const [searchTerm, setSearchTerm] = useState<string>("");
 

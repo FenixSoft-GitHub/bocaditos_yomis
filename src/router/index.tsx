@@ -97,7 +97,7 @@ export const AppRoutes = createBrowserRouter([
       },
       {
         path: "orders/:id",
-        element: <DashboardOrderPage />,
+        element: <DashboardOrderPage />, 
       },
       {
         path: "categories",
@@ -122,7 +122,7 @@ export const AppRoutes = createBrowserRouter([
       {
         path: "deliverys/edit/:id",
         element: <DashboardDeliverysUpdatePage />,
-      },
+      }, 
       {
         path: "promotions",
         element: <DashboardPromoPage />,
