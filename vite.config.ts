@@ -23,9 +23,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg", "robots.txt"],
       manifest: {
-        name: "App Mi Recetario Pro",
-        short_name: "Recetario Pro",
-        description: "Tu app de repostería artesanal",
+        name: "Bocaditos Yomi's",
+        short_name: "Bocaditos Yomi's",
+        description: "App de Panadería, Pastelería y Repostería artesanal",
         theme_color: "#2b2b2b", // rosado pastel
         background_color: "#ffffff",
         display: "standalone",
