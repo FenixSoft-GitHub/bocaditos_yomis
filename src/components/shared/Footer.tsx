@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ReactNode } from "react";
 import { socialLinks } from "@/constants/SocialLink";
@@ -20,11 +19,10 @@ export const Footer = () => {
         {/* Sección principal del footer */}
         <div className="py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo y descripción */}
-          <div className="space-y-4 text-center lg:text-left flex flex-col items-center lg:items-start">
+          <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
             <Logo />
             <p className="text-sm text-cream/80">
-              Tu destino confiable para encontrar los mejores precios en equipos
-              de tecnología y accesorios.
+              "Bocaditos Yomi’s: El arte de hornear con el corazón."
             </p>
           </div>
 
