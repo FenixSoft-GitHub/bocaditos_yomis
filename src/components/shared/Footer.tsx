@@ -107,7 +107,7 @@ export const Footer = () => {
               Síguenos
             </h3>
             <p className="text-sm text-cream/80">
-              No te pierdas las novedades que Fenix Technology tiene para ti.
+              No te pierdas las novedades que Bocaditos Yomi's. tiene para ti.
             </p>
             <div className="grid grid-cols-5 gap-4 mt-6 justify-items-center">
               {socialLinks.map((link: SocialLink) => (
