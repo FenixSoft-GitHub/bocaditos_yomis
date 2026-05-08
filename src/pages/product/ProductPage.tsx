@@ -19,6 +19,8 @@ import { StarRating } from "@/components/reviews/StarRating";
 import { FaCartPlus } from "react-icons/fa6";
 import { RiSecurePaymentLine } from "react-icons/ri";
 import { getDiscountedPrice, getDiscountPercentage, isDiscountActive } from "@/lib/discount";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { breadcrumbSchema, productSchema } from "@/components/seo/schemas";
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -103,6 +105,32 @@ const ProductPage = () => {
 
   return (
     <>
+      <SEOHead
+        title={product.name}
+        description={
+          product.description || `Compra ${product.name} en Bocaditos Yomi's.`
+        }
+        canonical={`/products/${product.slug}`}
+        ogType="product"
+        ogImage={product.image_url?.[0] || undefined}
+        schema={[
+          productSchema({
+            name: product.name,
+            description: product.description || product.name,
+            image: product.image_url || [],
+            price: discountedPrice,
+            slug: product.slug,
+            inStock: !isOutOfStock,
+            rating: averageRating || undefined,
+            reviewCount: reviews.length || undefined,
+          }),
+          breadcrumbSchema([
+            { name: "Inicio", url: "/" },
+            { name: "Productos", url: "/products" },
+            { name: product.name, url: `/products/${product.slug}` },
+          ]),
+        ]}
+      />
       <div className="h-fit flex flex-col md:flex-row gap-4 md:gap-16 mt-32 py-6 px-8">
         <GridImages images={product?.image_url} />
 

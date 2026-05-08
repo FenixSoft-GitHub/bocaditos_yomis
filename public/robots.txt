@@ -1,2 +1,11 @@
 User-agent: *
 Allow: /
+
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /checkout
+Disallow: /checkout/
+Disallow: /account
+Disallow: /account/
+
+Sitemap: https://bocaditosynomis.vercel.app/sitemap.xml

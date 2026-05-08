@@ -6,6 +6,8 @@ import { BackButton } from "@/components/shared/BackButton";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import ReactMarkdown from "react-markdown";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { blogPostSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const BlogPostDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -45,7 +47,7 @@ const BlogPostDetailPage: React.FC = () => {
         <div className="flex items-center gap-2 group justify-center mt-8">
           <BackButton />
         </div>
-      </div> 
+      </div>
     );
   }
 
@@ -56,33 +58,58 @@ const BlogPostDetailPage: React.FC = () => {
   const authorNameToDisplay = post.display_author_name || "Autor desconocido";
 
   return (
-    <div className="container mx-auto text-choco dark:text-cream bg-fondo dark:bg-fondo-dark">
-      <div className="flex items-center justify-center gap-2 pt-36">
-        {post.image_url && (
-          <div className="relative h-[480px] w-full sm:w-3/4 mb-8">
-            <img
-              src={post.image_url}
-              alt={post.title}
-              className="w-full h-full object-cover rounded-lg"
-            />
+    <>
+      <SEOHead
+        title={post.title}
+        description={post.excerpt || post.title}
+        canonical={`/blog/${post.slug}`}
+        ogType="article"
+        ogImage={post.image_url || undefined}
+        schema={[
+          blogPostSchema({
+            title: post.title,
+            description: post.excerpt || post.title,
+            image: post.image_url || undefined,
+            slug: post.slug,
+            publishedAt: post.published_at || new Date().toISOString(),
+            updatedAt: post.updated_at || undefined,
+            authorName: post.display_author_name || undefined,
+          }),
+          breadcrumbSchema([
+            { name: "Inicio", url: "/" },
+            { name: "Blog", url: "/blog" },
+            { name: post.title, url: `/blog/${post.slug}` },
+          ]),
+        ]}
+      />
+      <div className="container mx-auto text-choco dark:text-cream bg-fondo dark:bg-fondo-dark">
+        <div className="flex items-center justify-center gap-2 pt-36">
+          {post.image_url && (
+            <div className="relative h-[480px] w-full sm:w-3/4 mb-8">
+              <img
+                src={post.image_url}
+                alt={post.title}
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="px-4 sm:px-24 py-10">
+          <h1 className="text-4xl font-bold mb-4 text-center">{post.title}</h1>
+          <p className="text-center mb-8">
+            Fecha: {formattedDate} {`| Por: ${authorNameToDisplay}`}
+          </p>
+
+          <div className="prose prose-lg max-w-none mb-8 dark:prose-invert">
+            <ReactMarkdown>{post.content_markdown || ""}</ReactMarkdown>
           </div>
-        )}
-      </div>
-
-      <div className="px-4 sm:px-24 py-10">
-        <h1 className="text-4xl font-bold mb-4 text-center">{post.title}</h1>
-        <p className="text-center mb-8">
-          Fecha: {formattedDate} {`| Por: ${authorNameToDisplay}`}
-        </p>
-
-        <div className="prose prose-lg max-w-none mb-8 dark:prose-invert">
-          <ReactMarkdown>{post.content_markdown || ""}</ReactMarkdown>
-        </div>
-        <div className="flex items-center gap-2 group justify-end">
-          <BackButton />
+          <div className="flex items-center gap-2 group justify-end">
+            <BackButton />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
