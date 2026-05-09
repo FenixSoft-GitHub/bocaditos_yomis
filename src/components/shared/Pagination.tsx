@@ -1,4 +1,4 @@
-import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
   totalItems: number;
@@ -6,50 +6,58 @@ interface Props {
   setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
+const ITEMS_PER_PAGE = 8;
+
 export const Pagination = ({ totalItems, page, setPage }: Props) => {
-  const handleNextPage = () => {
+  const totalPages = totalItems ? Math.ceil(totalItems / ITEMS_PER_PAGE) : 1;
+  const isFirst = page === 1;
+  const isLast = page >= totalPages;
+  const startItem = (page - 1) * ITEMS_PER_PAGE + 1;
+  const endItem = Math.min(page * ITEMS_PER_PAGE, totalItems);
+
+  const handlePrev = () => {
     window.scrollTo(0, 0);
-    setPage(page + 1);
+    setPage((p) => Math.max(p - 1, 1));
   };
-
-  const handlePrevPage = () => {
+  const handleNext = () => {
     window.scrollTo(0, 0);
-    setPage((prevPage) => Math.max(prevPage - 1, 1));
+    setPage((p) => p + 1);
   };
-
-  const itemsPerPage = 8;
-  const totalPages = totalItems ? Math.ceil(totalItems / itemsPerPage) : 1;
-  const isLastPage = page >= totalPages;
-
-  const startItem = (page - 1) * itemsPerPage + 1; // 1 -> 11 -> 21
-  const endItem = Math.min(page * itemsPerPage, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center">
-      <p className="text-xs font-medium mb-5 sm:mb-0">
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+      <p className="text-xs text-choco/70 dark:text-cream/60">
         Mostrando{" "}
-        <span className="font-bold">
-          {startItem} - {endItem}
+        <span className="font-semibold text-choco dark:text-cream">
+          {startItem}–{endItem}
         </span>{" "}
-        de <span className="font-bold"> {totalItems}</span> productos
+        de{" "}
+        <span className="font-semibold text-choco dark:text-cream">
+          {totalItems}
+        </span>{" "}
+        productos
       </p>
-      <div className="flex gap-6 items-center">
+      <div className="flex items-center gap-2">
         <button
-          className="inline-flex items-center gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition"
-          onClick={handlePrevPage}
-          disabled={page === 1}
+          onClick={handlePrev}
+          disabled={isFirst}
+          className="btn-primary disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
+          aria-label="Página anterior"
         >
-          <GrFormPrevious className="text-xl" />
+          <ChevronLeft className="size-4" />
           <span>Anterior</span>
         </button>
-
+        <span className="text-sm font-medium px-3 py-1.5 rounded-lg bg-choco/10 dark:bg-cream/10 text-choco dark:text-cream min-w-[3rem] text-center">
+          {page} / {totalPages}
+        </span>
         <button
-          className="inline-flex items-center gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition"
-          onClick={handleNextPage}
-          disabled={isLastPage}
+          onClick={handleNext}
+          disabled={isLast}
+          className="btn-primary disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
+          aria-label="Página siguiente"
         >
           <span>Siguiente</span>
-          <GrFormNext className="text-xl " />
+          <ChevronRight className="size-4" />
         </button>
       </div>
     </div>

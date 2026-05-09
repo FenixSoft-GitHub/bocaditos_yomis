@@ -12,32 +12,43 @@ interface SocialLink {
   className: string;
 }
 
+const footerLinks = [
+  { to: "/products",     label: "Productos" },
+  { to: "/about",        label: "Sobre Nosotros" },
+  { to: "/blog",         label: "Blog" },
+  { to: "/contact-us",   label: "Contáctanos" },
+  { to: "/soporte",      label: "Soporte" },
+  { to: "/policies",     label: "Políticas de privacidad" },
+  { to: "/terms-of-use", label: "Términos de uso" },
+  { to: "/conditions",   label: "Condiciones personalizadas" },
+];
+
 export const Footer = () => {
   return (
-    <footer className="bg-gray-950 text-cream">
+    <footer className="bg-oscuro text-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Sección principal del footer */}
-        <div className="py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Logo y descripción */}
-          <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
+        <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+          {/* Logo + tagline */}
+          <div className="flex flex-col items-center lg:items-start gap-3">
             <Logo />
-            <p className="text-sm text-cream/80">
-              "Bocaditos Yomi’s: El arte de hornear con el corazón."
+            <p className="text-sm text-cream/70 italic leading-relaxed">
+              "El arte de hornear con el corazón."
             </p>
           </div>
 
-          {/* Formulario de suscripción */}
+          {/* Métodos de pago */}
           <div className="space-y-4">
-            <h3 className="font-semibold uppercase tracking-wider text-center">
-              Métodos de Pagos
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-cocoa text-center">
+              Métodos de Pago
             </h3>
-            <div className="grid grid-cols-2 gap-4 mt-6 items-center sm:grid-cols-3">
-              {PaymentMethods.map((paymentMethod, index) => (
+            <div className="grid grid-cols-3 gap-3 items-center">
+              {PaymentMethods.map((method, index) => (
                 <div key={index} className="flex justify-center p-1">
                   <img
-                    src={paymentMethod.image}
-                    alt={paymentMethod.alt}
-                    className={paymentMethod.size + " rounded"}
+                    src={method.image}
+                    alt={method.alt}
+                    className={method.size + " rounded opacity-90 hover:opacity-100 transition-opacity"}
                   />
                 </div>
               ))}
@@ -46,70 +57,31 @@ export const Footer = () => {
 
           {/* Enlaces útiles */}
           <div className="space-y-4 text-center md:text-left">
-            <h3 className="font-semibold uppercase tracking-wider">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-cocoa">
               Enlaces Útiles
             </h3>
-            <nav className="space-y-1.5">
-              <Link
-                to="/products"
-                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
-              >
-                Productos
-              </Link>
-              <Link
-                to="/about"
-                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
-              >
-                Sobre Nosotros
-              </Link>
-              <Link
-                to="/blog"
-                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
-              >
-                Blog
-              </Link>
-              <Link
-                to="/contact-us"
-                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
-              >
-                Contáctanos
-              </Link>
-              <Link
-                to="/soporte"
-                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
-              >
-                Soporte
-              </Link>
-              <Link
-                to="/policies"
-                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
-              >
-                Políticas de privacidad
-              </Link>
-              <Link
-                to="/terms-of-use"
-                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
-              >
-                Términos de uso
-              </Link>
-              <Link
-                to="/conditions"
-                className="block text-sm text-cream/80 hover:text-butter hover:underline hover:scale-105 transition-all ease-in-out duration-300"
-              >
-                Condiciones Personalizadas
-              </Link>
+            <nav className="space-y-2">
+              {footerLinks.map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="block text-sm text-cream/70 hover:text-butter transition-colors duration-200"
+                >
+                  {label}
+                </Link>
+              ))}
             </nav>
           </div>
 
           {/* Redes sociales */}
           <div className="space-y-4 text-center md:text-left">
-            <h3 className="font-semibold uppercase tracking-wider text-white">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-cocoa">
               Síguenos
             </h3>
-            <p className="text-sm text-cream/80">
-              No te pierdas las novedades que Bocaditos Yomi's. tiene para ti.
+            <p className="text-sm text-cream/70 leading-relaxed">
+              Entérate primero de nuestras novedades y promociones.
             </p>
-            <div className="grid grid-cols-5 gap-4 mt-6 justify-items-center">
+            <div className="flex flex-wrap gap-3 justify-center md:justify-start mt-2">
               {socialLinks.map((link: SocialLink) => (
                 <a
                   key={link.id}
@@ -126,27 +98,18 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Línea divisoria */}
-        <div className="border-t border-cocoa/70">
-          <div className="py-6 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-cream/60">
-              {new Date().getFullYear()} © Bocaditos Yomi's. ❤ Todos los
-              derechos reservados.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link
-                to="/contact-us"
-                className="text-sm text-cream/60 hover:text-butter transition-colors"
-              >
-                Contacto
-              </Link>
-              <Link
-                to="/contact-us#location"
-                className="text-sm text-cream/60 hover:text-butter transition-colors"
-              >
-                FAQ
-              </Link>
-            </div>
+        {/* Barra inferior */}
+        <div className="border-t border-cocoa/30 py-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="text-xs text-cream/50">
+            {new Date().getFullYear()} © Bocaditos Yomi's · Todos los derechos reservados.
+          </p>
+          <div className="flex gap-5">
+            <Link to="/contact-us" className="text-xs text-cream/50 hover:text-butter transition-colors">
+              Contacto
+            </Link>
+            <Link to="/contact-us#location" className="text-xs text-cream/50 hover:text-butter transition-colors">
+              FAQ
+            </Link>
           </div>
         </div>
       </div>

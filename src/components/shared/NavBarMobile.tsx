@@ -1,54 +1,61 @@
-import { IoMdClose } from "react-icons/io";
+import { X } from "lucide-react";
 import { useGlobalStore } from "@/store/global.store";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { NavbarLinks } from "@/constants/NavBarLinks";
 import { Logo } from "./Logo";
 
 export const NavbarMobile = () => {
   const setActiveNavMobile = useGlobalStore(
-    (state) => state.setActiveNavMobile
+    (state) => state.setActiveNavMobile,
   );
+  const close = () => setActiveNavMobile(false);
 
   return (
-    <div className="bg-cream/80 backdrop-blur-md text-choco dark:text-cream dark:bg-fondo-dark/80 h-screen w-full shadow-lg animate-slide-in-left fixed z-50 flex justify-center py-24 px-6">
-      <button
-        className="absolute top-5 right-5 bg-amber-600 text-cream dark:bg-amber-500 dark:text-oscuro hover:bg-amber-700 dark:hover:bg-amber-600 rounded-full shadow-md transition-all duration-200"
-        onClick={() => setActiveNavMobile(false)}
-        aria-label="Cerrar menú"
+    <div className="fixed inset-0 z-50 flex">
+      <div
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        onClick={close}
+        aria-hidden="true"
+      />
+      <nav
+        className="relative ml-auto w-72 h-full bg-fondo dark:bg-oscuro shadow-2xl flex flex-col py-8 px-6 animate-slide-in"
+        aria-label="Menú de navegación"
       >
-        <IoMdClose size={28} className="p-1" />
-      </button>
-
-      <div className="flex flex-col gap-12 items-center w-full max-w-xs">
-        <Link
-          to="/"
-          onClick={() => setActiveNavMobile(false)}
-          className="scale-[1.5] transition-transform duration-300"
-        >
+        <div className="flex items-center justify-between mb-8">
           <Logo />
-        </Link>
+          <button
+            onClick={close}
+            className="p-2 rounded-lg bg-choco/10 dark:bg-cream/10 hover:bg-choco/20 dark:hover:bg-cream/20 text-choco dark:text-cream transition-colors"
+            aria-label="Cerrar menú"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-        <nav className="flex flex-col w-full gap-4">
+        <div className="flex flex-col gap-1 flex-1">
           {NavbarLinks.map((item) => (
             <NavLink
               key={item.id}
               to={item.href}
-              onClick={() => setActiveNavMobile(false)}
+              onClick={close}
               className={({ isActive }) =>
-                `flex items-center justify-start gap-3 w-full px-4 py-3 rounded-lg font-medium tracking-wide transition-all duration-200
-                ${
+                `flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
                   isActive
-                    ? "bg-amber-100 text-choco dark:bg-cream/10"
-                    : "hover:bg-amber-50 dark:hover:bg-white/10 text-choco/80 dark:text-cream/80"
+                    ? "bg-choco text-cream dark:bg-cream/15 dark:text-cream"
+                    : "text-choco/80 dark:text-cream/70 hover:bg-choco/10 dark:hover:bg-cream/10 hover:text-choco dark:hover:text-cream"
                 }`
               }
             >
               {item.icon}
-              <span className="text-base">{item.title}</span>
+              <span>{item.title}</span>
             </NavLink>
           ))}
-        </nav>
-      </div>
+        </div>
+
+        <p className="text-xs text-choco/40 dark:text-cream/30 text-center mt-6">
+          © {new Date().getFullYear()} Bocaditos Yomi's
+        </p>
+      </nav>
     </div>
   );
 };
