@@ -83,7 +83,7 @@ const BlogPostDetailPage: React.FC = () => {
         ]}
       />
       <div className="container mx-auto text-choco dark:text-cream bg-fondo dark:bg-fondo-dark">
-        <div className="flex items-center justify-center gap-2 pt-36">
+        <div className="flex items-center justify-center gap-2 pt-6">
           {post.image_url && (
             <div className="relative h-[480px] w-full sm:w-3/4 mb-8">
               <img

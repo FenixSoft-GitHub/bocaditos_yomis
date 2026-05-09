@@ -21,13 +21,15 @@ const AboutPage = () => {
       <div className="w-full h-full">
         {/* Hero Section */}
         <div className="relative w-full h-screen flex justify-end items-center">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat h-full bg-[url('/img/about/about.avif')] dark:mask-image-[linear-gradient(to_bottom,_black_80%,_transparent)] light:mask-image-[linear-gradient(to_bottom,_white_80%,_transparent)]"
-            style={{
-              maskImage: "linear-gradient(to bottom, black 80%, transparent)",
-            }}
+          <img
+            src="/img/about/about.avif"
+            alt="Sobre Bocaditos Yomi's"
+            loading="eager"
+            fetchPriority="high"
+            className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black opacity-20" />
+          {/* Gradiente oscuro hacia la derecha para destacar el texto */}
+          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-fondo dark:from-fondo-dark to-transparent" />
 
           <div className="relative max-w-[750px] flex flex-col text-end px-4 lg:px-12 gap-3.5 text-cream">
             <h2 className="text-4xl font-bold mb-3 drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]">
@@ -36,7 +38,7 @@ const AboutPage = () => {
             <h3 className="text-2xl font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]">
               Bocaditos Yomi's - Donde el sabor tiene alma
             </h3>
-            <div className="text-balance text-end text-sm tracking-wide md:text-xl ">
+            <div className="text-balance text-end text-sm tracking-wide md:text-xl">
               <p>
                 En <strong>Bocaditos Yomi's</strong> creemos que cada dulce
                 tiene una historia, y la nuestra comenzó en una cocina familiar,

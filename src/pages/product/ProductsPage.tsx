@@ -40,16 +40,6 @@ const ProductsPage = () => {
     setPage(1);
   }, [searchTerm, selectedCategories]);
 
-  // const handleCategoryChange = (categories: string | null) => {
-  //   setSelectedCategories(categories);
-  //   setPage(1); // Reset page when filter changes
-  // };
-
-  // const handleResetFilter = () => {
-  //   setSelectedCategories(null);
-  //   setPage(1);
-  // };
-
   if (isLoading || isLoadingCategories) return <Loader size={60} />;
   if (isErrorCategories) return <div>Error</div>;
   if (!categoriesSelect || categoriesSelect.length === 0)
@@ -59,7 +49,7 @@ const ProductsPage = () => {
     <section className="container mx-auto text-choco dark:text-cream dark:bg-fondo-dark">
       <div className="flex flex-col md:items-center md:justify-between gap-4 mb-4">
         {/* Header y filtro */}
-        <div className="w-full mb-4 mt-28 lg:mt-42 flex flex-col lg:flex-row justify-between items-center gap-4">
+        <div className="w-full mb-4 flex flex-col lg:flex-row justify-between items-center gap-4">
           <div className="flex-1 min-w-0">
             <h1 className="text-3xl md:text-4xl font-bold md:text-left drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)] ">
               Artículos

@@ -26,7 +26,7 @@ const Banner = () => {
   return (
     <section
       className="relative w-full overflow-hidden"
-      style={{ height: "85svh", minHeight: "480px" }}
+      style={{ height: "100svh", minHeight: "560px" }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       aria-label="Banner principal"

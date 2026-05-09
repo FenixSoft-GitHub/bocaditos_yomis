@@ -131,7 +131,7 @@ const ProductPage = () => {
           ]),
         ]}
       />
-      <div className="h-fit flex flex-col md:flex-row gap-4 md:gap-16 mt-32 py-6 px-8">
+      <div className="h-fit flex flex-col md:flex-row gap-4 md:gap-16 py-6 px-8">
         <GridImages images={product?.image_url} />
 
         <div className="flex-1 space-y-2">

@@ -69,13 +69,15 @@ const BlogPublicListPage: React.FC = () => {
     <div className="w-full h-full">
       {/* ... (Hero Section y Blog de la Pastelería H1) */}
       <div className="relative w-full h-screen flex justify-end items-center">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat h-full bg-[url('/img/blog/blog.avif')] dark:mask-image-[linear-gradient(to_bottom,_black_80%,_transparent)] light:mask-image-[linear-gradient(to_bottom,_white_80%,_transparent)]"
-          style={{
-            maskImage: "linear-gradient(to bottom, black 80%, transparent)",
-          }}
+        <img
+          src="/img/blog/blog.avif"
+          alt="Blog de Bocaditos Yomi's"
+          loading="eager"
+          fetchPriority="high"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/40 to-black/10" />
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-fondo dark:from-fondo-dark to-transparent" />
 
         <div className="relative max-w-[800px] flex flex-col text-end px-4 lg:px-12 gap-3.5 text-cream">
           <h2 className="text-2xl sm:text-4xl font-bold mb-3 drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]">
