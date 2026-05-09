@@ -5,6 +5,8 @@ import { Layout } from "@layout/Layout";
 import ClientLayout from "@/layout/ClientLayout";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { Loader } from "@/components/shared/Loader";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { AdminRoute } from "@/components/auth/AdminRoute";
 import {
   AboutPage,
   CheckoutPage,
@@ -56,6 +58,7 @@ export const AppRoutes = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
+      // ── Rutas públicas ──────────────────────────────────────────
       { path: "/", element: s(<HomePage />) },
       { path: "/products", element: s(<ProductsPage />) },
       { path: "/products/:slug", element: s(<ProductPage />) },
@@ -70,49 +73,79 @@ export const AppRoutes = createBrowserRouter([
       { path: "/terms-of-use", element: s(<TermsOfUsers />) },
       { path: "/policies", element: s(<Policies />) },
       { path: "/conditions", element: s(<Condiciones />) },
+
+      // ── Rutas protegidas de cliente (requiere sesión) ───────────
       {
-        path: "account",
-        element: <ClientLayout />,
+        element: <ProtectedRoute />,
         children: [
-          { path: "", element: <Navigate to="/account/pedidos" /> },
-          { path: "pedidos", element: s(<OrdersUserPage />) },
-          { path: "pedidos/:id", element: s(<OrderUserPage />) },
+          {
+            path: "account",
+            element: <ClientLayout />,
+            children: [
+              { path: "", element: <Navigate to="/account/pedidos" /> },
+              { path: "pedidos", element: s(<OrdersUserPage />) },
+              { path: "pedidos/:id", element: s(<OrderUserPage />) },
+            ],
+          },
         ],
       },
     ],
   },
-  { path: "/checkout", element: s(<CheckoutPage />) },
-  { path: "/checkout/:id/thank-you", element: s(<ThankyouPage />) },
+
+  // ── Checkout protegido (fuera del Layout principal) ─────────────
   {
-    path: "/dashboard",
-    element: <DashboardLayout />,
+    element: <ProtectedRoute />,
     children: [
-      { path: "", element: <Navigate to="/dashboard/products" /> },
-      { path: "products", element: s(<DashboardProductsPage />) },
-      { path: "product/new", element: s(<DashboardProductUpdatePage />) },
-      { path: "product/edit/:id", element: s(<DashboardProductUpdatePage />) },
-      { path: "orders", element: s(<DashboardOrdersPage />) },
-      { path: "orders/:id", element: s(<DashboardOrderPage />) },
-      { path: "categories", element: s(<DashboardCategoriesPage />) },
-      { path: "category/new", element: s(<DashboardCategoryUpdatePage />) },
+      { path: "/checkout", element: s(<CheckoutPage />) },
+      { path: "/checkout/:id/thank-you", element: s(<ThankyouPage />) },
+    ],
+  },
+
+  // ── Dashboard protegido (requiere sesión + rol admin) ────────────
+  {
+    element: <AdminRoute />,
+    children: [
       {
-        path: "category/edit/:id",
-        element: s(<DashboardCategoryUpdatePage />),
+        path: "/dashboard",
+        element: <DashboardLayout />,
+        children: [
+          { path: "", element: <Navigate to="/dashboard/products" /> },
+          { path: "products", element: s(<DashboardProductsPage />) },
+          { path: "product/new", element: s(<DashboardProductUpdatePage />) },
+          {
+            path: "product/edit/:id",
+            element: s(<DashboardProductUpdatePage />),
+          },
+          { path: "orders", element: s(<DashboardOrdersPage />) },
+          { path: "orders/:id", element: s(<DashboardOrderPage />) },
+          { path: "categories", element: s(<DashboardCategoriesPage />) },
+          { path: "category/new", element: s(<DashboardCategoryUpdatePage />) },
+          {
+            path: "category/edit/:id",
+            element: s(<DashboardCategoryUpdatePage />),
+          },
+          { path: "deliverys", element: s(<DashboardDeliverysPage />) },
+          {
+            path: "deliverys/new",
+            element: s(<DashboardDeliverysUpdatePage />),
+          },
+          {
+            path: "deliverys/edit/:id",
+            element: s(<DashboardDeliverysUpdatePage />),
+          },
+          { path: "promotions", element: s(<DashboardPromoPage />) },
+          { path: "promotions/new", element: s(<DashboardPromoUpdatePage />) },
+          {
+            path: "promotions/edit/:id",
+            element: s(<DashboardPromoUpdatePage />),
+          },
+          { path: "users", element: s(<DashboardUsersPage />) },
+          { path: "charts", element: s(<DashboardChartsPage />) },
+          { path: "blog", element: s(<BlogDashboardPage />) },
+          { path: "blog/new", element: s(<NewBlogPostPage />) },
+          { path: "blog/edit/:id", element: s(<EditBlogPostPage />) },
+        ],
       },
-      { path: "deliverys", element: s(<DashboardDeliverysPage />) },
-      { path: "deliverys/new", element: s(<DashboardDeliverysUpdatePage />) },
-      {
-        path: "deliverys/edit/:id",
-        element: s(<DashboardDeliverysUpdatePage />),
-      },
-      { path: "promotions", element: s(<DashboardPromoPage />) },
-      { path: "promotions/new", element: s(<DashboardPromoUpdatePage />) },
-      { path: "promotions/edit/:id", element: s(<DashboardPromoUpdatePage />) },
-      { path: "users", element: s(<DashboardUsersPage />) },
-      { path: "charts", element: s(<DashboardChartsPage />) },
-      { path: "blog", element: s(<BlogDashboardPage />) },
-      { path: "blog/new", element: s(<NewBlogPostPage />) },
-      { path: "blog/edit/:id", element: s(<EditBlogPostPage />) },
     ],
   },
 ]);

@@ -1,41 +1,20 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useCartStore } from '@/store/cart.store';
-import { FormCheckout } from '@/components/checkout/FormCheckout';
-import { ItemsCheckout } from '@/components/checkout/ItemsCheckout';
-import { Loader } from '@/components/shared/Loader';
-import { useEffect, useState } from 'react';
-import { useUser } from '@/hooks';
-import { supabase } from '@/supabase/client';
+// DESPUÉS — pega esto:
+import { Link } from "react-router-dom";
+import { useCartStore } from "@/store/cart.store";
+import { FormCheckout } from "@/components/checkout/FormCheckout";
+import { ItemsCheckout } from "@/components/checkout/ItemsCheckout";
+import { useEffect, useState } from "react";
 
 const CheckoutPage = () => {
-  const navigate = useNavigate(); 
-  const totalItems = useCartStore(state => state.totalItemsInCart);
+  const totalItems = useCartStore((state) => state.totalItemsInCart);
   const [, setIsScrolled] = useState(false);
 
-  const { isLoading } = useUser();
-
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' || !session) {
-        navigate('/login');
-      }
-    });
-
-    return () => {
-      authListener?.subscription.unsubscribe();
-    };
-  }, [navigate]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (isLoading) return <Loader size={60} />; 
   return (
     <main className="dark:bg-fondo-dark dark:text-cream bg-fondo text-choco">
       <div className="w-full flex relative">

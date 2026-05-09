@@ -47,7 +47,7 @@ const ProductsPage = () => {
 
   return (
     <section className="container mx-auto text-choco dark:text-cream dark:bg-fondo-dark">
-      <div className="flex flex-col md:items-center md:justify-between gap-4 mb-4">
+      <div className="flex flex-col md:items-center md:justify-between gap-4 mb-4 mt-8">
         {/* Header y filtro */}
         <div className="w-full mb-4 flex flex-col lg:flex-row justify-between items-center gap-4">
           <div className="flex-1 min-w-0">

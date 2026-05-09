@@ -56,7 +56,7 @@ export const NavBar = memo(() => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}
     >
       <div className="container mx-auto">
-        <div className="flex items-center justify-between py-2">
+        <div className="flex items-center justify-between py-1">
           <Logo />
 
           <nav className="hidden md:flex items-center gap-1">

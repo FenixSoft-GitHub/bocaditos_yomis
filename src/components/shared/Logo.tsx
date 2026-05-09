@@ -16,7 +16,7 @@ export const Logo = ({ className }: Props) => {
         alt="Logo Bocaditos Yomi's"
         width={72}
         height={72}
-        className={`w-14 h-14 md:w-16 md:h-16 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ${className ?? ""}`}
+        className={`w-14 h-14 md:w-22 md:h-22 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ${className ?? ""}`}
       />
     </Link>
   );
