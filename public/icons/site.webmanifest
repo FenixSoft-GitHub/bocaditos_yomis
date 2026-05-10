@@ -1,21 +1,48 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Bocaditos Yomi's",
+  "short_name": "Yomi's",
+  "description": "Snacks y golosinas artesanales. Frescos y deliciosos.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#6b4226",
+  "background_color": "#f9f5f0",
+  "lang": "es",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/icons/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "shortcuts": [
+    {
+      "name": "Ver Productos",
+      "short_name": "Productos",
+      "url": "/products",
+      "icons": [
+        { "src": "/icons/web-app-manifest-192x192.png", "sizes": "192x192" }
+      ]
+    },
+    {
+      "name": "Mi Pedido",
+      "short_name": "Pedidos",
+      "url": "/account/pedidos",
+      "icons": [
+        { "src": "/icons/web-app-manifest-192x192.png", "sizes": "192x192" }
+      ]
+    }
+  ]
 }
