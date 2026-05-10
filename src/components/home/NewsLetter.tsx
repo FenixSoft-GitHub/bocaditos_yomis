@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import emailjs from "@emailjs/browser";
+import { Mail, CheckCircle, AlertCircle } from "lucide-react";
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
@@ -15,19 +16,20 @@ const NewsLetter = () => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-
-    const templateParams = {
-      email,
-      subject: "Nueva suscripción al boletín",
-      message: `Nuevo usuario suscrito al boletín: ${email}`,
-    };
-
     try {
-      await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+      await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        {
+          email,
+          subject: "Nueva suscripción al boletín",
+          message: `Nuevo suscriptor: ${email}`,
+        },
+        PUBLIC_KEY,
+      );
       setIsSuccess(true);
       setEmail("");
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Error al suscribirse. Intenta de nuevo.");
     } finally {
       setIsLoading(false);
@@ -35,44 +37,80 @@ const NewsLetter = () => {
   };
 
   return (
-    <div className="relative bg-gray-500 text-cream py-20">
-      {/* Imagen de fondo */}
-      <div className="absolute inset-0 bg-cover bg-center  h-full bg-[url('/img/banner/imgNew.avif')]" />
+    <section
+      className="relative py-20 overflow-hidden"
+      aria-labelledby="newsletter-heading"
+    >
+      <img
+        src="/img/banner/imgNew.avif"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-oscuro/60" />
 
-      {/* Contenido del Newsletter */}
-      <div className="container mx-auto z-10 relative">
-        <div className="w-full text-choco bg-cream p-8 space-y-5 md:w-[50%] lg:w-[40%] rounded-md dark:bg-fondo-dark dark:text-cream dark:border-cream/50 border border-coco/50">
-          <p className="text-xs uppercase font-semibold">
-            Suscríbete a nuestro boletín y recibe promociones exclusivas
-          </p>
-          <p className="text-xs font-medium w-[80%] leading-4">
-            Introduce tu correo para recibir ofertas
-          </p>
-
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5 xl:flex-row">
-            <input
-              type="email"
-              name="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              className="border border-choco/70 dark:border-cream/30 focus:outline-none rounded-md py-2 px-4 w-full text-xs font-medium"
-              placeholder="Correo Electrónico"
-            />
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="bg-choco text-cream font-semibold rounded-full uppercase tracking-wider py-3 text-xs xl:px-5 transition duration-300 ease-in-out hover:scale-105 shadow-lg dark:text-cream"
+      <div className="relative z-10 container mx-auto px-4">
+        <div className="max-w-md bg-fondo dark:bg-fondo-dark border border-cocoa/30 dark:border-cream/20 rounded-2xl p-8 space-y-5 shadow-2xl">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Mail className="size-4 text-choco dark:text-cocoa" />
+              <p className="text-xs uppercase font-semibold tracking-widest text-choco/60 dark:text-cream/60">
+                Boletín exclusivo
+              </p>
+            </div>
+            <h2
+              id="newsletter-heading"
+              className="text-xl font-bold text-choco dark:text-cream"
             >
-              {isLoading ? "Enviando..." : "Suscribirme"}
-            </button>
-          </form>
+              Recibe promociones y novedades
+            </h2>
+            <p className="text-sm text-choco/60 dark:text-cream/60 leading-relaxed">
+              Sé el primero en enterarte de nuestros nuevos productos y ofertas
+              especiales.
+            </p>
+          </div>
 
-          {isSuccess && <p className="text-green-500 text-xs">¡Gracias por suscribirte!</p>}
-          {error && <p className="text-red-500 text-xs">{error}</p>}
+          {isSuccess ? (
+            <div className="flex items-center gap-3 py-3 px-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+              <CheckCircle className="size-5 text-green-600 dark:text-green-400 shrink-0" />
+              <p className="text-sm font-medium text-green-700 dark:text-green-400">
+                ¡Gracias por suscribirte! Pronto recibirás novedades.
+              </p>
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col sm:flex-row gap-3"
+            >
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="tu@correo.com"
+                aria-label="Correo para suscripción"
+                className="flex-1 px-4 py-2.5 text-sm rounded-lg border border-cocoa/30 dark:border-cream/20 bg-cream dark:bg-fondo-dark text-choco dark:text-cream placeholder:text-choco/40 dark:placeholder:text-cream/40 focus:outline-none focus:ring-2 focus:ring-choco/20 dark:focus:ring-cream/20"
+              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn-primary px-5 py-2.5 rounded-lg shrink-0 disabled:opacity-50"
+              >
+                {isLoading ? "Enviando..." : "Suscribirme"}
+              </button>
+            </form>
+          )}
+
+          {error && (
+            <div className="flex items-center gap-2 text-red-500 dark:text-red-400">
+              <AlertCircle className="size-4 shrink-0" />
+              <p className="text-xs">{error}</p>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -2,13 +2,20 @@ import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useLogin, useUser } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
-import { MdOutlineAlternateEmail } from "react-icons/md";
-import { TbLockPassword } from "react-icons/tb";
+import { Mail, Eye, EyeOff } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
+
+const inputClass = `w-full pl-4 pr-11 py-3 rounded-lg border text-sm transition-all duration-200
+  bg-fondo dark:bg-fondo-dark text-choco dark:text-cream
+  placeholder:text-choco/40 dark:placeholder:text-cream/40
+  border-cocoa/30 dark:border-cream/20
+  focus:outline-none focus:ring-2 focus:ring-choco/20 dark:focus:ring-cream/20
+  focus:border-choco dark:focus:border-cream/60`;
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
 
   const { mutate, isPending } = useLogin();
   const { session, isLoading } = useUser();
@@ -18,79 +25,92 @@ const LoginPage = () => {
     mutate({ email, password });
   };
 
-  if (isLoading) return <Loader size={60} />;
-  if (session) return <Navigate to="/" />;
+  if (isLoading) return <Loader size={50} />;
+  if (session) return <Navigate to="/" replace />;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-fonfo text-choco dark:bg-fondo-dark dark:text-cream mt-8">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center space-y-2">
-          <Logo className="mx-auto" />
-          <h1 className="text-3xl font-bold tracking-tight">Iniciar sesión</h1>
-          <p className="text-muted-foreground text-sm">
+    <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center space-y-3">
+          <div className="flex justify-center">
+            <Logo />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight">Iniciar sesión</h1>
+          <p className="text-sm text-choco/60 dark:text-cream/60">
             ¡Qué bueno tenerte de vuelta!
           </p>
         </div>
 
         {isPending ? (
-          <div className="flex justify-center items-center mt-20">
-            <Loader size={60} />
-          </div>
+          <Loader size={50} fullScreen={false} />
         ) : (
-          <form onSubmit={onLogin} className="space-y-4">
-            {/* Correo electrónico */}
-            <div className="space-y-1">
+          <form onSubmit={onLogin} className="space-y-5" noValidate>
+            <div className="space-y-1.5">
               <label htmlFor="email" className="text-sm font-medium">
                 Correo electrónico
               </label>
-
               <div className="relative">
                 <input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="ejemplo@correo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pr-10 pl-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
+                  className={inputClass}
+                  required
                 />
-                <MdOutlineAlternateEmail className="absolute right-3 top-1/2 size-6 transform -translate-y-1/2 text-choco/60 dark:text-cream/60 pointer-events-none" />
+                <Mail className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-choco/40 dark:text-cream/40 pointer-events-none" />
               </div>
             </div>
 
-            {/* Contraseña */}
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <label htmlFor="password" className="text-sm font-medium">
-                Password
+                Contraseña
               </label>
               <div className="relative">
                 <input
                   id="password"
-                  type="password"
+                  type={showPass ? "text" : "password"}
+                  autoComplete="current-password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-cocoa/50 dark:border-cream/30 rounded-md bg-cream dark:bg-cocoa/10 text-sm text-choco dark:text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cocoa/30"
+                  className={inputClass}
+                  required
                 />
-                <TbLockPassword className="absolute right-3 top-1/2 size-6 transform -translate-y-1/2 text-choco/60 dark:text-cream/60 pointer-events-none" />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-choco/40 dark:text-cream/40 hover:text-choco dark:hover:text-cream transition-colors"
+                  aria-label={
+                    showPass ? "Ocultar contraseña" : "Mostrar contraseña"
+                  }
+                >
+                  {showPass ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
               </div>
             </div>
 
-            {/* Botón */}
             <button
               type="submit"
-              className="w-full mt-4 bg-amber-600 hover:bg-amber-500 text-oscuro text-sm font-semibold py-3 rounded-md shadow-sm transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-600"
+              disabled={isPending}
+              className="w-full py-3 rounded-lg font-semibold text-sm bg-choco text-cream hover:bg-cocoa dark:bg-cream dark:text-oscuro dark:hover:bg-butter transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
             >
               Iniciar sesión
             </button>
           </form>
         )}
 
-        {/* Enlace a registro */}
-        <p className="text-center text-sm text-muted-foreground">
-          ¿No tienes una cuenta?
+        <p className="text-center text-sm text-choco/60 dark:text-cream/60">
+          ¿No tienes una cuenta?{" "}
           <Link
             to="/register"
-            className="ml-1 underline font-semibold hover:text-cocoa"
+            className="font-semibold text-choco dark:text-cream underline underline-offset-4 hover:text-cocoa transition-colors"
           >
             Regístrate
           </Link>

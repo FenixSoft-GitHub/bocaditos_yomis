@@ -10,13 +10,13 @@ const CheckoutPage = () => {
   return (
     <main className="min-h-screen bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
       {/* Header del checkout */}
-      <div className="border-b border-cocoa/20 dark:border-cream/10 py-4 px-6">
+      <div className="border-b border-cocoa/20 dark:border-cream/10 py-1 px-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <img
               src="/LogoBocaditosYomis.avif"
               alt="Bocaditos Yomi's"
-              className="w-10 h-10 object-contain"
+              className="w-18 h-18 object-contain"
             />
             <span className="font-semibold text-sm hidden sm:block">
               Bocaditos Yomi's

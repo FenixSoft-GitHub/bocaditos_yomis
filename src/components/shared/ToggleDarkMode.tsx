@@ -3,16 +3,20 @@ import { Moon, Sun } from "lucide-react";
 
 export const ToggleDarkMode = () => {
   const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
-    <div className="w-10 h-10 flex justify-center items-center rounded-md bg-transparent hover:bg-cream/20 transition-all duration-400 cursor-pointer">
-      <button
-        onClick={toggleTheme}
-        className="p-2 rounded-md transition"
-        aria-label="Cambiar tema"
-      >
-        {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-      </button>
-    </div>
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-lg hover:bg-cream/10 transition-colors duration-200"
+      aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+      title={isDark ? "Modo claro" : "Modo oscuro"}
+    >
+      {isDark ? (
+        <Sun className="w-5 h-5 text-cream" />
+      ) : (
+        <Moon className="w-5 h-5 text-cream" />
+      )}
+    </button>
   );
 };
