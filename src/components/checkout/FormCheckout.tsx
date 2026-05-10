@@ -6,10 +6,9 @@ import { useCreateOrder, useDeliverys } from "@/hooks";
 import { useCartStore } from "@/store/cart.store";
 import { Separator } from "@/components/shared/Separator";
 import { Loader } from "@/components/shared/Loader";
-import { IoChevronBack } from "react-icons/io5";
+import { ShieldCheck, ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ShippingSection } from "./ShippingSection";
-import { RiSecurePaymentLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 
 export const FormCheckout = () => {
@@ -19,17 +18,16 @@ export const FormCheckout = () => {
     handleSubmit,
   } = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
-  });  
+  });
 
   const { mutate: createOrder, isPending } = useCreateOrder();
   const cleanCart = useCartStore((state) => state.cleanCart);
   const cartItems = useCartStore((state) => state.items);
   const totalAmount = useCartStore((state) => state.totalAmount);
-
   const navigate = useNavigate();
+  const { deliverys: deliveryOptions, isLoading: loadingDelivery } =
+    useDeliverys();
 
-  const { deliverys: deliveryOptions, isLoading: loadingDelivery } = useDeliverys();
-  
   const onSubmit = handleSubmit((data) => {
     const orderInput = {
       address: data,
@@ -46,33 +44,22 @@ export const FormCheckout = () => {
 
     createOrder(orderInput, {
       onSuccess: () => {
-        // ✅ Mostrar mensaje
         toast.success(
-          <div>
-            <p className="font-bold">¡Pedido realizado con éxito!</p>
-            <p className="text-sm text-gray-600">
-              En breve nos pondremos en contacto contigo.
-            </p>
-          </div>,
+          "¡Pedido realizado con éxito! Pronto nos pondremos en contacto.",
           {
             position: "bottom-right",
-            duration: 3000,
-          }
+            duration: 4000,
+          },
         );
         cleanCart();
       },
       onError: () => {
         toast.error(
-          <div>
-            <p className="font-bold">Error al procesar el pedido</p>
-            <p className="text-sm text-gray-600">
-              Intenta nuevamente o revisa los datos ingresados.
-            </p>
-          </div>,
+          "Error al procesar el pedido. Revisa los datos e intenta de nuevo.",
           {
             position: "bottom-right",
-            duration: 3000,
-          }
+            duration: 4000,
+          },
         );
       },
     });
@@ -81,37 +68,38 @@ export const FormCheckout = () => {
   if (isPending || loadingDelivery) {
     return (
       <div className="flex flex-col gap-3 w-full min-h-[50vh] items-center justify-center">
-        <Loader size={60} />
-        <p className="text-sm font-medium">Procesando información...</p>
+        <Loader size={50} fullScreen={false} />
+        <p className="text-sm text-choco/60 dark:text-cream/60">
+          Procesando tu pedido...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="dark:bg-fondo-dark dark:text-cream bg-fondo text-choco">
-      {/* Botón Volver */}
+    <div className="text-choco dark:text-cream">
       <button
-        className="flex items-center gap-2 text-sm border border-cocoa dark:border-cream/70 rounded-md bg-cream dark:bg-cream/30 shadow-gray-400 shadow-md hover:bg-cocoa/20 hover:font-semibold dark:hover:bg-cocoa/20 px-6 py-1.5 mb-4"
+        type="button"
         onClick={() => navigate(-1)}
+        className="inline-flex items-center gap-1.5 text-sm text-choco/60 dark:text-cream/60 hover:text-choco dark:hover:text-cream transition-colors mb-6 group"
       >
-        <IoChevronBack size={16} />
+        <ChevronLeft className="size-4 transition-transform group-hover:-translate-x-1" />
         Volver
       </button>
+
       <form className="flex flex-col gap-6" onSubmit={onSubmit}>
-        {/* Dirección */}
         <ShippingSection
           register={register}
           errors={errors}
           deliveryOptions={deliveryOptions}
         />
 
-        {/* Información de pago */}
-        <div className="border border-cocoa/50 p-4 rounded-lg shadow-sm dark:border-cream/30 space-y-2">
-          <div className="flex gap-3">
-            <RiSecurePaymentLine size={24} />
-            <h4 className="font-semibold text-base">Depósito Bancario</h4>
+        <div className="border border-cocoa/30 dark:border-cream/20 p-5 rounded-xl space-y-3 bg-cream/50 dark:bg-cream/5">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="size-5 text-choco dark:text-cocoa" />
+            <h4 className="font-semibold">Datos para Depósito Bancario</h4>
           </div>
-          <ul className="text-sm space-y-0.5">
+          <ul className="text-sm space-y-1 text-choco/80 dark:text-cream/80">
             <li>
               <strong>Razón Social:</strong> Bocaditos Yomi's
             </li>
@@ -127,20 +115,19 @@ export const FormCheckout = () => {
           </ul>
         </div>
 
-        {/* Resumen */}
-        <div className="flex flex-col gap-2">
-          <h3 className="font-semibold text-2xl">Resumen del pedido</h3>
+        {/* Resumen solo en móvil */}
+        <div className="lg:hidden flex flex-col gap-3">
+          <h3 className="font-semibold text-lg">Resumen del pedido</h3>
           <Separator />
           <ItemsCheckout />
         </div>
 
-        {/* Botón submit */}
         <button
           type="submit"
           disabled={isPending || !deliveryOptions?.length}
-          className="bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 px-6 rounded-md border border-transparent hover:shadow-md cursor-pointer py-2.5 font-bold tracking-wide mt-2 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 outline-2 outline-offset-2 outline-amber-600 dark:outline-amber-500"
+          className="w-full py-3.5 px-6 rounded-xl font-bold tracking-wide text-sm bg-choco text-cream hover:bg-cocoa dark:bg-cream dark:text-oscuro dark:hover:bg-butter transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
         >
-          Finalizar Pedido
+          Confirmar Pedido
         </button>
       </form>
     </div>

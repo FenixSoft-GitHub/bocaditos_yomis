@@ -5,44 +5,39 @@ import { Separator } from "../shared/Separator";
 export const ItemsCheckout = () => {
   const cartItems = useCartStore((state) => state.items);
   const totalAmount = useCartStore((state) => state.totalAmount);
-  
+
   return (
-    <div>
-      <ul className="space-y-5 mb-5">
+    <div className="flex flex-col gap-4">
+      <ul className="space-y-4">
         {cartItems.map((item) => (
-          <li
-            key={item.productId}
-            className="flex justify-between items-center gap-5"
-          >
-            <div className="flex relative border border-choco dark:border-cocoa/70 rounded-lg">
+          <li key={item.productId} className="flex items-center gap-4">
+            <div className="relative shrink-0">
               <img
                 src={item.image_url[0]}
                 alt={item.name}
-                className="size-16 object-cover rounded-lg"
+                className="size-16 object-cover rounded-lg border border-cocoa/20 dark:border-cream/10"
               />
-              <span className="w-5 h-5 rounded-full bg-choco/90 text-cream dark:bg-cream dark:text-oscuro font-semibold flex items-center justify-center text-xs absolute -right-1 -top-2">
+              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-choco dark:bg-cream text-cream dark:text-oscuro text-[10px] font-bold flex items-center justify-center shadow">
                 {item.quantity}
               </span>
             </div>
-
-            <div className="flex-1 space-y-3">
-              <div className="flex justify-between">
-                <p className="font-semibold">{item.name}</p>
-                <p className="text-sm font-medium mt-1">
-                  {formatPrice(item.price)}
-                </p>
-              </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium line-clamp-2">{item.name}</p>
+              <p className="text-xs text-choco/50 dark:text-cream/50 mt-0.5">
+                {formatPrice(item.price)} × {item.quantity}
+              </p>
             </div>
+            <p className="text-sm font-semibold shrink-0">
+              {formatPrice(item.price * item.quantity)}
+            </p>
           </li>
         ))}
       </ul>
       <Separator />
-
-      <div className="flex justify-between font-semibold text-lg">
-        <p>Total:</p>
-        <p>{formatPrice(totalAmount)}</p>
+      <div className="flex justify-between items-center font-bold text-base">
+        <span>Total</span>
+        <span className="text-lg">{formatPrice(totalAmount)}</span>
       </div>
-
       <Separator />
     </div>
   );

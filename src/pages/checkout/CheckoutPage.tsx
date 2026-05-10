@@ -1,57 +1,73 @@
-// DESPUÉS — pega esto:
 import { Link } from "react-router-dom";
 import { useCartStore } from "@/store/cart.store";
 import { FormCheckout } from "@/components/checkout/FormCheckout";
 import { ItemsCheckout } from "@/components/checkout/ItemsCheckout";
-import { useEffect, useState } from "react";
+import { ShoppingCart } from "lucide-react";
 
 const CheckoutPage = () => {
   const totalItems = useCartStore((state) => state.totalItemsInCart);
-  const [, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
-    <main className="dark:bg-fondo-dark dark:text-cream bg-fondo text-choco">
-      <div className="w-full flex relative">
-        {totalItems === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-5 w-full mt-10">
+    <main className="min-h-screen bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
+      {/* Header del checkout */}
+      <div className="border-b border-cocoa/20 dark:border-cream/10 py-4 px-6">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2">
             <img
-              src="/img/Cart.avif"
-              alt="Carro Vacío"
-              className="md:w-3/12 w-1/2 rounded-lg shadow-lg"
+              src="/LogoBocaditosYomis.avif"
+              alt="Bocaditos Yomi's"
+              className="w-10 h-10 object-contain"
             />
-            <p className="text-sm font-medium tracking-tight">
-              Su carro está vacío
-            </p>
-            <Link
-              to="/products"
-              className="bg-choco/90 text-cream dark:bg-cream/70 dark:text-choco hover:bg-choco dark:hover:bg-cream hover:scale-105 font-semibold py-4 rounded-full px-7 text-xs shadow-lg transition-all duration-300 ease-in-out mt-4 outline-2 outline-offset-2 dark:outline-cream/70 outline-choco/90"
-            >
-              Empezar a comprar
-            </Link>
+            <span className="font-semibold text-sm hidden sm:block">
+              Bocaditos Yomi's
+            </span>
+          </Link>
+          <div className="flex items-center gap-2 text-sm text-choco/60 dark:text-cream/60">
+            <ShoppingCart className="size-4" />
+            <span>
+              {totalItems} {totalItems === 1 ? "artículo" : "artículos"}
+            </span>
           </div>
-        ) : (
-          <>
-            <div className="w-full md:w-[50%] p-10">
-              <FormCheckout />
-            </div>
+        </div>
+      </div>
 
-            <div
-              className="w-[50%] sticky top-0 right-0 p-10 hidden md:block"
-              style={{
-                minHeight: "calc(100vh - 72px)",
-              }}
-            >
+      {/* Contenido */}
+      {totalItems === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-6 py-24 px-4 text-center">
+          <img
+            src="/img/Cart.avif"
+            alt="Carrito vacío"
+            className="w-40 md:w-56 rounded-xl shadow-lg opacity-80"
+          />
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold">Tu carrito está vacío</h2>
+            <p className="text-sm text-choco/60 dark:text-cream/60">
+              Agrega productos antes de continuar con el pago.
+            </p>
+          </div>
+          <Link
+            to="/products"
+            className="btn-primary px-8 py-3 text-base rounded-full"
+          >
+            Explorar productos
+          </Link>
+        </div>
+      ) : (
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-73px)]">
+          {/* Formulario */}
+          <div className="p-6 md:p-10 border-r-0 lg:border-r border-cocoa/20 dark:border-cream/10">
+            <FormCheckout />
+          </div>
+
+          {/* Resumen — solo en desktop */}
+          <div className="hidden lg:block p-6 md:p-10">
+            <div className="sticky top-6">
+              <h2 className="text-lg font-semibold mb-4">Resumen del pedido</h2>
               <ItemsCheckout />
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
