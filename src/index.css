@@ -145,3 +145,21 @@ input:-webkit-autofill {
 .prose a  { @apply text-indigo-600 hover:underline dark:text-indigo-400; }
 .prose pre  { @apply bg-gray-100 dark:bg-gray-700 p-4 rounded-md overflow-x-auto; }
 .prose code { @apply bg-gray-100 dark:bg-gray-700 px-1 rounded-sm text-sm; }
+
+/* ---- Bottom Navigation Bar ---- */
+.tab-btn {
+  @apply flex flex-col items-center justify-center gap-0.5 flex-1 py-2 rounded-lg transition-colors duration-200 min-w-0;
+}
+.tab-active {
+  @apply text-choco dark:text-cream font-semibold;
+}
+.tab-inactive {
+  @apply text-choco/40 dark:text-cream/40 hover:text-choco/70 dark:hover:text-cream/70;
+}
+
+/* Espacio inferior en móvil para que el BottomNav no tape el contenido */
+@media (max-width: 767px) {
+  main {
+    padding-bottom: 4.5rem;
+  }
+}

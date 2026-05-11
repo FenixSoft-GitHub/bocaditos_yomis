@@ -8,10 +8,9 @@ import ScrollToTop from "@/components/shared/ScrollToTop";
 import { useGlobalStore } from "@/store/global.store";
 import { Sheet } from "@/components/shared/Sheet";
 import { NavbarMobile } from "@/components/shared/NavBarMobile";
+import { BottomNav } from "@/components/shared/BottomNav";
 
-/** Rutas cuya primera sección es un hero a pantalla completa.
- *  En estas el NavBar flota encima de la imagen (sin spacer). */
-const HERO_ROUTES = new Set(["/", "/about", "/blog", "/contact-us"]);
+const FULL_HERO_ROUTES = new Set(["/about", "/blog", "/contact-us"]);
 
 export const Layout = () => {
   const { pathname } = useLocation();
@@ -19,20 +18,16 @@ export const Layout = () => {
   const activeNavMobile = useGlobalStore((state) => state.activeNavMobile);
 
   const isHome = pathname === "/";
-  const hasHero = HERO_ROUTES.has(pathname);
+  const isFullHero = FULL_HERO_ROUTES.has(pathname);
+  const needsSpacer = !isHome && !isFullHero;
 
   return (
     <div className="min-h-screen flex flex-col bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
-      {/* NavBar siempre fixed — flota encima de todo */}
       <NavBar />
 
-      {/* Home → Banner ocupa 100vh aquí mismo.
-          About / Blog / Contacto → sin spacer, su hero ocupa 100vh
-          y el NavBar flota transparente encima igual que en Home.
-          Resto de páginas → spacer para que el contenido no quede tapado. */}
       {isHome ? (
         <Banner />
-      ) : !hasHero ? (
+      ) : needsSpacer ? (
         <div className="h-[72px] md:h-[80px] shrink-0" aria-hidden="true" />
       ) : null}
 
@@ -47,10 +42,16 @@ export const Layout = () => {
         <Footer />
       </footer>
 
+      {/* Bottom Navigation — solo móvil */}
+      <BottomNav />
+
+      {/* WhatsApp — sube en móvil para no tapar el BottomNav */}
+      <div className="fixed right-6 z-40 bottom-20 md:bottom-6">
+        <WhatsAppButton />
+      </div>
+
       {isSheetOpen && <Sheet />}
       {activeNavMobile && <NavbarMobile />}
-
-      <WhatsAppButton />
     </div>
   );
 };

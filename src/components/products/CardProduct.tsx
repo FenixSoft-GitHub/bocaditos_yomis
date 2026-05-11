@@ -10,6 +10,7 @@ import {
   getDiscountPercentage,
   isDiscountActive,
 } from "@/lib/discount";
+import { motion } from "framer-motion";
 
 interface CardProductProps {
   product: Product;
@@ -35,7 +36,11 @@ export const CardProduct = ({ product }: CardProductProps) => {
   };
 
   return (
-    <article className="group h-full flex flex-col border border-cocoa/30 dark:border-cream/10 rounded-xl bg-cream dark:bg-fondo-dark overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+    <motion.article
+      whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.12)" }}
+      transition={{ type: "spring", stiffness: 300, damping: 22 }}
+      className="group h-full flex flex-col border border-cocoa/30 dark:border-cream/10 rounded-xl bg-cream dark:bg-fondo-dark overflow-hidden shadow-sm"
+    >
       <Link
         to={`/products/${product.slug}`}
         className="block relative w-full aspect-square overflow-hidden"
@@ -79,20 +84,21 @@ export const CardProduct = ({ product }: CardProductProps) => {
               </span>
             )}
           </div>
-          <button
+          <motion.button
+            whileTap={{ scale: 0.88 }}
             onClick={handleAddClick}
             disabled={isOutOfStock}
             aria-label={`Añadir ${product.name} al carrito`}
-            className={`flex items-center justify-center rounded-full p-2.5 transition-all duration-200 ${
+            className={`flex items-center justify-center rounded-full p-2.5 transition-colors duration-200 ${
               isOutOfStock
                 ? "bg-choco/10 dark:bg-cream/10 cursor-not-allowed opacity-50"
-                : "bg-choco dark:bg-cream/80 text-cream dark:text-choco hover:bg-cocoa dark:hover:bg-cream hover:scale-110 active:scale-95 shadow-sm"
+                : "bg-choco dark:bg-cream/80 text-cream dark:text-choco hover:bg-cocoa dark:hover:bg-cream shadow-sm"
             }`}
           >
             <ShoppingCart className="size-4" />
-          </button>
+          </motion.button>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 };

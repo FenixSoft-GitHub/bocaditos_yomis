@@ -1,12 +1,19 @@
-import { NavLink } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { NavLink, useNavigate } from "react-router-dom";
 import { DashboardLinks } from "@/constants/DashboardLinks";
 import { Logo } from "@/components/shared/Logo";
 import { IoLogOutOutline } from "react-icons/io5";
 import { signOut } from "@/actions";
 
 export const SideBar = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const handleLogout = async () => {
     await signOut();
+    queryClient.removeQueries({ queryKey: ["user"] });
+    queryClient.removeQueries({ queryKey: ["user-profile"] });
+    navigate("/");
   };
 
   return (
@@ -21,8 +28,8 @@ export const SideBar = () => {
             className={({ isActive }) =>
               `flex items-center justify-center gap-4 pl-0 py-2 transition-all duration-300 rounded-md ${
                 isActive
-                  ? "text-cream bg-amber-600"
-                  : "hover:text-cream hover:bg-amber-700/90 bg-cream/10 border border-cocoa/30 hover:border-transparent"
+                  ? "text-cream bg-choco"
+                  : "hover:text-cream hover:bg-choco/90 bg-cream/10 border border-cocoa/30 hover:border-transparent"
               } lg:pl-5 lg:justify-start`
             }
           >

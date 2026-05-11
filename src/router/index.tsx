@@ -41,6 +41,7 @@ import {
   NuestraHistoriaPage,
   ContactUsPage,
   ProductsPage,
+  NotFoundPage,
 } from "@/pages";
 
 const PageLoader = () => (
@@ -89,6 +90,8 @@ export const AppRoutes = createBrowserRouter([
           },
         ],
       },
+      // ── 404 dentro del Layout (con NavBar y Footer) ─────────
+      { path: "*", element: s(<NotFoundPage />) },
     ],
   },
 
@@ -148,4 +151,7 @@ export const AppRoutes = createBrowserRouter([
       },
     ],
   },
+
+  // ── Fallback global 404 ──────────────────────────────────────
+  { path: "*", element: s(<NotFoundPage />) },
 ]);

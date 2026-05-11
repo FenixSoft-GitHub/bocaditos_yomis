@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { signOut } from "@/actions";
 import { useRoleUser, useUser } from "@/hooks";
 import { LogOut, ExternalLink, FileText } from "lucide-react";
@@ -10,10 +11,15 @@ import ScrollToTop from "@/components/shared/ScrollToTop";
  */
 const ClientLayout = () => {
   const { session } = useUser();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: role } = useRoleUser(session?.user.id as string);
 
   const handleLogout = async () => {
     await signOut();
+    queryClient.removeQueries({ queryKey: ["user"] });
+    queryClient.removeQueries({ queryKey: ["user-profile"] });
+    navigate("/");
   };
 
   const btnClass =

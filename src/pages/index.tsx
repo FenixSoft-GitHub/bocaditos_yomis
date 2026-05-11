@@ -90,3 +90,6 @@ export const NewBlogPostPage = lazy(
 export const EditBlogPostPage = lazy(
   () => import("@pages/dashboard/blog/EditBlogPostPage"),
 );
+
+// ── Página 404 ───────────────────────────────────────────────────
+export const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));

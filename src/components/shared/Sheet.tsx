@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalStore } from "@/store/global.store";
 import { Cart } from "@/components/shared/Cart";
 import { Search } from "@/components/shared/Search";
@@ -6,13 +7,11 @@ import { Search } from "@/components/shared/Search";
 export const Sheet = () => {
   const sheetContent = useGlobalStore((state) => state.sheetContent);
   const closeSheet = useGlobalStore((state) => state.closeSheet);
-
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    // Función para manejar clics fuera del Sheet
     const handleOutsideClick = (event: MouseEvent) => {
       if (
         sheetRef.current &&
@@ -22,16 +21,20 @@ export const Sheet = () => {
       }
     };
 
-    // Agregar event Listener
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeSheet();
+    };
+
     document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEsc);
 
     return () => {
       document.body.style.overflow = "unset";
       document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEsc);
     };
   }, [closeSheet]);
 
-  // Función para saber el componente a renderizar
   const renderContent = () => {
     switch (sheetContent) {
       case "cart":
@@ -44,13 +47,27 @@ export const Sheet = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/70 z-50 flex justify-end animate-fade-in">
-      <div
-        ref={sheetRef}
-        className="bg-cream/70 text-choco h-screen w-[500px] shadow-lg animate-slide-in"
+    <AnimatePresence>
+      <motion.div
+        key="overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        className="fixed inset-0 bg-oscuro/70 z-50 flex justify-end backdrop-blur-sm"
       >
-        {renderContent()}
-      </div>
-    </div>
+        <motion.div
+          key="panel"
+          ref={sheetRef}
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "100%" }}
+          transition={{ type: "spring", stiffness: 280, damping: 28 }}
+          className="bg-cream dark:bg-fondo-dark text-choco dark:text-cream h-screen w-full max-w-[420px] shadow-2xl overflow-hidden"
+        >
+          {renderContent()}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
