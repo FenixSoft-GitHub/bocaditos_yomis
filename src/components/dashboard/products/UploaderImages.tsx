@@ -1,7 +1,7 @@
 import { FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { ProductFormValues } from "@/lib/validators";
 import { useEffect, useState } from "react";
-import { IoIosCloseCircleOutline } from "react-icons/io";
+import { XCircle } from "lucide-react";
 
 interface ImagePreview {
   file?: File;
@@ -93,7 +93,7 @@ export const UploaderImages = ({ setValue, errors, watch, disabled }: Props) => 
                 onClick={() => handleRemoveImage(index)}
                 className="flex justify-end absolute -top-3 -right-4 hover:scale-110 transition-all z-10"
               >
-                <IoIosCloseCircleOutline size={22} className="text-red-500" />
+                <XCircle size={22} className="text-red-500" />
               </button>
             </div>
           </div>

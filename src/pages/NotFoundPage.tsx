@@ -25,9 +25,9 @@ const NotFoundPage = () => {
           className="mb-8"
         >
           <img
-            src="/img/misc/NoResult.avif"
+            src="/img/misc/NoResult.png"
             alt="Página no encontrada"
-            className="w-56 md:w-72 drop-shadow-xl"
+            className="w-56 md:w-58 drop-shadow-xl rounded-2xl"
           />
         </motion.div>
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CellTableProduct } from "../products/CellTableProduct";
 import { formatDate } from "@/helpers";
 import { Link, useNavigate } from "react-router-dom";
-import { MdAddCircleOutline } from "react-icons/md";
+import { PlusCircle } from "lucide-react";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
@@ -69,7 +69,7 @@ export const TableCategory = () => {
             to="/dashboard/category/new"
             className="inline-flex items-center min-w-[220px] gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition justify-center"
           >
-            <MdAddCircleOutline size={20} className="inline-block mr-1" />
+            <PlusCircle size={20} className="inline-block mr-1" />
             Nueva Categoría
           </Link>
         </div>

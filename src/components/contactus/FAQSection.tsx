@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { HiOutlineChevronDown } from "react-icons/hi2";
+import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { faqs } from "@/constants/faqsData";
 
@@ -30,7 +30,7 @@ export const FAQSection = () => {
                 aria-controls={`faq-${index}`}
               >
                 {item.question}
-                <HiOutlineChevronDown
+                <ChevronDown
                   className={`w-5 h-5 transform transition-transform duration-300 ${
                     isOpen ? "rotate-180" : ""
                   }`}

@@ -1,4 +1,4 @@
-import { IoChevronBack } from "react-icons/io5";
+import { ChevronLeft } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useOrderAdmin } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
@@ -15,7 +15,7 @@ const DashboardOrderPage = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { data: order, isLoading } = useOrderAdmin(String(id));
-  
+
   //Recibir el número de id
   const location = useLocation();
   const orderIndex = location.state?.orderIndex;
@@ -30,7 +30,7 @@ const DashboardOrderPage = () => {
           className="flex items-center gap-2 text-sm border border-cocoa dark:border-cream/30 rounded-full bg-cream dark:bg-cocoa/20 shadow-gray-400 shadow-md hover:bg-cocoa/20 hover:font-semibold dark:hover:bg-cocoa/20 px-6 py-1 w-fit mt-10"
           onClick={() => navigate(-1)}
         >
-          <IoChevronBack size={16} />
+          <ChevronLeft size={16} />
           Volver
         </button>
 
@@ -54,8 +54,8 @@ const DashboardOrderPage = () => {
                     header.position === "center"
                       ? "text-center"
                       : header.position === "right"
-                      ? "text-right"
-                      : "text-left"
+                        ? "text-right"
+                        : "text-left"
                   }`}
                 >
                   {header.label}
@@ -116,17 +116,11 @@ const DashboardOrderPage = () => {
         <h2 className="text-lg font-semibold">Dirección</h2>
         <div className="w-full overflow-x-auto rounded-xl border border-cocoa dark:border-cream/30 shadow-sm p-3 flex flex-col gap-5">
           <div className="space-y-1 dark:bg-cream/20 bg-cocoa/20 p-3 rounded-md">
-            <h3 className="font-medium">
-              Cliente:
-            </h3>
-            <p className="text-sm">
-              {order.customer.full_name}
-            </p>
+            <h3 className="font-medium">Cliente:</h3>
+            <p className="text-sm">{order.customer.full_name}</p>
           </div>
           <div>
-            <h3 className="font-medium mb-1">
-              Envío:
-            </h3>
+            <h3 className="font-medium mb-1">Envío:</h3>
             <div className="text-sm  space-y-0.5">
               <p>{order.address.address_1}</p>
               {order.address.address_2 && <p>{order.address.address_2}</p>}

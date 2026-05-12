@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { NavLink, useNavigate } from "react-router-dom";
 import { DashboardLinks } from "@/constants/DashboardLinks";
 import { Logo } from "@/components/shared/Logo";
-import { IoLogOutOutline } from "react-icons/io5";
+import { LogOut } from "lucide-react";
 import { signOut } from "@/actions";
 
 export const SideBar = () => {
@@ -44,7 +44,7 @@ export const SideBar = () => {
         onClick={handleLogout}
       >
         <span className="hidden lg:block">Cerrar sesión</span>
-        <IoLogOutOutline size={20} className="inline-block" />
+        <LogOut size={20} className="inline-block" />
       </button>
     </div>
   );

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CellTableProduct } from "../products/CellTableProduct";
 import { formatDate, formatPrice } from "@/helpers";
 import { Link, useNavigate } from "react-router-dom";
-import { MdAddCircleOutline } from "react-icons/md";
+import { PlusCircle } from "lucide-react";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { useDeleteDelivery } from "@/hooks/deliverys/useDeleteDelivery";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
@@ -70,7 +70,7 @@ export const TableDeliverys = () => {
             to="/dashboard/deliverys/new"
             className="inline-flex items-center min-w-[220px] gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition justify-center"
           >
-            <MdAddCircleOutline size={18} />
+            <PlusCircle size={18} />
             Nuevo Delivery
           </Link>
         </div>

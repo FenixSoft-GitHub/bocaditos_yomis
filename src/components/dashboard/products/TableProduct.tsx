@@ -5,7 +5,7 @@ import { Loader } from "@/components/shared/Loader";
 import { formatDate, formatPrice } from "@/helpers";
 import { Pagination } from "@/components/shared/Pagination";
 import { CellTableProduct } from "@/components/dashboard";
-import { MdAddCircleOutline } from "react-icons/md";
+import { PlusCircle } from "lucide-react";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
 import { getDiscountedPrice, isDiscountActive } from "@/lib/discount";
@@ -69,7 +69,7 @@ export const TableProduct = () => {
             to="/dashboard/product/new"
             className="inline-flex w-fit items-center gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition"
           >
-            <MdAddCircleOutline size={20} className="inline-block mr-1" />
+            <PlusCircle size={20} className="inline-block mr-1" />
             Nuevo Producto
           </Link>
         </div>
@@ -156,12 +156,6 @@ export const TableProduct = () => {
                       content={product.categories.name}
                       className="text-left"
                     />
-                    {/* <CellTableProduct
-                      className="text-right"
-                      content={formatPrice(product?.price)}
-                    /> */}
-
-                    {/* <CellTableProduct className="text-right"> */}
 
                     {isDiscountActive(product.discounts[0]) ? (
                       <td className="table-cell px-4 py-2 font-medium tracking-tighter text-right align-middle">

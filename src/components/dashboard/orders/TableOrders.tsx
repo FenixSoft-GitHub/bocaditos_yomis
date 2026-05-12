@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CellTableProduct } from "../products/CellTableProduct";
 import { formatDateLong, formatPrice } from "@/helpers";
-import { GoMail } from "react-icons/go";
+import { Mail } from "lucide-react";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
 
 const headers = ["Cliente", "Fecha", "Estado", "Total"];
@@ -127,7 +127,7 @@ export const TableOrders = () => {
                       <div className="flex flex-col">
                         <span className="font-medium">{order.users.full_name}</span>
                         <span className="flex items-center text-xs mt-1 gap-1 text-choco dark:text-cream/70">
-                          <GoMail className="size-4" />
+                          <Mail className="size-4" />
                           {order.users.email}
                         </span>
                       </div>

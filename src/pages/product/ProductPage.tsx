@@ -7,8 +7,6 @@ import { useGetReviewsByProduct, useProduct } from "@/hooks";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { CiDeliveryTruck } from "react-icons/ci";
-import { BsChatLeftText } from "react-icons/bs";
 import { ProductDescription } from "@/components/products/ProductDescription";
 import { useCounterStore } from "@/store/counter.store";
 import { useCartStore } from "@/store/cart.store";
@@ -16,11 +14,10 @@ import toast from "react-hot-toast";
 import InputNumber from "@/components/shared/InputNumber";
 import { ReviewSection } from "@/components/reviews/ReviewSection";
 import { StarRating } from "@/components/reviews/StarRating";
-import { FaCartPlus } from "react-icons/fa6";
-import { RiSecurePaymentLine } from "react-icons/ri";
 import { getDiscountedPrice, getDiscountPercentage, isDiscountActive } from "@/lib/discount";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { breadcrumbSchema, productSchema } from "@/components/seo/schemas";
+import { ShoppingCart, Truck, MessageCircle, ShieldCheck } from "lucide-react";
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -205,7 +202,7 @@ const ProductPage = () => {
                 onClick={addToCart}
                 className="w-full flex gap-5.5 items-center justify-center md:w-1/2 bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
               >
-                <FaCartPlus className="size-5" />
+                <ShoppingCart className="size-5" />
                 Añadir al carrito
               </button>
             )}
@@ -214,21 +211,21 @@ const ProductPage = () => {
               onClick={buyNow}
               className="w-full flex gap-5.5 items-center justify-center md:w-1/2 bg-oscuro text-cream dark:bg-fondo dark:text-choco hover:bg-neutral-800 dark:hover:bg-neutral-300 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
             >
-              <RiSecurePaymentLine className="size-5" />
+              <ShieldCheck className="size-5" />
               Comprar ahora
             </button>
           </div>
 
           <div className="flex pt-8">
             <div className="flex flex-col gap-1 flex-1 items-center">
-              <CiDeliveryTruck size={35} />
+              <Truck size={35} />
               <p className="text-xs font-medium">Envío gratis</p>
             </div>
             <Link
               to="/contact-us"
               className="flex flex-col gap-1 flex-1 items-center justify-center hover:scale-105 transition-all duration-300 ease-in-out"
             >
-              <BsChatLeftText size={25} />
+              <MessageCircle size={25} />
               <p className="flex flex-col items-center text-xs font-medium">
                 <span>¿Necesitas ayuda?</span>
                 Contáctanos aquí

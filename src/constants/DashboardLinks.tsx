@@ -1,56 +1,61 @@
-import { BsTagsFill } from "react-icons/bs";
-import { TbTruckDelivery } from "react-icons/tb";
-import { FaBlog, FaBoxOpen, FaCartShopping, FaUserCheck } from "react-icons/fa6";
-import { MdCategory } from "react-icons/md";
-import { IoBarChartSharp } from "react-icons/io5";
+import {
+  BookOpen,
+  Package,
+  ShoppingBag,
+  Tag,
+  Truck,
+  Users,
+  BarChart3,
+  LayoutGrid,
+} from "lucide-react";
 
 export const DashboardLinks = [
   {
     id: 1,
     title: "Productos",
     href: "/dashboard/products",
-    icon: <FaBoxOpen size={25} />,
+    icon: <Package size={22} />,
   },
   {
     id: 2,
     title: "Ordenes",
     href: "/dashboard/orders",
-    icon: <FaCartShopping size={25} />,
+    icon: <ShoppingBag size={22} />,
   },
   {
     id: 3,
     title: "Categorias",
     href: "/dashboard/categories",
-    icon: <MdCategory size={25} />,
+    icon: <LayoutGrid size={22} />,
   },
   {
     id: 4,
     title: "Promociones",
     href: "/dashboard/promotions",
-    icon: <BsTagsFill size={25} />,
+    icon: <Tag size={22} />,
   },
   {
     id: 5,
     title: "Delivery",
     href: "/dashboard/deliverys",
-    icon: <TbTruckDelivery size={25} />,
+    icon: <Truck size={22} />,
   },
   {
     id: 6,
     title: "Blog",
     href: "/dashboard/blog",
-    icon: <FaBlog size={25} />,
+    icon: <BookOpen size={22} />,
   },
   {
     id: 7,
     title: "Usuarios",
     href: "/dashboard/users",
-    icon: <FaUserCheck size={25} />,
+    icon: <Users size={22} />,
   },
   {
     id: 8,
     title: "Gráficos",
     href: "/dashboard/charts",
-    icon: <IoBarChartSharp size={25} />,
+    icon: <BarChart3 size={22} />,
   },
 ];

@@ -1,14 +1,11 @@
-// src/components/admin/UserManagementTable.tsx
-
 "use client";
-
 import React, { useState } from "react";
 import { UserProfile } from "@/interfaces/user.interface";
 import { useUpdateUserRole } from "@/hooks";
 import { toast } from "react-hot-toast";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal"; // Importa el nuevo modal
 import { Search } from "lucide-react";
-import { GrPowerReset } from "react-icons/gr";
+import { RotateCcw } from "lucide-react";
 
 interface UserManagementTableProps {
   users: UserProfile[];
@@ -93,7 +90,7 @@ export const UserManagementTable: React.FC<UserManagementTableProps> = ({
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-500 hover:text-amber-700 rounded-full p-1.5 transition-colors duration-200 bg-cream/30"
             title="Limpiar búsqueda"
           >
-            <GrPowerReset className="size-4" />
+            <RotateCcw className="size-4" />
           </button>
         )}
       </div>

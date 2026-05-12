@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FaEllipsis } from "react-icons/fa6";
-import { HiOutlineExternalLink } from "react-icons/hi";
+import { MoreHorizontal, ExternalLink, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface DropdownMenuProps {
@@ -8,80 +7,54 @@ interface DropdownMenuProps {
   onDelete: () => void;
 }
 
-export const DropdownMenu = ({
-  onEdit,
-  onDelete,
-}: DropdownMenuProps) => {
+export const DropdownMenu = ({ onEdit, onDelete }: DropdownMenuProps) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        // Inicia el temporizador para cerrar después de 300ms
-        timeoutRef.current = setTimeout(() => {
-          setOpen(false);
-        }, 300);
-      }
+      if (ref.current && !ref.current.contains(event.target as Node))
+        setOpen(false);
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const cancelClose = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-  };
-
   return (
-    <div
-      className="relative"
-      ref={ref}
-      onMouseEnter={cancelClose}
-      onMouseLeave={() => {
-        timeoutRef.current = setTimeout(() => setOpen(false), 300);
-      }}
-    >
+    <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="text-slate-700 dark:text-gray-100 hover:text-cocoa"
+        className="p-1.5 rounded-lg text-choco/60 dark:text-cream/60 hover:text-choco dark:hover:text-cream hover:bg-cocoa/10 dark:hover:bg-cream/10 transition-colors"
+        aria-label="Opciones"
       >
-        <FaEllipsis />
+        <MoreHorizontal className="size-4" />
       </button>
-
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: -5 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -5 }}
-            transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-32 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-600 rounded-md shadow-md z-20"
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 mt-2 w-36 bg-fondo dark:bg-oscuro border border-cocoa/20 dark:border-cream/20 rounded-xl shadow-lg z-20 overflow-hidden"
           >
             <button
               onClick={() => {
                 onEdit();
                 setOpen(false);
               }}
-              className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-zinc-700"
+              className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-choco dark:text-cream hover:bg-cocoa/10 dark:hover:bg-cream/10 transition-colors"
             >
-              Editar <HiOutlineExternalLink size={14} />
+              <ExternalLink className="size-3.5" /> Editar
             </button>
             <button
               onClick={() => {
                 onDelete();
                 setOpen(false);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-zinc-700"
+              className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
             >
-              Eliminar
+              <Trash2 className="size-3.5" /> Eliminar
             </button>
           </motion.div>
         )}

@@ -4,8 +4,7 @@ import { Loader } from "@/components/shared/Loader";
 import BlogPostCard from "@/components/blog/BlogPostCard";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { GrPowerReset } from "react-icons/gr";
-import { GoSearch } from "react-icons/go";
+import { RotateCcw, Search } from "lucide-react";
 import { getColSpan, getImageClass, getMaxHeight } from "@/utils/bento";
 
 const BlogPublicListPage: React.FC = () => {
@@ -114,7 +113,7 @@ const BlogPublicListPage: React.FC = () => {
           </h1>
 
           <div className="relative flex items-center gap-3">
-            <GoSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-choco dark:text-cream/50 size-5 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-choco dark:text-cream/50 size-5 pointer-events-none" />
             <input
               type="text"
               placeholder="Buscar por título, autor o fecha..."
@@ -128,7 +127,7 @@ const BlogPublicListPage: React.FC = () => {
                 className="text-cream dark:text-choco hover:scale-110 transition-all duration-300 flex justify-center items-center gap-2 cursor-pointer rounded-full bg-choco p-2 dark:bg-cream/70 w-auto h-fit shadow-lg"
                 title="Limpiar filtro"
               >
-                <GrPowerReset className="size-5" />
+                <RotateCcw className="size-5" />
               </button>
             )}
           </div>

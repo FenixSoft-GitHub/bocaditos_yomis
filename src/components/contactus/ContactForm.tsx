@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import emailjs from "@emailjs/browser";
-import { FiSend } from "react-icons/fi";
+import { Send } from "lucide-react";
 import { ContactFormData } from "@components/contactus/types";
 import SuccessMessage from "@components/contactus/SuccessMessage";
 
@@ -29,7 +29,9 @@ export const ContactForm: React.FC = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -55,7 +57,7 @@ export const ContactForm: React.FC = () => {
 
   const handleCloseSuccessMessage = () => {
     setIsSuccess(false);
-};
+  };
 
   return (
     <form
@@ -160,7 +162,7 @@ export const ContactForm: React.FC = () => {
             : "bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 focus:ring-2 focus:ring-amber-400"
         }`}
       >
-        <FiSend className="text-lg" />
+        <Send className="text-lg" />
         {isLoading ? "Enviando..." : "Enviar Mensaje"}
       </button>
       {error && <p className="text-red-500 text-sm text-center">{error}</p>}

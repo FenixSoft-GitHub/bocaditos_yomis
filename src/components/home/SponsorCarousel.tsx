@@ -35,7 +35,7 @@ export const SponsorCarousel = () => {
       <h2 className="font-bold text-2xl">Productos que disponemos</h2>
 
       <p className="w-2/3 text-center text-sm md:text-base">
-        Tenemos los mejores productos para ti, desde chocolates hasta café, todos
+        Tenemos los mejores productos para ti, desde panes, tortas, dulces y chocolates hasta café, todos
         elaborados con ingredientes de la más alta calidad. ¡Descúbrelos y disfruta de su sabor único!
       </p>
       <div className="relative w-full overflow-hidden py-6 dark:bg-cocoa/60 rounded-lg my-6">

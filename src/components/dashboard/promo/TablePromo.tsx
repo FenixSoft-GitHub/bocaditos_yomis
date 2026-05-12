@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { CellTableProduct } from "../products/CellTableProduct";
 import { formatDate, formatPrice } from "@/helpers";
 import { Link, useNavigate } from "react-router-dom";
-import { MdAddCircleOutline } from "react-icons/md";
+import { PlusCircle } from "lucide-react";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { useChangeStatusPromo } from "@/hooks/promo/useChangeStatusPromo";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
@@ -26,20 +26,19 @@ export const TablePromo = () => {
   const { promotions, isLoading } = usePromo();
   const { mutate: deletePromo, isPending } = useDeletePromo();
   const { mutate } = useChangeStatusPromo();
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState<{
     id: string;
     code: string;
   } | null>(null);
 
-
   // Funciones
   const handleOpenModal = (id: string, code: string) => {
     setSelectedPromo({ id, code });
     setIsModalOpen(true);
   };
-  
+
   const handleConfirmDelete = () => {
     if (selectedPromo) {
       deletePromo(selectedPromo.id);
@@ -47,12 +46,11 @@ export const TablePromo = () => {
     }
   };
 
-
   const handleStatusChange = useCallback(
     (id: string, is_active: boolean) => {
       mutate({ id, is_active });
     },
-    [mutate]
+    [mutate],
   );
 
   useEffect(() => {
@@ -80,7 +78,7 @@ export const TablePromo = () => {
   const filteredPromotions = promotions.filter(
     (promotion) =>
       promotion.code &&
-      promotion.code.toLowerCase().includes(searchTerm.toLowerCase())
+      promotion.code.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -108,7 +106,7 @@ export const TablePromo = () => {
             to="/dashboard/promotions/new"
             className="inline-flex items-center min-w-[220px] gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition justify-center"
           >
-            <MdAddCircleOutline size={20} className="inline-block mr-1" />
+            <PlusCircle size={20} className="inline-block mr-1" />
             Nueva Promoción
           </Link>
         </div>

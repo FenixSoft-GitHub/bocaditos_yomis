@@ -1,6 +1,4 @@
-import { Home, Store, Info } from "lucide-react";
-import { GrBlog } from "react-icons/gr";
-import { MdOutlineConnectWithoutContact } from "react-icons/md";
+import { Home, Store, Info, BookOpen, MessageCircle } from "lucide-react";
 
 export const NavbarLinks = [
   {
@@ -25,12 +23,12 @@ export const NavbarLinks = [
     id: 4,
     title: "Blog",
     href: "/blog",
-    icon: <GrBlog className="size-5" />,
+    icon: <BookOpen className="size-5" />,
   },
   {
     id: 5,
     title: "Contáctanos",
     href: "/contact-us",
-    icon: <MdOutlineConnectWithoutContact className="size-6" />,
+    icon: <MessageCircle className="size-5" />,
   },
 ];

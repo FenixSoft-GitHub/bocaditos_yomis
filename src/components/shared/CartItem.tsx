@@ -66,7 +66,7 @@ export const CartItem = ({ item }: Props) => {
           </div>
           {/* Muestra el subtotal del artículo */}
           <p className="text-sm font-semibold text-choco dark:text-cream">
-            Valor total: {formatPrice(itemTotal)}
+            {formatPrice(itemTotal)}
           </p>
         </div>
       </div>

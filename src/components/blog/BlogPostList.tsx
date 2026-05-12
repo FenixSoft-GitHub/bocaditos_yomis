@@ -6,8 +6,7 @@ import { BlogPost } from "@/interfaces";
 
 import { useState } from "react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
-import { IoIosCreate } from "react-icons/io";
-import { MdDeleteForever, MdEditDocument } from "react-icons/md";
+import { Pencil, Trash2, PlusCircle } from "lucide-react";
 
 
 interface BlogPostListProps {
@@ -44,15 +43,6 @@ const BlogPostList: React.FC<BlogPostListProps> = ({ onEdit }) => {
     setSelectedPostId(null);
   };
 
-
-  // const handleDelete = (id: string) => {
-  //   if (
-  //     window.confirm("¿Estás seguro de que quieres eliminar esta publicación?")
-  //   ) {
-  //     deletePost(id);
-  //   }
-  // };
-
   if (isLoadingBlogPosts) {
     return <p>Cargando publicaciones...</p>;
   }
@@ -68,7 +58,7 @@ const BlogPostList: React.FC<BlogPostListProps> = ({ onEdit }) => {
         to="/dashboard/blog/new"
         className="bg-amber-500 text-cream px-4 py-2 rounded hover:bg-amber-600 mb-4 flex gap-2 w-fit"
       >
-        <IoIosCreate className="size-6" />
+        <PlusCircle className="size-6" />
         Nueva Publicación
       </Link>
 
@@ -97,16 +87,15 @@ const BlogPostList: React.FC<BlogPostListProps> = ({ onEdit }) => {
                   onClick={() => onEdit(post)}
                   className="px-3 py-1 rounded bg-amber-500 text-cream hover:bg-amber-600 flex gap-2 w-fit"
                 >
-                  <MdEditDocument className="size-5" />
+                  <Pencil className="size-5" />
                   Editar
                 </button>
                 <button
                   onClick={() => handleRequestDelete(post.id!)}
                   disabled={isDeletingPost}
-                  // className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 disabled:opacity-50"
                   className="px-3 py-1 rounded bg-red-500 text-cream hover:bg-red-600 flex gap-2 w-fit disabled:opacity-50"
                 >
-                  <MdDeleteForever className="size-5" />
+                  <Trash2 className="size-5" />
                   {isDeletingPost ? "Eliminando..." : "Eliminar"}
                 </button>
               </div>

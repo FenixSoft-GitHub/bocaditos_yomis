@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react"; // Importa useEffect
-import { HiOutlineSearch } from "react-icons/hi";
-import { IoMdClose } from "react-icons/io";
+import { useState, useEffect } from "react";
+import { Search as SearchIcon, X, Loader2 } from "lucide-react";
 import { useGlobalStore } from "@/store/global.store";
 import { formatPrice } from "@/helpers";
-import { searchProducts } from "@/actions/product"; // Asegúrate de que la ruta sea correcta y que searchProducts devuelva Product[]
-import { Product } from "@/interfaces/product.interface"; // Importa la interfaz Product unificada
+import { searchProducts } from "@/actions/product";
+import { Product } from "@/interfaces/product.interface";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   getDiscountedPrice,
   getDiscountPercentage,
   isDiscountActive,
-} from "@/lib/discount"; // Importa las funciones de descuento
+} from "@/lib/discount";
 
 export const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
-  const [isSearching, setIsSearching] = useState(false); // Nuevo estado para indicar si la búsqueda está en curso
+  const [isSearching, setIsSearching] = useState(false);
   const closeSheet = useGlobalStore((state) => state.closeSheet);
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export const Search = () => {
     setIsSearching(true); // Indica que la búsqueda está en curso
 
     // Configura un temporizador para ejecutar la búsqueda después de un retardo
-    const debounceTimer = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       try {
         const products = await searchProducts(searchTerm);
         setSearchResults(products);
@@ -45,58 +45,58 @@ export const Search = () => {
 
     // Función de limpieza: se ejecuta si el componente se desmonta
     // o si el 'searchTerm' cambia antes de que el temporizador termine.
-    return () => clearTimeout(debounceTimer);
+    return () => clearTimeout(timer);
   }, [searchTerm]); // Este efecto se ejecuta cada vez que 'searchTerm' cambia
 
   return (
-    <>
-      <div className="py-5 px-7 flex gap-10 items-center border-b border-cocoa bg-cream text-choco dark:border-cream/70 dark:bg-fondo-dark/60 dark:text-gray-100">
-        {/* Ya no es un <form> ya que la búsqueda se dispara en onChange */}
-        <div className="flex gap-3 items-center flex-1 shadow-lg bg-cocoa/50 dark:bg-fondo-dark rounded-full px-4 py-1.5 dark:text-cream">
-          <HiOutlineSearch size={22} />
+    <div className="flex flex-col h-full bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
+      {/* BARRA DE BÚSQUEDA - HEADER */}
+      <div className="py-4 px-4 flex gap-3 items-center border-b border-cocoa/20 dark:border-cream/10 shink-0">
+        <div className="flex gap-3 items-center flex-1 bg-cocoa/10 dark:bg-cream/10 rounded-full px-4 py-2">
+          <SearchIcon className="size-4 text-choco/50 dark:text-cream/50 shrink-0" />
           <input
             type="text"
-            placeholder="¿Qué busca?"
-            className="outline-none w-full text-sm bg-transparent"
+            placeholder="Buscar productos..."
+            autoFocus
+            className="outline-none w-full text-sm bg-transparent placeholder:text-choco/40 dark:placeholder:text-cream/40"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)} // El cambio de estado aquí dispara el useEffect
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
+          {isSearching && (
+            <Loader2 className="size-4 text-choco/40 dark:text-cream/40 animate-spin shrink-0" />
+          )}
         </div>
-        <button
-          className="bg-amber-600 text-cream dark:bg-amber-500 dark:text-oscuro hover:bg-amber-700 dark:hover:bg-amber-600 font-medium rounded-full shadow-lg cursor-pointer"
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.9 }}
           onClick={closeSheet}
+          className="p-1.5 rounded-full bg-choco/10 dark:bg-cream/10 hover:bg-choco/20 dark:hover:bg-cream/20 transition-colors shrink-0 cursor-pointer"
+          aria-label="Cerrar búsqueda"
         >
-          <IoMdClose size={25} className="p-1" />
-        </button>
+          <X className="size-4" />
+        </motion.button>
       </div>
 
       {/* RESULTADOS DE Busqueda */}
-      <div className="p-5 pb-24 h-full bg-fondo/90 text-choco dark:bg-fondo-dark/90 dark:text-cream overflow-y-auto">
-        {isSearching && searchTerm.trim() !== "" ? (
-          <div className="text-center py-10">
-            <p>Buscando productos...</p> {/* Indicador de carga */}
-          </div>
-        ) : searchResults.length > 0 ? (
-          <ul>
+      <div className="p-4 pb-24 overflow-y-auto flex-1">
+        {searchResults.length > 0 ? (
+          <ul className="space-y-2">
             {searchResults.map((product) => {
-              // Lógica de descuento para CADA PRODUCTO
               const activeDiscount =
                 product.discount && isDiscountActive(product.discount)
                   ? product.discount
                   : null;
-              const hasDiscount = !!activeDiscount;
-              const discountedPrice =
-                hasDiscount && product.price !== undefined
-                  ? getDiscountedPrice(product.price, activeDiscount!)
-                  : product.price;
+              const discountedPrice = activeDiscount
+                ? getDiscountedPrice(product.price, activeDiscount)
+                : product.price;
+              const discountPct = activeDiscount
+                ? getDiscountPercentage(product.price, activeDiscount)
+                : null;
 
               return (
-                <li
-                  className="p-2 rounded-lg group bg-fondo dark:bg-cocoa/10 hover:bg-cream dark:hover:bg-cocoa/20 mb-2"
-                  key={product.id}
-                >
+                <li key={product.id}>
                   <button
-                    className="flex items-center gap-4 w-full text-left"
+                    className="flex items-center gap-3 w-full text-left p-2.5 rounded-xl group dark:hover:bg-cream/10 transition-colors"
                     onClick={() => {
                       navigate(`/products/${product.slug}`);
                       closeSheet();
@@ -105,50 +105,45 @@ export const Search = () => {
                     <img
                       src={product.image_url[0]}
                       alt={product.name}
-                      className="h-16 w-16 object-cover rounded-lg flex-shrink-0"
+                      className="size-14 object-cover rounded-lg flex-shrink-0"
                     />
 
-                    <div className="flex flex-col gap-1 flex-grow min-w-0">
-                      <p className="text-sm font-semibold group-hover:underline">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold line-clamp-1 group-hover:text-cocoa transition-colors">
                         {product.name}
                       </p>
 
-                      <p className="text-[13px] text-gray-600 dark:text-gray-400 truncate">
+                      <p className="text-xs text-choco/50 dark:text-cream/50 truncate mt-0.5">
                         {product.description}
                       </p>
 
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          {hasDiscount ? (
+                      <div className="flex items-center gap-2 mt-1">
+                        {/* <div className="flex items-center gap-2"> */}
+                          {activeDiscount ? (
                             <>
-                              <p className="text-sm font-medium line-through text-gray-500 dark:text-gray-400">
+                              <span className="text-sm line-through text-choco/40 dark:text-cream/40">
                                 {formatPrice(product.price)}
-                              </p>
-                              <p className="text-base font-bold text-amber-600 dark:text-amber-500">
+                              </span>
+                              <span className="text-sm font-bold text-dorado">
                                 {formatPrice(discountedPrice)}
-                              </p>
-                              <span className="text-[10px] bg-red-100 text-red-600 font-semibold px-2 py-0.5 rounded-full">
-                                -
-                                {getDiscountPercentage(
-                                  product.price,
-                                  activeDiscount!
-                                )}
-                                %
+                              </span>
+                              <span className="text-[10px] bg-dorado/20 text-choco dark:text-dorado font-semibold px-1.5 py-0.5 rounded-full">
+                                -{discountPct}%
                               </span>
                             </>
                           ) : (
-                            <p className="text-sm font-medium">
+                            <span className="text-sm font-semibold">
                               {formatPrice(product.price)}
-                            </p>
+                            </span>
                           )}
-                        </div>
-                        <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex justify-between gap-1">
+                        {/* </div> */}
+                        {/* <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex justify-between gap-1">
                           {product.stock && product.stock > 0 ? (
                             `Stock: ${product.stock}`
                           ) : (
                             <span className="text-red-500">Agotado</span>
                           )}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </button>
@@ -156,174 +151,29 @@ export const Search = () => {
               );
             })}
           </ul>
-        ) : searchTerm.trim() !== "" && !isSearching ? ( // Mostrar "No se encontraron resultados" solo si se buscó algo y no hay resultados
-          <div className="flex flex-col items-center justify-center h-full gap-7">
+        ) : searchTerm.trim() !== "" && !isSearching ? (
+          <div className="flex flex-col items-center justify-center py-16 gap-4">
             <img
-              src="/img/misc/NoResult.avif"
+              src="/img/misc/NoResultItems2.webp"
               alt="No se encontraron resultados"
-              className="w-1/2 border border-cocoa/70 shadow-lg rounded-full p-4 dark:shadow-gray-200 shadow-choco"
+              className="w-3/4 rounded-lg opacity-80"
             />
-            <p className="text-sm text-center">No se encontraron resultados</p>
-          </div>
-        ) : (
-          // Mensaje inicial cuando el campo de búsqueda está vacío
-          <div className="flex flex-col items-center justify-center h-full gap-7">
-            <HiOutlineSearch size={40} className="text-gray-400" />
-            <p className="text-sm text-center text-gray-500 dark:text-gray-400">
-              Empieza a escribir para buscar productos...
+            <p className="text-sm text-choco/50 dark:text-cream/50 text-center">
+              No encontramos "<strong>{searchTerm}</strong>"
             </p>
           </div>
+        ) : (
+          !searchTerm && (
+            // Mensaje inicial cuando el campo de búsqueda está vacío
+            <div className="flex flex-col items-center justify-center py-16 gap-3 text-choco/40 dark:text-cream/40">
+              <SearchIcon className="size-10" />
+              <p className="text-sm text-center">
+                Escribe para buscar productos...
+              </p>
+            </div>
+          )
         )}
       </div>
-    </>
+    </div>
   );
 };
-
-// import { useState } from "react";
-// import { HiOutlineSearch } from "react-icons/hi";
-// import { IoMdClose } from "react-icons/io";
-// import { useGlobalStore } from "@/store/global.store";
-// import { formatPrice } from "@/helpers";
-// import { searchProducts } from "@/actions";
-// import { Product } from "@/interfaces";
-// import { useNavigate } from "react-router-dom";
-// import { getDiscountedPrice, getDiscountPercentage, isDiscountActive } from "@/lib/discount";
-
-// export const Search = () => {
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const [searchResults, setSearchResults] = useState<Product[]>([]);
-//   const closeSheet = useGlobalStore((state) => state.closeSheet);
-//   const navigate = useNavigate();
-
-//   const handleSearch = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     if (searchTerm.trim()) {
-//       const products = await searchProducts(searchTerm);
-//       setSearchResults(products);
-//     } else {
-//       setSearchResults([]);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <div className="py-5 px-7 flex gap-10 items-center border-b border-cocoa bg-cream text-choco dark:border-cream/70 dark:bg-fondo-dark/60 dark:text-gray-100">
-//         <form
-//           className="flex gap-3 items-center flex-1 shadow-lg bg-cocoa/50 dark:bg-fondo-dark rounded-full px-4 py-1.5 dark:text-cream"
-//           onSubmit={handleSearch}
-//         >
-//           <HiOutlineSearch size={22} />
-//           <input
-//             type="text"
-//             placeholder="¿Qué busca?"
-//             className="outline-none w-full text-sm bg-transparent" // Añadido bg-transparent
-//             value={searchTerm}
-//             onChange={(e) => setSearchTerm(e.target.value)}
-//           />
-//         </form>
-//         <button
-//           className="bg-amber-600 text-cream dark:bg-amber-500 dark:text-oscuro hover:bg-amber-700 dark:hover:bg-amber-600 font-medium rounded-full shadow-lg cursor-pointer"
-//           onClick={closeSheet}
-//         >
-//           <IoMdClose size={25} className="p-1" />
-//         </button>
-//       </div>
-
-//       {/* RESULTADOS DE Busqueda */}
-//       <div className="p-5 pb-12 h-full bg-fondo/90 text-choco dark:bg-fondo-dark/90 dark:text-cream overflow-y-auto">
-//         {searchResults.length > 0 ? (
-//           <ul>
-//             {searchResults.map((product) => {
-//               // Lógica de descuento para CADA PRODUCTO
-//               const activeDiscount =
-//                 product.discount && isDiscountActive(product.discount)
-//                   ? product.discount
-//                   : null;
-//               const hasDiscount = !!activeDiscount;
-//               const discountedPrice =
-//                 hasDiscount && product.price !== undefined
-//                   ? getDiscountedPrice(product.price, activeDiscount!)
-//                   : product.price;
-
-//               return (
-//                 <li
-//                   className="p-2 rounded-lg group bg-fondo dark:bg-cocoa/10 hover:bg-cream dark:hover:bg-cocoa/20 mb-2"
-//                   key={product.id}
-//                 >
-//                   <button
-//                     className="flex items-center gap-4 w-full text-left" // Añadido w-full y text-left
-//                     onClick={() => {
-//                       navigate(`/products/${product.slug}`);
-//                       closeSheet();
-//                     }}
-//                   >
-//                     <img
-//                       src={product.image_url[0]}
-//                       alt={product.name}
-//                       className="h-16 w-16 object-cover rounded-lg flex-shrink-0" // Añadido flex-shrink-0
-//                     />
-
-//                     <div className="flex flex-col gap-1 flex-grow min-w-0">
-//                       {" "}
-//                       {/* Añadido flex-grow */}
-//                       <p className="text-sm font-semibold group-hover:underline">
-//                         {product.name}
-//                       </p>
-//                       <p className="text-[13px] text-gray-600 dark:text-gray-400 truncate">
-//                         {product.description}
-//                       </p>
-//                       <div className="flex items-center justify-between gap-2">
-//                         <div className="flex items-center gap-2">
-//                           {" "}
-//                           {hasDiscount ? (
-//                             <>
-//                               <p className="text-sm font-medium line-through text-gray-500 dark:text-gray-400">
-//                                 {formatPrice(product.price)}
-//                               </p>
-//                               <p className="text-sm font-bold text-amber-600 dark:text-amber-500">
-//                                 {formatPrice(discountedPrice)}
-//                               </p>
-//                               <span className="text-[10px] bg-red-100 text-red-600 font-semibold px-2 py-0.5 rounded-full">
-//                                 -
-//                                 {getDiscountPercentage(
-//                                   product.price,
-//                                   activeDiscount
-//                                 )}
-//                                 %
-//                               </span>
-//                             </>
-//                           ) : (
-//                             <p className="text-sm font-medium">
-//                               {formatPrice(product.price)}
-//                             </p>
-//                           )}
-//                         </div>
-//                         <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex justify-between gap-1">
-//                           {product.stock && product.stock > 0 ? (
-//                             `Stock: ${product.stock}`
-//                           ) : (
-//                             <span className="text-red-500">Agotado</span>
-//                           )}
-//                         </div>
-//                       </div>
-//                     </div>
-//                   </button>
-//                 </li>
-//               );
-//             })}
-//           </ul>
-//         ) : (
-//           <div className="flex flex-col items-center justify-center h-full gap-7">
-//             <img
-//               src="/img/misc/NoResult.avif"
-//               alt="No se encontraron resultados"
-//               className="w-1/2 border border-cocoa/70 shadow-lg rounded-full p-4 dark:shadow-gray-200 shadow-choco"
-//             />
-//             <p className="text-sm text-center">No se encontraron resultados</p>
-//           </div>
-//         )}
-//       </div>
-//     </>
-//   );
-// };

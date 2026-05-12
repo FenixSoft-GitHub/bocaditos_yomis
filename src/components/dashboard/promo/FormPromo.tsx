@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PromoCodeFormValues, promoCodeSchema } from "@/lib/validators";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoChevronBack } from "react-icons/io5";
+import { ChevronLeft } from "lucide-react";
 import { useCreatePromo, useUpdatePromo } from "@/hooks";
 
 interface Props {
@@ -70,7 +70,7 @@ export const FormPromo = ({ title, initialData }: Props) => {
         className="flex items-center gap-2 text-sm border border-cocoa dark:border-cream/30 rounded-full bg-cream dark:bg-cocoa/20 shadow-gray-400 shadow-md hover:bg-cocoa/20 hover:font-semibold dark:hover:bg-cocoa/20 px-6 py-1 w-fit mt-10"
         onClick={() => navigate(-1)}
       >
-        <IoChevronBack size={16} />
+        <ChevronLeft size={16} />
         Volver
       </button>
 

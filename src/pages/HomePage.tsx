@@ -3,9 +3,7 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductGridSkeleton } from "@/components/products/ProductGridSkeleton";
 import { useHomeProducts } from "@/hooks";
 import { SponsorCarousel } from "@/components/home/SponsorCarousel";
-import { ImGift } from "react-icons/im";
-import { IoMdPricetags } from "react-icons/io";
-import { AiOutlineProduct } from "react-icons/ai";
+import { Gift, Tag, Package } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { organizationSchema, websiteSchema } from "@/components/seo/schemas";
 import { PageTransition } from "@/components/animations";
@@ -28,7 +26,7 @@ const HomePage = () => {
                 title="Nuevos Productos"
                 products={recentProducts}
                 showNavigation={true}
-                icon={<IoMdPricetags />}
+                icon={<Tag className="size-8" />}
               />
             )}
 
@@ -40,7 +38,7 @@ const HomePage = () => {
                 title="Productos Destacados"
                 products={popularProducts}
                 showNavigation={true}
-                icon={<AiOutlineProduct />}
+                icon={<Package className="size-8" />}
               />
             )}
 
@@ -55,7 +53,7 @@ const HomePage = () => {
                   title="¡Productos en Oferta!"
                   products={discountedProducts}
                   showNavigation={true}
-                  icon={<ImGift />}
+                  icon={<Gift className="size-8" />}
                 />
               )
             )}

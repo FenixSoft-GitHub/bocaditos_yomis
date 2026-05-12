@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import BentoItem from "@/components/about/BentoItem";
 import { BentoAbout } from "@/constants/BentoAbout";
 import Numeros from "@/components/about/Numeros";
-import { FaArrowRight } from "react-icons/fa6";
+import { ArrowRight } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { breadcrumbSchema } from "@/components/seo/schemas";
 
@@ -78,7 +78,7 @@ const AboutPage = () => {
               className="inline-flex items-center gap-2 bg-cocoa/20 px-3 py-1 rounded-md text-sm text-oscuro dark:text-amber-400 dark:hover:text-dorado hover:underline font-medium hover:scale-105 transform-all ease-in-out duration-300"
             >
               Leer más
-              <FaArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="size-4" />
             </Link>
           </div>
           <div id="theater" className="mt-6 md:mt-0 md:w-1/2">
