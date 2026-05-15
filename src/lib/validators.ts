@@ -59,7 +59,8 @@ export const discountSchema = z.object({
       }
       return { message: ctx.defaultError };
     },
-  }), // ¡QUITADO .nullable().optional()! Ahora es obligatorio cuando discount está presente
+  })
+  .nullable().optional(), // ¡QUITADO .nullable().optional()! Ahora es obligatorio cuando discount está presente
   ends_at: z.coerce
     .date({
       errorMap: (issue, ctx) => {
@@ -71,7 +72,8 @@ export const discountSchema = z.object({
     })
     .refine((data) => data > new Date(), {
       message: "La fecha de fin debe ser posterior a la actual.",
-    }), // ¡QUITADO .nullable().optional()! Ahora es obligatorio cuando discount está presente
+    })
+    .nullable().optional(), // ¡QUITADO .nullable().optional()! Ahora es obligatorio cuando discount está presente
 });
 
 export type DiscountFormValues = z.infer<typeof discountSchema>;

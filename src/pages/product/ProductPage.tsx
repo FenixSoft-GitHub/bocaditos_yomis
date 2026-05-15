@@ -4,7 +4,7 @@ import { Separator } from "@/components/shared/Separator";
 import Tag from "@/components/shared/Tag";
 import { formatPrice } from "@/helpers";
 import { useGetReviewsByProduct, useProduct } from "@/hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { ProductDescription } from "@/components/products/ProductDescription";
@@ -14,7 +14,11 @@ import toast from "react-hot-toast";
 import InputNumber from "@/components/shared/InputNumber";
 import { ReviewSection } from "@/components/reviews/ReviewSection";
 import { StarRating } from "@/components/reviews/StarRating";
-import { getDiscountedPrice, getDiscountPercentage, isDiscountActive } from "@/lib/discount";
+import {
+  getDiscountedPrice,
+  getDiscountPercentage,
+  isDiscountActive,
+} from "@/lib/discount";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { breadcrumbSchema, productSchema } from "@/components/seo/schemas";
 import { ShoppingCart, Truck, MessageCircle, ShieldCheck } from "lucide-react";
@@ -26,7 +30,9 @@ const ProductPage = () => {
   const { count, reset, setCount } = useCounterStore();
   const addItem = useCartStore((state) => state.addItem);
   const navigate = useNavigate();
-  
+
+  // Obtener reseñas (sin isLoading si no lo usas)
+  const { data: reviews } = useGetReviewsByProduct(product?.id);
 
   // Resetear el slug actual cuando cambia en la URL
   useEffect(() => {
@@ -34,11 +40,24 @@ const ProductPage = () => {
     reset();
   }, [slug, reset]);
 
+  // Calcular rating promedio solo cuando hay reseñas (optimizado con useMemo)
+  const averageRating = useMemo(() => {
+    if (!reviews || reviews.length === 0) return 0;
+    const validRatings = reviews.filter((r) => r.rating !== null);
+    if (validRatings.length === 0) return 0;
+    return (
+      validRatings.reduce((sum, r) => sum + r.rating!, 0) / validRatings.length
+    );
+  }, [reviews]);
+
   const isOutOfStock = product?.stock === 0 || false;
 
   const activeDiscount = product?.discounts?.find(isDiscountActive);
   const hasDiscount = !!activeDiscount;
-  const discountedPrice = getDiscountedPrice(product?.price || 0, activeDiscount);
+  const discountedPrice = getDiscountedPrice(
+    product?.price || 0,
+    activeDiscount,
+  );
 
   // Función para añadir al carrito
   const addToCart = () => {
@@ -49,7 +68,7 @@ const ProductPage = () => {
         image_url: product?.image_url || [],
         price: discountedPrice,
         quantity: count,
-        stock: product?.stock || 0, 
+        stock: product?.stock || 0,
       });
       toast.success("Producto añadido al carrito", {
         position: "bottom-right",
@@ -77,17 +96,23 @@ const ProductPage = () => {
     }
   };
 
-  const { data: reviews } = useGetReviewsByProduct(product?.id);
+  // ✅ CORREGIDO: Datos para el schema de producto
+  const productSchemaData = useMemo(() => {
+    if (!product) return null;
+    return {
+      id: product.id, // ← Añadido
+      name: product.name,
+      description: product.description || product.name,
+      image_url: product.image_url || [],
+      price: discountedPrice,
+      slug: product.slug,
+      stock: product.stock ?? 0, // ← Ahora es number
+      rating: averageRating || undefined,
+      reviewCount: reviews?.length || 0,
+    };
+  }, [product, discountedPrice, averageRating, reviews]);
 
-  if(!reviews) return <p>No existe Reviews</p>
-
-  const validRatings = reviews.filter((r) => r.rating !== null);
-  const averageRating =
-    validRatings.length > 0
-      ? validRatings.reduce((sum, r) => sum + r.rating!, 0) /
-        validRatings.length
-      : 0;
-
+  // Mostrar loading mientras carga el producto
   if (isLoading) {
     return <Loader size={60} />;
   }
@@ -111,16 +136,7 @@ const ProductPage = () => {
         ogType="product"
         ogImage={product.image_url?.[0] || undefined}
         schema={[
-          productSchema({
-            name: product.name,
-            description: product.description || product.name,
-            image: product.image_url || [],
-            price: discountedPrice,
-            slug: product.slug,
-            inStock: !isOutOfStock,
-            rating: averageRating || undefined,
-            reviewCount: reviews.length || undefined,
-          }),
+          productSchema(productSchemaData!),
           breadcrumbSchema([
             { name: "Inicio", url: "/" },
             { name: "Productos", url: "/products" },
@@ -134,14 +150,14 @@ const ProductPage = () => {
         <div className="flex-1 space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">{product?.name}</h1>
 
-          <div className="flex gap-5 items-center">
+          <div className="flex gap-5 items-center flex-wrap">
             <div className="flex items-center gap-4">
               {hasDiscount ? (
-                <div className="flex justify-center items-center gap-3">
+                <div className="flex justify-center items-center gap-3 flex-wrap">
                   <span className="text-2xl font-bold text-amber-500">
                     {formatPrice(discountedPrice)}
                   </span>
-                  <span className="line-through">
+                  <span className="line-through text-neutral-500">
                     {formatPrice(product.price)}
                   </span>
                   <span className="text-xs bg-red-100 text-red-600 font-semibold px-2 py-0.5 rounded-full">
@@ -162,7 +178,7 @@ const ProductPage = () => {
             <div className="flex items-center gap-2">
               <StarRating rating={averageRating} />
               <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                {averageRating.toFixed(1)} / 5 ({reviews.length} reseñas)
+                {averageRating.toFixed(1)} / 5 ({reviews?.length || 0} reseñas)
               </span>
             </div>
           </div>
@@ -240,3 +256,245 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+
+// import GridImages from "@/components/products/GridImages";
+// import { Loader } from "@/components/shared/Loader";
+// import { Separator } from "@/components/shared/Separator";
+// import Tag from "@/components/shared/Tag";
+// import { formatPrice } from "@/helpers";
+// import { useGetReviewsByProduct, useProduct } from "@/hooks";
+// import { useEffect, useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import { useParams } from "react-router-dom";
+// import { ProductDescription } from "@/components/products/ProductDescription";
+// import { useCounterStore } from "@/store/counter.store";
+// import { useCartStore } from "@/store/cart.store";
+// import toast from "react-hot-toast";
+// import InputNumber from "@/components/shared/InputNumber";
+// import { ReviewSection } from "@/components/reviews/ReviewSection";
+// import { StarRating } from "@/components/reviews/StarRating";
+// import { getDiscountedPrice, getDiscountPercentage, isDiscountActive } from "@/lib/discount";
+// import { SEOHead } from "@/components/seo/SEOHead";
+// import { breadcrumbSchema, productSchema } from "@/components/seo/schemas";
+// import { ShoppingCart, Truck, MessageCircle, ShieldCheck } from "lucide-react";
+
+// const ProductPage = () => {
+//   const { slug } = useParams<{ slug: string }>();
+//   const [currentSlug, setCurrentSlug] = useState(slug);
+//   const { product, isLoading, isError } = useProduct(currentSlug || "");
+//   const { count, reset, setCount } = useCounterStore();
+//   const addItem = useCartStore((state) => state.addItem);
+//   const navigate = useNavigate();
+
+//   // Resetear el slug actual cuando cambia en la URL
+//   useEffect(() => {
+//     setCurrentSlug(slug);
+//     reset();
+//   }, [slug, reset]);
+
+//   const isOutOfStock = product?.stock === 0 || false;
+
+//   const activeDiscount = product?.discounts?.find(isDiscountActive);
+//   const hasDiscount = !!activeDiscount;
+//   const discountedPrice = getDiscountedPrice(product?.price || 0, activeDiscount);
+
+//   // Función para añadir al carrito
+//   const addToCart = () => {
+//     if ((product?.stock ?? 0) > 0) {
+//       addItem({
+//         productId: product?.id || "",
+//         name: product?.name || "",
+//         image_url: product?.image_url || [],
+//         price: discountedPrice,
+//         quantity: count,
+//         stock: product?.stock || 0,
+//       });
+//       toast.success("Producto añadido al carrito", {
+//         position: "bottom-right",
+//       });
+//     } else {
+//       toast.error("Producto agotado", {
+//         position: "bottom-right",
+//       });
+//     }
+//   };
+
+//   // Función para comprar ahora
+//   const buyNow = () => {
+//     if ((product?.stock ?? 0) > 0) {
+//       addItem({
+//         productId: product?.id || "",
+//         name: product?.name || "",
+//         image_url: product?.image_url || [],
+//         price: discountedPrice,
+//         quantity: count,
+//         stock: product?.stock || 0,
+//       });
+
+//       navigate("/checkout");
+//     }
+//   };
+
+//   const { data: reviews } = useGetReviewsByProduct(product?.id);
+
+//   if(!reviews) return <p>No existe Reviews</p>
+
+//   const validRatings = reviews.filter((r) => r.rating !== null);
+//   const averageRating =
+//     validRatings.length > 0
+//       ? validRatings.reduce((sum, r) => sum + r.rating!, 0) /
+//         validRatings.length
+//       : 0;
+
+//   if (isLoading) {
+//     return <Loader size={60} />;
+//   }
+
+//   if (isError) {
+//     return <div>Error loading product</div>;
+//   }
+
+//   if (!product) {
+//     return <div>Product not found</div>;
+//   }
+
+//   return (
+//     <>
+//       <SEOHead
+//         title={product.name}
+//         description={
+//           product.description || `Compra ${product.name} en Bocaditos Yomi's.`
+//         }
+//         canonical={`/products/${product.slug}`}
+//         ogType="product"
+//         ogImage={product.image_url?.[0] || undefined}
+//         schema={[
+//           productSchema({
+//             name: product.name,
+//             description: product.description || product.name,
+//             image: product.image_url || [],
+//             price: discountedPrice,
+//             slug: product.slug,
+//             inStock: !isOutOfStock,
+//             rating: averageRating || undefined,
+//             reviewCount: reviews.length || undefined,
+//           }),
+//           breadcrumbSchema([
+//             { name: "Inicio", url: "/" },
+//             { name: "Productos", url: "/products" },
+//             { name: product.name, url: `/products/${product.slug}` },
+//           ]),
+//         ]}
+//       />
+//       <div className="h-fit flex flex-col md:flex-row gap-4 md:gap-16 py-6 px-8">
+//         <GridImages images={product?.image_url} />
+
+//         <div className="flex-1 space-y-2">
+//           <h1 className="text-3xl font-bold tracking-tight">{product?.name}</h1>
+
+//           <div className="flex gap-5 items-center">
+//             <div className="flex items-center gap-4">
+//               {hasDiscount ? (
+//                 <div className="flex justify-center items-center gap-3">
+//                   <span className="text-2xl font-bold text-amber-500">
+//                     {formatPrice(discountedPrice)}
+//                   </span>
+//                   <span className="line-through">
+//                     {formatPrice(product.price)}
+//                   </span>
+//                   <span className="text-xs bg-red-100 text-red-600 font-semibold px-2 py-0.5 rounded-full">
+//                     -{getDiscountPercentage(product.price, activeDiscount)}%
+//                   </span>
+//                 </div>
+//               ) : (
+//                 <span className="text-2xl font-semibold">
+//                   {formatPrice(product.price)}
+//                 </span>
+//               )}
+//             </div>
+
+//             <div className="relative bg-cream/80 cursor-not-allowed p-1 transition-all duration-300 ease-in-out hover:scale-105 rounded-full">
+//               {isOutOfStock && <Tag contentTag="agotado" />}
+//             </div>
+
+//             <div className="flex items-center gap-2">
+//               <StarRating rating={averageRating} />
+//               <span className="text-sm text-neutral-600 dark:text-neutral-400">
+//                 {averageRating.toFixed(1)} / 5 ({reviews.length} reseñas)
+//               </span>
+//             </div>
+//           </div>
+
+//           <Separator />
+
+//           <div className="flex flex-col gap-3">
+//             <p className="text-sm font-medium">Descripción del producto</p>
+
+//             <div className="flex gap-3 h-12 lg:h-24">
+//               <ProductDescription content={product.description} />
+//             </div>
+
+//             <div className="space-y-3 mb-3 lg:mb-6 flex flex-col items-center lg:items-start">
+//               <p className="text-xs font-medium">Cantidad:</p>
+//               <InputNumber
+//                 value={count}
+//                 min={1}
+//                 max={product?.stock || 99}
+//                 onChange={(val) => setCount(val)}
+//                 className="w-30 text-xl"
+//                 classNameIcon="size-4"
+//               />
+//             </div>
+//           </div>
+
+//           <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 w-full px-4">
+//             {isOutOfStock ? (
+//               <button
+//                 disabled
+//                 className="w-full md:w-1/2 bg-neutral-300 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400 font-medium py-3 px-6 rounded-xl border border-neutral-400 dark:border-neutral-600 transition-all duration-200 cursor-not-allowed"
+//               >
+//                 Agotado
+//               </button>
+//             ) : (
+//               <button
+//                 onClick={addToCart}
+//                 className="w-full flex gap-5.5 items-center justify-center md:w-1/2 bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
+//               >
+//                 <ShoppingCart className="size-5" />
+//                 Añadir al carrito
+//               </button>
+//             )}
+
+//             <button
+//               onClick={buyNow}
+//               className="w-full flex gap-5.5 items-center justify-center md:w-1/2 bg-oscuro text-cream dark:bg-fondo dark:text-choco hover:bg-neutral-800 dark:hover:bg-neutral-300 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-transparent hover:shadow-md cursor-pointer"
+//             >
+//               <ShieldCheck className="size-5" />
+//               Comprar ahora
+//             </button>
+//           </div>
+
+//           <div className="flex pt-8">
+//             <div className="flex flex-col gap-1 flex-1 items-center">
+//               <Truck size={35} />
+//               <p className="text-xs font-medium">Envío gratis</p>
+//             </div>
+//             <Link
+//               to="/contact-us"
+//               className="flex flex-col gap-1 flex-1 items-center justify-center hover:scale-105 transition-all duration-300 ease-in-out"
+//             >
+//               <MessageCircle size={25} />
+//               <p className="flex flex-col items-center text-xs font-medium">
+//                 <span>¿Necesitas ayuda?</span>
+//                 Contáctanos aquí
+//               </p>
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//       <div>{product?.id && <ReviewSection productId={product.id} />}</div>
+//     </>
+//   );
+// };
+
+// export default ProductPage;

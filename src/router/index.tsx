@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import type { ReactNode } from "react";
 import { Layout } from "@layout/Layout";
 import ClientLayout from "@/layout/ClientLayout";
-import DashboardLayout from "@/layout/DashboardLayout";
+import { DashboardLayout } from "@/layout/DashboardLayout";
 import { Loader } from "@/components/shared/Loader";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";

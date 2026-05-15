@@ -1,201 +1,202 @@
-"use client";
-import React, { useState } from "react";
+import { useState, useMemo } from "react";
 import { UserProfile } from "@/interfaces/user.interface";
 import { useUpdateUserRole } from "@/hooks";
 import { toast } from "react-hot-toast";
-import { ConfirmationModal } from "@/components/shared/ConfirmationModal"; // Importa el nuevo modal
-import { Search } from "lucide-react";
-import { RotateCcw } from "lucide-react";
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
+import { Pagination } from "@/components/shared/Pagination";
+import { User, Mail, Phone, Shield, Calendar } from "lucide-react";
+import { DashboardSection } from "@/components/dashboard/shared/DashboardSection";
+import { DashboardCard } from "@/components/dashboard/shared/DashboardCard";
 
-interface UserManagementTableProps {
+interface Props {
   users: UserProfile[];
 }
 
-const tableHeaders = ["Nombre Completo", "Email", "Teléfono", "Rol", "Miembro desde"];
+const ITEMS_PER_PAGE = 9;
 
-export const UserManagementTable: React.FC<UserManagementTableProps> = ({
-  users,
-}) => {
+const roleConfig: Record<string, { label: string; className: string }> = {
+  admin: {
+    label: "Admin",
+    className:
+      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+  },
+  customer: {
+    label: "Cliente",
+    className:
+      "bg-blue-100   text-blue-700   dark:bg-blue-900/30   dark:text-blue-400",
+  },
+};
+
+export const UserManagementTable = ({ users }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { mutate: updateUserRole, isPending: isUpdatingRole } =
-    useUpdateUserRole();
-
-  // Estados para el modal de confirmación
+  const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
-  const [newRoleForSelectedUser, setNewRoleForSelectedUser] =
-    useState<string>("");
+  const [newRole, setNewRole] = useState("");
+  const { mutate: updateUserRole, isPending } = useUpdateUserRole();
 
-  // Función que se llama cuando el usuario cambia el rol en el select
-  const handleRoleChangeIntent = (user: UserProfile, newRole: string) => {
+  const handleRoleChangeIntent = (user: UserProfile, role: string) => {
     setSelectedUser(user);
-    setNewRoleForSelectedUser(newRole);
-    setIsModalOpen(true); // Abre el modal de confirmación
+    setNewRole(role);
+    setIsModalOpen(true);
   };
 
-  // Función que se llama cuando se confirma en el modal
-  const handleConfirmRoleChange = () => {
-    if (selectedUser && newRoleForSelectedUser) {
+  const handleConfirm = () => {
+    if (selectedUser && newRole) {
       updateUserRole(
-        { authUserId: selectedUser.user_id, newRole: newRoleForSelectedUser },
+        { authUserId: selectedUser.user_id, newRole },
         {
           onSuccess: () => {
-            toast.success("Rol de usuario actualizado con éxito!");
-            setIsModalOpen(false); // Cierra el modal
-            setSelectedUser(null);
-            setNewRoleForSelectedUser("");
+            toast.success("Rol actualizado correctamente");
+            setIsModalOpen(false);
           },
-          onError: (error) => {
-            toast.error(`Error al actualizar el rol: ${error.message}`);
-          },
-        }
+          onError: (e) => toast.error(`Error: ${e.message}`),
+        },
       );
     }
   };
 
-  const handleCancelRoleChange = () => {
-    setIsModalOpen(false);
-    setSelectedUser(null);
-    setNewRoleForSelectedUser("");
-    // Opcional: podrías restablecer el select a su valor original si el usuario cancela,
-    // pero como el cambio de rol es reactivo con los datos, se actualizará solo.
+  const filteredUsers = useMemo(() => {
+    const term = searchTerm.toLowerCase();
+    return users.filter((u) =>
+      [u.full_name, u.email, u.phone, u.role].some((f) =>
+        f?.toLowerCase().includes(term),
+      ),
+    );
+  }, [users, searchTerm]);
+
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    return filteredUsers.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredUsers, page]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setPage(1);
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.role?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="bg-cream dark:bg-cocoa/10 p-6 rounded-lg shadow-md">
-      <div className="mb-4 relative">
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-cream/80">
-          <Search className="w-5 h-5" />
-        </span>
+    <>
+      <DashboardSection
+        title="Usuarios"
+        description="Administra los roles y permisos de los usuarios"
+        count={users.length}
+        filters={
+          <AdvancedFilter
+            searchValue={searchTerm}
+            onSearchChange={handleSearchChange}
+            onClear={() => {
+              setSearchTerm("");
+              setPage(1);
+            }}
+          />
+        }
+        isEmpty={filteredUsers.length === 0}
+        empty={
+          <>
+            <User className="size-12" />
+            <p className="text-sm font-medium">No se encontraron usuarios</p>
+          </>
+        }
+      >
+        {paginatedUsers.map((user) => {
+          const role = user.role || "customer";
+          const roleStyle = roleConfig[role] ?? roleConfig.customer;
 
-        <input
-          type="text"
-          placeholder="Buscar por nombre, email, teléfono o rol..."
-          className="w-full pl-10 pr-10 py-2 rounded border shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 dark:bg-fondo-dark dark:text-cream dark:border-cream/30 bg-fondo"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-
-        {searchTerm && (
-          <button
-            onClick={() => setSearchTerm("")}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-500 hover:text-amber-700 rounded-full p-1.5 transition-colors duration-200 bg-cream/30"
-            title="Limpiar búsqueda"
-          >
-            <RotateCcw className="size-4" />
-          </button>
-        )}
-      </div>
-
-      <div className="overflow-x-auto rounded-md border border-choco dark:border-cream/30">
-        <table className="min-w-full divide-y divide-cocoa dark:divide-amber-500">
-          <thead className="bg-cocoa/30 text-choco  dark:bg-cream/30 dark:text-cream">
-            <tr>
-              {tableHeaders.map((header, index) => (
-                <th
-                  key={index}
-                  className={`px-2 sm:px-4 py-3 text-xs font-semibold text-center uppercase tracking-wider ${
-                    index === 0 ? "rounded-l-md" : ""
-                  } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""}`}
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="bg-cream dark:bg-fondo-dark divide-y divide-gray-200 dark:divide-cream/30">
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user) => (
-                <tr key={user.id}>
-                  <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-fondo-dark dark:text-cream">
+          return (
+            <DashboardCard key={user.id} className={"gap-3.5 m-1"}>
+              {/* Avatar + nombre */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-cocoa/20 dark:bg-cream/20 flex items-center justify-center shrink-0 text-sm font-bold text-choco dark:text-cream">
+                  {user.full_name?.charAt(0)?.toUpperCase() ?? "U"}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-choco dark:text-cream truncate">
                     {user.full_name}
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap text-sm text-choco dark:text-cream/80">
-                    {user.email}
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap text-sm text-choco dark:text-cream/80">
-                    {user.phone || "N/A"}
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap text-sm">
-                    <select
-                      className="block w-fit py-1 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm dark:bg-fondo-dark dark:text-gray-100 dark:border-cream/30"
-                      value={user.role || "customer"}
-                      onChange={(e) =>
-                        handleRoleChangeIntent(user, e.target.value)
-                      } // Llama a la nueva función
-                      disabled={isUpdatingRole}
-                    >
-                      <option value="customer">Cliente</option>
-                      <option value="admin">Admin</option>
-                      {/* Agrega más roles si es necesario */}
-                    </select>
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap text-sm text-choco dark:text-cream/80">
+                  </p>
+                  <span
+                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${roleStyle.className}`}
+                  >
+                    <Shield className="size-2.5 mr-1" />
+                    {roleStyle.label}
+                  </span>
+                </div>
+                <div className="size-10 rounded-full bg-cocoa/20 flex items-center justify-center shrink-0 text-sm font-bold text-choco dark:text-cream">
+                  <User className="size-4" />
+                </div>
+              </div>
+
+              {/* Info */}
+              <div className="space-y-1.5 pt-2 border-t border-cocoa/10 dark:border-cream/10 text-xs text-choco/70 dark:text-cream/70">
+                <div className="flex items-center gap-1.5">
+                  <Mail className="size-3 shrink-0" />
+                  <span className="truncate">{user.email}</span>
+                </div>
+                {user.phone && (
+                  <div className="flex items-center gap-1.5">
+                    <Phone className="size-3 shrink-0" />
+                    <span>{user.phone}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="size-3 shrink-0" />
+                  <span>
                     {new Date(user.created_at).toLocaleDateString("es-ES", {
                       year: "numeric",
                       month: "short",
                       day: "numeric",
                     })}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="px-6 py-3 text-center text-choco dark:text-gray-400"
-                >
-                  No se encontraron usuarios.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      {isUpdatingRole && (
-        <p className="text-center text-sm mt-4 text-indigo-600 dark:text-indigo-400">
-          Actualizando rol...
-        </p>
-      )}
+                  </span>
+                </div>
+              </div>
 
-      {/* Modal de Confirmación */}
+              {/* Cambio de rol */}
+              <select
+                value={role}
+                onChange={(e) => handleRoleChangeIntent(user, e.target.value)}
+                disabled={isPending}
+                className="w-full text-xs border border-cocoa/20 dark:border-cream/20 rounded-lg px-3 py-2 bg-fondo dark:bg-fondo-dark text-choco dark:text-cream focus:outline-none focus:ring-2 focus:ring-choco/20 cursor-pointer disabled:opacity-50"
+              >
+                <option value="customer">Cliente</option>
+                <option value="admin">Admin</option>
+              </select>
+            </DashboardCard>
+          );
+        })}
+
+        {/* Paginación */}
+        {filteredUsers.length > ITEMS_PER_PAGE && (
+          <div className="sm:col-span-2 xl:col-span-3 pt-2 border-t border-cocoa/20 dark:border-cream/10">
+            <Pagination
+              page={page}
+              setPage={setPage}
+              totalItems={filteredUsers.length}
+            />
+          </div>
+        )}
+      </DashboardSection>
+
       {selectedUser && (
         <ConfirmationModal
           isOpen={isModalOpen}
-          onClose={handleCancelRoleChange}
-          onConfirm={handleConfirmRoleChange}
-          title="Confirmar Cambio de Rol"
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleConfirm}
+          title="Confirmar cambio de rol"
           message={
             <span>
-              ¿Estás seguro de que quieres cambiar el rol de{" "}
-              <span className="font-semibold">{selectedUser.full_name}</span> (
-              {selectedUser.email}) de{" "}
-              <span className="font-semibold">
-                {selectedUser.role || "customer"}
-              </span>{" "}
-              a{" "}
-              <span className="font-semibold text-blue-600 dark:text-blue-400">
-                {newRoleForSelectedUser}
-              </span>
+              ¿Cambiar el rol de <strong>{selectedUser.full_name}</strong> a{" "}
+              <strong className="text-choco dark:text-cream">
+                {newRole === "admin" ? "Admin" : "Cliente"}
+              </strong>
               ?
-              <br />
-              <br />
-              Esta acción puede otorgar o revocar permisos importantes.
             </span>
           }
-          confirmText="Sí, cambiar rol"
-          cancelText="No, cancelar"
-          isConfirming={isUpdatingRole}
+          confirmText="Sí, cambiar"
+          cancelText="Cancelar"
+          isConfirming={isPending}
         />
       )}
-    </div>
+    </>
   );
 };

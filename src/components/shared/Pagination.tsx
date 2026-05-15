@@ -6,7 +6,7 @@ interface Props {
   setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 9;
 
 export const Pagination = ({ totalItems, page, setPage }: Props) => {
   const totalPages = totalItems ? Math.ceil(totalItems / ITEMS_PER_PAGE) : 1;

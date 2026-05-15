@@ -16,6 +16,7 @@ interface Props {
   errors: FieldErrors<ProductFormValues>;
   required?: boolean;
   disabled?: boolean;
+  icon?: React.ReactNode;
 }
 
 export const InputForm = ({
@@ -29,6 +30,7 @@ export const InputForm = ({
   errors,
   required,
   disabled,
+  icon,
 }: Props) => {
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
@@ -37,6 +39,7 @@ export const InputForm = ({
           htmlFor={name}
           className="text-xs font-bold tracking-tight capitalize "
         >
+          {icon}
           {label}:
         </label>
 
@@ -62,6 +65,7 @@ export const InputForm = ({
           id={name}
           step={step}
           disabled={disabled}
+          onFocus={(e) => e.target.select()}
           className={`py-2 text-sm px-3 font-medium tracking-tighter w-full border border-cocoa/70 dark:border-cream/30 rounded-md placeholder:font-normal focus:outline-none text-choco bg-cream dark:bg-fondo-dark dark:text-cream dark:focus:border-cream/50 focus:border-cocoa/90 focus:border-2 outline-none transition-all duration-300 ease-in-out ${className}`}
           autoComplete="off"
           {...register(name)}

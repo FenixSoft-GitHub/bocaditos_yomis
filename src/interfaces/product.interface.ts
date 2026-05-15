@@ -22,7 +22,7 @@ export interface Product {
   description: string;
   price: number;
   image_url: string[];
-  stock: number | null;
+  stock: number;
   slug: string;
   category_id: string; // FK directa
   created_at: string | null;
@@ -42,7 +42,7 @@ export interface SupabaseRawProductWithRelations {
   description: string;
   price: number;
   image_url: string[];
-  stock: number | null;
+  stock: number;
   created_at: string | null;
   updated_at: string | null;
   slug: string;
@@ -60,7 +60,7 @@ export interface ProductCategory {
   name: string;
   price: number;
   slug: string;
-  stock: number | null;
+  stock: number;
   updated_at: string | null;
 }
 

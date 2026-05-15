@@ -1,6 +1,4 @@
 
-"use client";
-
 import React from "react";
 import { useAllUsersWithRoles } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
@@ -27,10 +25,6 @@ const DashboardUsersPage: React.FC = () => {
 
   return (
     <section className="container mx-auto px-4 py-8 mt-20 text-choco dark:text-cream bg-fondo dark:bg-fondo-dark min-h-screen">
-      <h1 className="text-3xl font-bold text-center mb-10 drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
-        Gestión de Usuarios
-      </h1>
-
       <div className="max-w-5xl mx-auto">
         {users && users.length > 0 ? (
           <UserManagementTable users={users} />

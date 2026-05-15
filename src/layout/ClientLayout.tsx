@@ -34,7 +34,7 @@ const ClientLayout = () => {
             `${btnClass} ${isActive ? "underline" : ""}`
           }
         >
-          Pedidos <FileText size={18} />
+          Pedidos<FileText size={18} />
         </NavLink>
 
         {role === "admin" && (

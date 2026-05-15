@@ -1,160 +1,157 @@
 import { Loader } from "@/components/shared/Loader";
 import { useDeliverys } from "@/hooks";
-import { useState } from "react";
-import { CellTableProduct } from "../products/CellTableProduct";
+import { useState, useMemo } from "react";
 import { formatDate, formatPrice } from "@/helpers";
-import { Link, useNavigate } from "react-router-dom";
-import { PlusCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { useDeleteDelivery } from "@/hooks/deliverys/useDeleteDelivery";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
+import { Pagination } from "@/components/shared/Pagination";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { DashboardSection } from "@/components/dashboard/shared/DashboardSection";
+import { DashboardCard } from "@/components/dashboard/shared/DashboardCard";
+import { DashboardAddButton } from "@/components/dashboard/shared/DashboardAddButton";
+import { Truck, DollarSign, Clock, Calendar } from "lucide-react";
 
-const tableHeaders = ["Nombre", "Precio", "Tiempo", "Fecha de creación", ""];
+const ITEMS_PER_PAGE = 9;
 
 export const TableDeliverys = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
-  const { deliverys, isLoading } = useDeliverys();
-  const { mutate: deleteDelivery, isPending } = useDeleteDelivery();
-
+  const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDelivery, setSelectedDelivery] = useState<{
     id: string;
     name: string;
   } | null>(null);
+  const navigate = useNavigate();
+  const { deliverys, isLoading } = useDeliverys();
+  const { mutate: deleteDelivery, isPending } = useDeleteDelivery();
 
-  // Funciones
-  const handleOpenModal = (id: string, name: string) => {
-    setSelectedDelivery({ id, name });
-    setIsModalOpen(true);
-  };
+  const filtered = useMemo(
+    () =>
+      (deliverys ?? []).filter((d) =>
+        d.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    [deliverys, searchTerm],
+  );
 
-  const handleConfirmDelete = () => {
-    if (selectedDelivery) {
-      deleteDelivery(selectedDelivery.id);
-      setIsModalOpen(false);
-    }
-  };
+  const paginated = useMemo(() => {
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    return filtered.slice(start, start + ITEMS_PER_PAGE);
+  }, [filtered, page]);
 
   if (!deliverys || isLoading || isPending) return <Loader size={60} />;
 
-  const filteredDeliverys = deliverys.filter(
-    (delivery) =>
-      delivery.name &&
-      delivery.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="flex flex-col h-full min-h-[500px] bg-fondo dark:bg-fondo-dark text-choco dark:text-cream border border-cocoa/30 dark:border-cream/30 rounded-lg px-3 py-2 gap-3">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="w-full sm:w-auto">
-          <h1 className="text-xl font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
-            Deliverys
-          </h1>
-          <p className="text-xs mb-1 font-regular">
-            Administración de Deliverys
-          </p>
-        </div>
-
-        <div className="w-full sm:max-w-sm ">
+    <>
+      <DashboardSection
+        title="Métodos de Entrega"
+        description="Configura los métodos de envío disponibles"
+        count={deliverys.length}
+        action={
+          <DashboardAddButton
+            to="/dashboard/deliverys/new"
+            label="Nuevo Método"
+          />
+        }
+        filters={
           <AdvancedFilter
             searchValue={searchTerm}
-            onSearchChange={setSearchTerm}
-            onClear={() => setSearchTerm("")}
+            onSearchChange={(v) => {
+              setSearchTerm(v);
+              setPage(1);
+            }}
+            onClear={() => {
+              setSearchTerm("");
+              setPage(1);
+            }}
           />
-        </div>
+        }
+        isEmpty={filtered.length === 0}
+        empty={
+          <>
+            <Truck className="size-12" />
+            <p className="text-sm font-medium">
+              No se encontraron métodos de entrega
+            </p>
+          </>
+        }
+      >
+        {paginated.map((delivery) => (
+          <DashboardCard key={delivery.id} className={"gap-4.5 m-1.5"}>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-lg bg-cocoa/15 dark:bg-cream/15 flex items-center justify-center shrink-0">
+                  <Truck className="size-4 text-choco/70 dark:text-cream/70" />
+                </div>
+                <p className="font-semibold text-sm text-choco dark:text-cream truncate">
+                  {delivery.name}
+                </p>
+              </div>
+              <DropdownMenu
+                onEdit={() =>
+                  navigate(`/dashboard/deliverys/edit/${delivery.id}`)
+                }
+                onDelete={() => {
+                  setSelectedDelivery({ id: delivery.id, name: delivery.name });
+                  setIsModalOpen(true);
+                }}
+              />
+            </div>
 
-        <div className="w-full sm:w-auto flex sm:justify-end">
-          <Link
-            to="/dashboard/deliverys/new"
-            className="inline-flex items-center min-w-[220px] gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition justify-center"
-          >
-            <PlusCircle size={18} />
-            Nuevo Delivery
-          </Link>
-        </div>
-      </div>
+            <div className="flex items-center justify-between pt-2 border-t border-cocoa/10 dark:border-cream/10 text-sm">
+              <div className="flex items-center gap-1.5 font-bold text-choco dark:text-cream">
+                <DollarSign className="size-3.5 text-choco/50 dark:text-cream/50" />
+                {delivery.price > 0 ? (
+                  formatPrice(delivery.price)
+                ) : (
+                  <span className="text-green-600 dark:text-green-400 text-xs font-semibold">
+                    Gratis
+                  </span>
+                )}
+              </div>
+              {delivery.estimated_time && (
+                <div className="flex items-center gap-1 text-xs text-choco/60 dark:text-cream/60">
+                  <Clock className="size-3" />
+                  {delivery.estimated_time}
+                </div>
+              )}
+            </div>
 
-      {/* Tabla */}
-      <div className="relative w-full h-full overflow-x-auto">
-        <table className="min-w-[600px] text-sm w-full caption-bottom  sm:table-auto">
-          <thead className="bg-cocoa/20 dark:bg-cream/10 text-choco dark:text-cream text-xs uppercase tracking-wide">
-            <tr className="bg-cocoa/30 dark:bg-cream/30 text-choco dark:text-cream rounded-md">
-              {tableHeaders.map((header, index) => (
-                <th
-                  key={index}
-                  className={`px-2 sm:px-4 py-2 font-semibold text-center ${
-                    index === 0 ? "rounded-l-md" : ""
-                  } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""}`}
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
+            <div className="flex items-center gap-1 text-[11px] text-choco/40 dark:text-cream/40">
+              <Calendar className="size-3" />
+              {formatDate(delivery.created_at as string)}
+            </div>
+          </DashboardCard>
+        ))}
 
-          {filteredDeliverys.length === 0 ? (
-            <tbody>
-              <tr>
-                <td
-                  colSpan={tableHeaders.length}
-                  className="text-center py-10 text-choco dark:text-cream"
-                >
-                  No se encontraron productos con ese término.
-                </td>
-              </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {filteredDeliverys.map((delivery, index) => {
-                return (
-                  <tr key={index}>
-                    <CellTableProduct
-                      content={delivery.name}
-                      className="text-left"
-                    />
+        {filtered.length > ITEMS_PER_PAGE && (
+          <div className="sm:col-span-2 xl:col-span-3 pt-2 border-t border-cocoa/20 dark:border-cream/10">
+            <Pagination
+              page={page}
+              setPage={setPage}
+              totalItems={filtered.length}
+            />
+          </div>
+        )}
+      </DashboardSection>
 
-                    <CellTableProduct
-                      className="text-right"
-                      content={formatPrice(delivery?.price)}
-                    />
-                    <CellTableProduct
-                      className="text-left"
-                      content={delivery?.estimated_time as string}
-                    />
-
-                    <CellTableProduct
-                      className="text-center"
-                      content={formatDate(delivery.created_at as string)}
-                    />
-
-                    <td className="relative">
-                      <DropdownMenu
-                        onEdit={() =>
-                          navigate(`/dashboard/deliverys/edit/${delivery.id}`)
-                        }
-                        onDelete={() =>
-                          handleOpenModal(delivery.id, delivery.name)
-                        }
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          )}
-        </table>
-      </div>
       <ConfirmationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="¿Eliminar delivery?"
+        onConfirm={() => {
+          if (selectedDelivery) {
+            deleteDelivery(selectedDelivery.id);
+            setIsModalOpen(false);
+          }
+        }}
+        title="¿Eliminar método de entrega?"
         message={
           <>
-            ¿Estás seguro de que deseas eliminar el delivery:{" "}
-            <strong className="text-amber-600">{selectedDelivery?.name}</strong>
+            ¿Eliminar{" "}
+            <strong className="text-choco dark:text-cream">
+              {selectedDelivery?.name}
+            </strong>
             ?
           </>
         }
@@ -162,6 +159,6 @@ export const TableDeliverys = () => {
         cancelText="Cancelar"
         isConfirming={isPending}
       />
-    </div>
+    </>
   );
 };

@@ -26,7 +26,7 @@ export const getProducts = async () => {
 
 // Obtener todos los productos paginados
 export const getProductsPages = async (page: number) => {
-  const itemsPerPage = 8;
+  const itemsPerPage = 9;
   const from = (page - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
 

@@ -1,6 +1,10 @@
-import { HiOutlineSearch } from "react-icons/hi";
+import { Search as SearchIcon, RotateCcw } from "lucide-react";
 import { useId } from "react";
-import { GrPowerReset } from "react-icons/gr";
+
+interface ClearButtonProps {
+  onClear: () => void;
+  isVisible: boolean;
+}
 
 type SelectOption = {
   label: string;
@@ -27,6 +31,21 @@ type AdvancedFilterProps = {
   className?: string;
 };
 
+const ClearButton = ({ onClear, isVisible }: ClearButtonProps) => {
+  if (!isVisible) return null;
+
+  return (
+    <button
+      type="button" 
+      onClick={onClear}
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-500 hover:text-amber-700 rounded-full p-1.5 transition-colors duration-200 bg-cream/30 z-10"
+      title="Limpiar búsqueda"
+    >
+      <RotateCcw className="size-4" />
+    </button>
+  );
+};
+
 export const AdvancedFilter = ({
   searchValue,
   onSearchChange,
@@ -46,26 +65,38 @@ export const AdvancedFilter = ({
 
   return (
     <div
-      className={`flex flex-col sm:flex-row sm:flex-wrap gap-y-3 sm:gap-3 items-stretch w-full ${className}`}
+      className={`flex flex-col md:flex-row items-end justify-between ${className} -mb-1`}
     >
       {/* Input de búsqueda */}
-      <div className="relative w-1/3 lg:w-full sm:flex-1 min-w-[220px]">
-        <HiOutlineSearch
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-choco dark:text-cream"
-          size={20}
-        />
-        <input
-          type="text"
-          placeholder="Buscar por nombre o término..."
-          className="w-full rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-cocoa/50 dark:focus:ring-cream/70 placeholder:text-choco/60 dark:placeholder:text-cream/60"
-          value={searchValue}
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
+      <div className="flex flex-col gap-1 flex-[2] min-w-[240px] max-w-sm">
+        <span className="text-sm font-medium text-choco dark:text-cream invisible md:block">
+          &nbsp;
+        </span>
+        <div className="relative">
+          <SearchIcon
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-choco dark:text-cream"
+            size={18}
+          />
+          <input
+            type="text"
+            placeholder="Buscar por nombre o término..."
+            className="w-full rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-cocoa/50 dark:focus:ring-cream/70 placeholder:text-choco/60 dark:placeholder:text-cream/60 text-choco dark:text-cream"
+            value={searchValue}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+          <ClearButton onClear={onClear} isVisible={!!isFilterActive} />
+        </div>
       </div>
 
       {/* Selects dinámicos */}
       {selects.map((select, idx) => (
-        <div key={idx} className="w-1/3 lg:w-full sm:flex-1 min-w-[220px]">
+        <div
+          key={idx}
+          className="flex flex-col gap-1 flex-1 min-w-[160px] max-w-xs"
+        >
+          <span className="text-sm font-medium text-choco dark:text-cream invisible md:block">
+            &nbsp;
+          </span>
           <select
             value={select.value}
             onChange={(e) => select.onChange(e.target.value)}
@@ -83,49 +114,44 @@ export const AdvancedFilter = ({
 
       {/* Rango de fechas */}
       {onDateChange && dateRange && (
-        <div className="flex flex-col sm:flex-row gap-2 w-full sm:flex-1 min-w-[220px]">
-          <div className="flex flex-col text-sm text-choco dark:text-cream flex-1 w-1/3 min-w-[220px] sm:min-w-[110px] sm:w-full">
-            <label htmlFor={fromId} className="mb-1">
-              Desde
-            </label>
-            <input
-              id={fromId}
-              type="date"
-              value={dateRange.from}
-              onChange={(e) =>
-                onDateChange({ ...dateRange, from: e.target.value })
-              }
-              className="rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent px-3 py-2 text-sm focus:ring-2 focus:ring-cocoa/50 dark:focus:ring-cream/70"
-            />
+        <>
+          <div className="flex flex-col text-sm text-choco dark:text-cream gap-2 w-full md:flex-row md:gap-4 flex-1 min-w-[240px] max-w-sm justify-end">
+            <div className="flex flex-col gap-1 flex-1 min-w-[150px] max-w-min">
+              <label
+                htmlFor={fromId}
+                className="text-sm font-medium text-choco dark:text-cream"
+              >
+                Desde
+              </label>
+              <input
+                id={fromId}
+                type="date"
+                value={dateRange.from}
+                onChange={(e) =>
+                  onDateChange({ ...dateRange, from: e.target.value })
+                }
+                className="w-full rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent px-3 py-2 text-sm focus:ring-2 focus:ring-cocoa/50 dark:focus:ring-cream/70 text-choco dark:text-cream"
+              />
+            </div>
+            <div className="flex flex-col gap-1 flex-1 min-w-[150px] max-w-min">
+              <label
+                htmlFor={toId}
+                className="text-sm font-medium text-choco dark:text-cream"
+              >
+                Hasta
+              </label>
+              <input
+                id={toId}
+                type="date"
+                value={dateRange.to}
+                onChange={(e) =>
+                  onDateChange({ ...dateRange, to: e.target.value })
+                }
+                className="w-full rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent px-3 py-2 text-sm focus:ring-2 focus:ring-cocoa/50 dark:focus:ring-cream/70 text-choco dark:text-cream"
+              />
+            </div>
           </div>
-          <div className="flex flex-col text-sm text-choco dark:text-cream flex-1 w-1/3 min-w-[220px] sm:min-w-[110px] sm:w-full">
-            <label htmlFor={toId} className="mb-1">
-              Hasta
-            </label>
-            <input
-              id={toId}
-              type="date"
-              value={dateRange.to}
-              onChange={(e) =>
-                onDateChange({ ...dateRange, to: e.target.value })
-              }
-              className="rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent px-3 py-2 text-sm focus:ring-2 focus:ring-cocoa/50 dark:focus:ring-cream/70"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Botón limpiar */}
-      {isFilterActive && (
-        <div className="w-full sm:w-auto flex ml-2 items-end">
-          <button
-            onClick={onClear}
-            className="text-cream dark:text-choco hover:scale-110 transition-all duration-300 flex items-center justify-center cursor-pointer rounded-full bg-choco w-10 h-10 dark:bg-cream/70"
-            title="Limpiar filtro"
-          >
-            <GrPowerReset className="size-5" />
-          </button>
-        </div>
+        </>
       )}
     </div>
   );

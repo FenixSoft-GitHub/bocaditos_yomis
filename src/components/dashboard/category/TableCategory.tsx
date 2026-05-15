@@ -1,155 +1,142 @@
 import { Loader } from "@/components/shared/Loader";
 import { useCategories, useDeleteCategory } from "@/hooks";
-import { useState } from "react";
-import { CellTableProduct } from "../products/CellTableProduct";
+import { useState, useMemo } from "react";
 import { formatDate } from "@/helpers";
-import { Link, useNavigate } from "react-router-dom";
-import { PlusCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { DropdownMenu } from "@/components/shared/DropdownMenu";
 import { AdvancedFilter } from "@/components/shared/AdvancedFilter";
+import { Pagination } from "@/components/shared/Pagination";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { DashboardSection } from "@/components/dashboard/shared/DashboardSection";
+import { DashboardCard } from "@/components/dashboard/shared/DashboardCard";
+import { DashboardAddButton } from "@/components/dashboard/shared/DashboardAddButton";
+import { LayoutGrid, Calendar, FileText } from "lucide-react";
 
-const tableHeaders = ["Nombre", "Descripción", "Fecha de creación", ""];
+const ITEMS_PER_PAGE = 9;
 
 export const TableCategory = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
-  const { categories, isLoading } = useCategories();
-  const { mutate: deleteCat, isPending } = useDeleteCategory();
-
+  const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{
     id: string;
     name: string;
   } | null>(null);
+  const navigate = useNavigate();
+  const { categories, isLoading } = useCategories();
+  const { mutate: deleteCat, isPending } = useDeleteCategory();
 
-  // Funciones
-  const handleOpenModal = (id: string, name: string) => {
-    setSelectedCategory({ id, name });
-    setIsModalOpen(true);
-  };
+  const filtered = useMemo(
+    () =>
+      (categories ?? []).filter((c) =>
+        c.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    [categories, searchTerm],
+  );
 
-  const handleConfirmDelete = () => {
-    if (selectedCategory) {
-      deleteCat(selectedCategory.id);
-      setIsModalOpen(false);
-    }
-  };
+  const paginated = useMemo(() => {
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    return filtered.slice(start, start + ITEMS_PER_PAGE);
+  }, [filtered, page]);
 
   if (!categories || isLoading || isPending) return <Loader size={60} />;
 
-  const filteredCategories = categories.filter(
-    (category) =>
-      category.name &&
-      category.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="flex flex-col h-full min-h-[500px] bg-fondo dark:bg-fondo-dark text-choco dark:text-cream border border-cocoa/30 dark:border-cream/30 rounded-lg px-3 py-2 gap-3">
-      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-        <div className="w-full sm:w-auto">
-          <h1 className="text-xl font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
-            Categorías
-          </h1>
-          <p className="text-xs mb-1 font-regular">
-            Administración de Categorías
-          </p>
-        </div>
-
-        <div className="w-full sm:max-w-md">
+    <>
+      <DashboardSection
+        title="Categorías"
+        description="Organiza tus productos por categorías"
+        count={categories.length}
+        action={
+          <DashboardAddButton
+            to="/dashboard/category/new"
+            label="Nueva Categoría"
+          />
+        }
+        filters={
           <AdvancedFilter
             searchValue={searchTerm}
-            onSearchChange={setSearchTerm}
-            onClear={() => setSearchTerm("")}
+            onSearchChange={(v) => {
+              setSearchTerm(v);
+              setPage(1);
+            }}
+            onClear={() => {
+              setSearchTerm("");
+              setPage(1);
+            }}
           />
-        </div>
+        }
+        isEmpty={filtered.length === 0}
+        empty={
+          <>
+            <LayoutGrid className="size-12" />
+            <p className="text-sm font-medium">No se encontraron categorías</p>
+          </>
+        }
+      >
+        {paginated.map((category) => (
+          <DashboardCard key={category.id} className={"gap-4.5 m-1.5"}>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="size-9 rounded-lg bg-cocoa/15 dark:bg-cream/15 flex items-center justify-center shrink-0">
+                  <LayoutGrid className="size-4 text-choco/70 dark:text-cream/70" />
+                </div>
+                <p className="font-semibold text-sm text-choco dark:text-cream capitalize">
+                  {category.name}
+                </p>
+              </div>
+              <DropdownMenu
+                onEdit={() =>
+                  navigate(`/dashboard/category/edit/${category.id}`)
+                }
+                onDelete={() => {
+                  setSelectedCategory({ id: category.id, name: category.name });
+                  setIsModalOpen(true);
+                }}
+              />
+            </div>
 
-        <div className="w-full sm:w-auto flex sm:justify-end">
-          <Link
-            to="/dashboard/category/new"
-            className="inline-flex items-center min-w-[220px] gap-2 px-4 py-2 bg-cocoa hover:bg-cocoa/90 text-white text-sm font-medium rounded-md transition justify-center"
-          >
-            <PlusCircle size={20} className="inline-block mr-1" />
-            Nueva Categoría
-          </Link>
-        </div>
-      </div>
+            {category.description && (
+              <div className="flex items-start gap-1.5 text-xs text-choco/60 dark:text-cream/60 pt-2 border-t border-cocoa/10 dark:border-cream/10">
+                <FileText className="size-3 shrink-0 mt-0.5" />
+                <span className="line-clamp-2">{category.description}</span>
+              </div>
+            )}
 
-      {/* Tabla */}
-      <div className="relative w-full h-full overflow-x-auto">
-        <table className="min-w-[600px] text-sm w-full caption-bottom sm:table-auto">
-          <thead className="bg-cocoa/20 dark:bg-cream/10 text-choco dark:text-cream text-xs uppercase tracking-wide">
-            <tr className="bg-cocoa/30 dark:bg-cream/30 text-choco dark:text-cream rounded-md">
-              {tableHeaders.map((header, index) => (
-                <th
-                  key={index}
-                  className={`px-2 sm:px-4 py-2 font-semibold text-center ${
-                    index === 0 ? "rounded-l-md" : ""
-                  } ${index === tableHeaders.length - 1 ? "rounded-r-md" : ""}`}
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
+            <div className="flex items-center gap-1 text-[11px] text-choco/40 dark:text-cream/40">
+              <Calendar className="size-3" />
+              {formatDate(category.created_at as string)}
+            </div>
+          </DashboardCard>
+        ))}
 
-          {filteredCategories.length === 0 ? (
-            <tbody>
-              <tr>
-                <td
-                  colSpan={tableHeaders.length}
-                  className="text-center py-10 text-choco dark:text-cream"
-                >
-                  No se encontraron productos con ese término.
-                </td>
-              </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {filteredCategories.map((category, index) => {
-                return (
-                  <tr key={index}>
-                    <CellTableProduct
-                      content={category.name}
-                      className="text-left"
-                    />
+        {filtered.length > ITEMS_PER_PAGE && (
+          <div className="sm:col-span-2 xl:col-span-3 pt-2 border-t border-cocoa/20 dark:border-cream/10">
+            <Pagination
+              page={page}
+              setPage={setPage}
+              totalItems={filtered.length}
+            />
+          </div>
+        )}
+      </DashboardSection>
 
-                    <CellTableProduct
-                      content={category.description}
-                      className="text-left"
-                    />
-
-                    <CellTableProduct
-                      className="text-center"
-                      content={formatDate(category.created_at as string)}
-                    />
-
-                    <td className="relative">
-                      <DropdownMenu
-                        onEdit={() =>
-                          navigate(`/dashboard/category/edit/${category.id}`)
-                        }
-                        onDelete={() =>
-                          handleOpenModal(category.id, category.name)
-                        }
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          )}
-        </table>
-      </div>
       <ConfirmationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="¿Eliminar categoria?"
+        onConfirm={() => {
+          if (selectedCategory) {
+            deleteCat(selectedCategory.id);
+            setIsModalOpen(false);
+          }
+        }}
+        title="¿Eliminar categoría?"
         message={
           <>
-            ¿Estás seguro de que deseas eliminar la categoria:{" "}
-            <strong className="text-amber-600">{selectedCategory?.name}</strong>
+            ¿Eliminar{" "}
+            <strong className="text-choco dark:text-cream">
+              {selectedCategory?.name}
+            </strong>
             ?
           </>
         }
@@ -157,6 +144,6 @@ export const TableCategory = () => {
         cancelText="Cancelar"
         isConfirming={isPending}
       />
-    </div>
+    </>
   );
 };
