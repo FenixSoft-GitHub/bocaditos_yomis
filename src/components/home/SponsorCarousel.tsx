@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { sponsors } from '@/constants/Sponsors';
+import { useEffect, useRef } from "react";
+import { sponsors } from "@/constants/Sponsors";
 
 export const SponsorCarousel = () => {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -10,19 +10,15 @@ export const SponsorCarousel = () => {
 
     let animationFrame: number;
     let lastTimestamp = performance.now();
-    const speed = 50; // px/s
+    const speed = 45; // px/s
 
     const animate = (now: number) => {
       const elapsed = now - lastTimestamp;
       lastTimestamp = now;
-
       track.scrollLeft += (speed * elapsed) / 1000;
-
-      // Si llegamos a la mitad del contenido, volvemos sin que se note
       if (track.scrollLeft >= track.scrollWidth / 2) {
         track.scrollLeft = Math.floor(track.scrollLeft - track.scrollWidth / 2);
       }
-
       animationFrame = requestAnimationFrame(animate);
     };
 
@@ -31,30 +27,41 @@ export const SponsorCarousel = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-3 pt-6 pb-8 text-choco dark:text-cream">
-      <h2 className="font-bold text-2xl">Productos que disponemos</h2>
+    <div className="bg-fondo dark:bg-fondo-dark border-t border-cocoa/10 dark:border-cream/10 py-12">
+      <div className="container mx-auto px-4 mb-8 text-center">
+        <p className="text-xs font-semibold uppercase tracking-widest text-cocoa dark:text-cocoa mb-2">
+          Lo que ofrecemos
+        </p>
+        <h2 className="text-2xl md:text-3xl font-bold text-choco dark:text-cream">
+          Nuestra variedad artesanal
+        </h2>
+        <p className="text-sm text-choco/60 dark:text-cream/60 mt-2 max-w-md mx-auto leading-relaxed">
+          Desde chocolates hasta café, elaborados con ingredientes de la más
+          alta calidad para que disfrutes cada sabor.
+        </p>
+      </div>
 
-      <p className="w-2/3 text-center text-sm md:text-base">
-        Tenemos los mejores productos para ti, desde panes, tortas, dulces y chocolates hasta café, todos
-        elaborados con ingredientes de la más alta calidad. ¡Descúbrelos y disfruta de su sabor único!
-      </p>
-      <div className="relative w-full overflow-hidden py-6 dark:bg-cocoa/60 rounded-lg my-6">
-        {/* Gradientes laterales */}
-        <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-fondo via-fondo/80 to-transparent dark:from-fondo-dark dark:via-fondo-dark/80 z-10" />
-        <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-fondo via-fondo/80 to-transparent dark:from-fondo-dark dark:via-fondo-dark/80 z-10" />
+      {/* Track con fade en los bordes */}
+      <div className="relative w-full overflow-hidden">
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-fondo dark:from-fondo-dark to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-fondo dark:from-fondo-dark to-transparent z-10" />
 
         <div
           ref={trackRef}
-          className="overflow-x-scroll scrollbar-none flex gap-20 whitespace-nowrap px-10"
+          className="overflow-x-scroll scrollbar-none flex gap-20 whitespace-nowrap px-10 mt-8"
           style={{ scrollBehavior: "auto" }}
         >
           {[...sponsors, ...sponsors].map((logo, i) => (
-            <img
+            <div
               key={i}
-              src={logo}
-              alt={`sponsor-${i}`}
-              className="h-20 w-auto object-contain grayscale hover:grayscale-0 transition duration-300"
-            />
+              className="flex items-center justify-center shrink-0 size-24 rounded-full bg-cocoa/50 dark:bg-cream/60 border border-cocoa/10 dark:border-cocoa/10 shadow-sm hover:shadow-md transition-all duration-300 group"
+            >
+              <img
+                src={logo}
+                alt={`producto-${i}`}
+                className="size-14 object-contain grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-110"
+              />
+            </div>
           ))}
         </div>
       </div>

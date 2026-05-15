@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { BannerImages } from "@/constants/BannerImages";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Banner = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -62,7 +62,8 @@ const Banner = () => {
           to="/products"
           className="inline-flex items-center gap-2 bg-cream text-choco hover:bg-butter font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cream focus:ring-offset-2 focus:ring-offset-black/40"
         >
-          Ver Productos
+          Ver catálogo completo
+          <ArrowRight className="size-4" />
         </Link>
       </div>
 
