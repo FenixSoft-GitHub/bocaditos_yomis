@@ -4,12 +4,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CategoryFormValues, categorySchema } from "@/lib/validators";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Save, X, LayoutGrid, AlignLeft } from "lucide-react";
 
 interface Props {
   title: string;
   initialData?: CategoryFormValues | null;
 }
+
+const inputClass = `w-full px-4 py-2.5 text-sm rounded-lg border transition-all duration-200
+  bg-fondo dark:bg-fondo-dark text-choco dark:text-cream
+  placeholder:text-choco/40 dark:placeholder:text-cream/40
+  border-cocoa/30 dark:border-cream/20
+  focus:outline-none focus:ring-2 focus:ring-choco/20 dark:focus:ring-cream/20
+  focus:border-choco dark:focus:border-cream/60
+  disabled:opacity-50`;
+
+const labelClass =
+  "block text-xs font-semibold uppercase tracking-wider text-choco/60 dark:text-cream/60 mb-1.5";
+const errorClass = "text-xs text-red-500 dark:text-red-400 mt-1 pl-1";
 
 export const FormCategories = ({ title, initialData }: Props) => {
   const isEditing = !!initialData;
@@ -22,100 +34,130 @@ export const FormCategories = ({ title, initialData }: Props) => {
     reset,
   } = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
-    defaultValues: initialData || {
-      name: "",
-      description: "",
-    },
-  }); 
+    defaultValues: initialData || { name: "", description: "" },
+  });
 
   const { mutate: createCategory, isPending: isCreating } = useCreateCategory();
-  const { mutate: updateCategory, isPending: isUpdating } = useUpdateCategory(() => navigate("/dashboard/categories"));
+  const { mutate: updateCategory, isPending: isUpdating } = useUpdateCategory(
+    () => navigate("/dashboard/categories"),
+  );
 
   useEffect(() => {
-    if (initialData) {
-      reset(initialData);
-    }
+    if (initialData) reset(initialData);
   }, [initialData, reset]);
 
   const onSubmit = (values: CategoryFormValues) => {
     if (isEditing) {
       updateCategory({ id: initialData!.id as string, values });
     } else {
-      createCategory(values, {
-        onSuccess: () => reset(),
-      });
+      createCategory(values, { onSuccess: () => reset() });
     }
   };
 
+  const isBusy = isCreating || isUpdating;
+
   return (
-    <section className="w-full max-w-2xl mx-auto flex flex-col gap-10 bg-fondo text-choco dark:bg-fondo-dark dark:text-cream ">
-      <button
-        className="flex items-center gap-2 text-sm border border-cocoa dark:border-cream/30 rounded-full bg-cream dark:bg-cocoa/20 shadow-gray-400 shadow-md hover:bg-cocoa/20 hover:font-semibold dark:hover:bg-cocoa/20 px-6 py-1 w-fit mt-10"
-        onClick={() => navigate(-1)}
-      >
-        <ChevronLeft size={16} />
-        Volver
-      </button>
+    <div className="max-w-xl mx-auto px-4 py-6 text-choco dark:text-cream">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-8">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-lg bg-cocoa/10 dark:bg-cream/10 hover:bg-cocoa/20 dark:hover:bg-cream/20 transition-colors"
+          aria-label="Volver"
+        >
+          <ChevronLeft className="size-5" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold">{title}</h1>
+          <p className="text-xs text-choco/50 dark:text-cream/50 mt-0.5">
+            {isEditing
+              ? "Modifica los datos de la categoría"
+              : "Completa los datos para crear una categoría"}
+          </p>
+        </div>
+      </div>
 
-      <div className="border border-cocoa/40 rounded-xl shadow-md p-6">
-        <header className="mb-6">
-          <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-        </header>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {/* Card */}
+      <div className="bg-cream dark:bg-oscuro border border-cocoa/20 dark:border-cream/10 rounded-xl p-6 shadow-sm">
+        {/* Icono decorativo */}
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-cocoa/10 dark:border-cream/10">
+          <div className="w-10 h-10 rounded-xl bg-cocoa/15 dark:bg-cream/15 flex items-center justify-center">
+            <LayoutGrid className="size-5 text-choco/70 dark:text-cream/70" />
+          </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Nombre</label>
+            <p className="font-semibold text-sm">Categoría de Producto</p>
+            <p className="text-xs text-choco/50 dark:text-cream/50">
+              Las categorías ayudan a organizar tu catálogo
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          {/* Nombre */}
+          <div>
+            <label htmlFor="name" className={labelClass}>
+              <LayoutGrid className="size-3 inline mr-1" />
+              Nombre *
+            </label>
             <input
+              id="name"
               type="text"
+              placeholder="Ej: Panes, Galletas, Tortas..."
+              disabled={isBusy}
+              className={`${inputClass} ${errors.name ? "border-red-400 focus:ring-red-200" : ""}`}
               {...register("name")}
-              className={`w-full px-4 py-2 rounded-lg border text-sm bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-                errors.name
-                  ? "border-red-500"
-                  : "border-gray-300 dark:border-zinc-700"
-              }`}
-              placeholder="Nombre de la categoría"
             />
-            {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-            )}
+            {errors.name && <p className={errorClass}>{errors.name.message}</p>}
           </div>
 
+          {/* Descripción */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="description" className={labelClass}>
+              <AlignLeft className="size-3 inline mr-1" />
               Descripción
             </label>
             <textarea
+              id="description"
+              rows={4}
+              placeholder="Describe brevemente esta categoría..."
+              disabled={isBusy}
+              className={`${inputClass} resize-y ${errors.description ? "border-red-400 focus:ring-red-200" : ""}`}
               {...register("description")}
-              rows={3}
-              placeholder="Descripción de la categoría"
-              className={`w-full px-4 py-2 rounded-lg border text-sm bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-                errors.description
-                  ? "border-red-500"
-                  : "border-gray-300 dark:border-zinc-700"
-              }`}
             />
             {errors.description && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.description.message}
-              </p>
+              <p className={errorClass}>{errors.description.message}</p>
             )}
           </div>
 
-          <button
-            type="submit"
-            disabled={isCreating || isUpdating}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isCreating || isUpdating
-              ? isEditing
-                ? "Guardando cambios..."
-                : "Agregando..."
-              : isEditing
-              ? "Guardar cambios"
-              : "Agregar categoría"}
-          </button>
+          {/* Botones */}
+          <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+            <button
+              type="submit"
+              disabled={isBusy}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-semibold text-sm bg-choco text-cream dark:bg-cream dark:text-oscuro hover:bg-cocoa dark:hover:bg-butter transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+            >
+              <Save className="size-4" />
+              {isBusy
+                ? isEditing
+                  ? "Guardando..."
+                  : "Creando..."
+                : isEditing
+                  ? "Guardar cambios"
+                  : "Crear categoría"}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              disabled={isBusy}
+              className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm border border-cocoa/30 dark:border-cream/20 text-choco/70 dark:text-cream/70 hover:bg-cocoa/10 dark:hover:bg-cream/10 transition-all"
+            >
+              <X className="size-4" />
+              Cancelar
+            </button>
+          </div>
         </form>
       </div>
-    </section>
+    </div>
   );
 };

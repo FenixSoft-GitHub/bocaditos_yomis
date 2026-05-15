@@ -72,18 +72,18 @@ const Banner = () => {
           className="pointer-events-auto bg-black/30 hover:bg-black/60 text-cream p-2 sm:p-3 rounded-full transition-all duration-200 backdrop-blur-sm"
           aria-label="Imagen anterior"
         >
-          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+          <ChevronLeft className="size-5 sm:size-6" />
         </button>
         <button
           onClick={goToNext}
           className="pointer-events-auto bg-black/30 hover:bg-black/60 text-cream p-2 sm:p-3 rounded-full transition-all duration-200 backdrop-blur-sm"
           aria-label="Imagen siguiente"
         >
-          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          <ChevronRight className="size-5 sm:size-6" />
         </button>
       </div>
 
-      <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center gap-2">
+      <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center gap-4">
         {BannerImages.map((_, index) => (
           <button
             key={index}
@@ -91,8 +91,8 @@ const Banner = () => {
             aria-label={`Ir a imagen ${index + 1}`}
             className={`rounded-full transition-all duration-300 ${
               index === currentIndex
-                ? "bg-cream w-6 h-2"
-                : "bg-cream/50 w-2 h-2 hover:bg-cream/80"
+                ? "bg-cream w-6 h-3"
+                : "bg-cream/50 size-3 hover:bg-cream/80"
             }`}
           />
         ))}

@@ -99,7 +99,7 @@ const ProductCardComponent = ({ product, onEdit, onDelete }: ProductCardProps) =
         <div className="flex flex-col">
           {hasDiscount ? (
             <>
-              <span className="text-xs line-through text-choco/40 dark:text-cream/40">
+              <span className="text-xs line-through text-choco/70 dark:text-cream/60">
                 {formatPrice(product.price)}
               </span>
               <span className="text-base font-bold text-dorado">
