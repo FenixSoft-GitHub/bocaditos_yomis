@@ -72,22 +72,22 @@
 }
 
 #theater,
-#trophies-text h1,
+#trophies-text h2, 
 #trophies-text p {
   animation: cover-animation linear both;
   animation-timeline: view();
 }
-#theater-text h1,
+#theater-text h2,
 #theater-text p,
 #trophies {
   animation: entry-animation linear both;
   animation-timeline: view();
 }
 #theater          { animation-range: entry 10% cover 40%; }
-#theater-text h1  { animation-range: entry 10% cover 30%; }
+#theater-text h2  { animation-range: entry 10% cover 30%; }
 #theater-text p   { animation-range: entry 10% cover 20%; }
 #trophies         { animation-range: entry 30% cover 50%; }
-#trophies-text h1 { animation-range: entry 30% cover 40%; }
+#trophies-text h2 { animation-range: entry 30% cover 40%; }
 #trophies-text p  { animation-range: entry 20% cover 30%; }
 
 @keyframes entry-animation {

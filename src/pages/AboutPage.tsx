@@ -5,21 +5,24 @@ import Numeros from "@/components/about/Numeros";
 import { ArrowRight } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { breadcrumbSchema } from "@/components/seo/schemas";
+import { FadeIn } from "@/components/animations";
+import { Sections } from "@/components/about/Sections";
 
 const AboutPage = () => {
   return (
     <>
       <SEOHead
         title="Sobre Nosotros"
-        description="Conoce la historia de Bocaditos Yomi's, nuestra pasión por los snacks artesanales."
+        description="Conoce la historia de Bocaditos Yomi's, nuestra pasión por los snacks artesanales y el equipo detrás de cada bocadito."
         canonical="/about"
         schema={breadcrumbSchema([
           { name: "Inicio", url: "/" },
           { name: "Sobre Nosotros", url: "/about" },
         ])}
       />
-      <div className="w-full h-full">
-        {/* Hero Section */}
+
+      <div className="w-full text-choco dark:text-cream">
+        {/* ── Hero ─────────────────────────────────────────────────── */}
         <div className="relative w-full h-screen flex justify-end items-center">
           <img
             src="/img/about/about.avif"
@@ -28,160 +31,132 @@ const AboutPage = () => {
             fetchPriority="high"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* Gradiente oscuro hacia la derecha para destacar el texto */}
+          <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/40 to-black/10" />
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-fondo dark:from-fondo-dark to-transparent" />
 
-          <div className="relative max-w-[750px] flex flex-col text-end px-4 lg:px-12 gap-3.5 text-cream">
-            <h2 className="text-4xl font-bold mb-3 drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]">
-              Nuestra Razón de Ser
-            </h2>
-            <h3 className="text-2xl font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]">
-              Bocaditos Yomi's - Donde el sabor tiene alma
-            </h3>
-            <div className="text-balance text-end text-sm tracking-wide md:text-xl">
-              <p>
-                En <strong>Bocaditos Yomi's</strong> creemos que cada dulce
-                tiene una historia, y la nuestra comenzó en una cocina familiar,
-                entre risas, recetas heredadas y el amor por compartir algo
-                hecho con las manos y el corazón.
-              </p>
-              <p>
-                Somos una{" "}
-                <strong>pastelería, panadería y repostería artesanal</strong>{" "}
-                que nació con el sueño de llevar momentos dulces a la vida de
-                nuestros clientes. Desde nuestros primeros pedidos hasta hoy,
-                nos enfocamos en ofrecer productos frescos, hechos al momento,
-                con ingredientes de calidad y un toque casero que se siente en
-                cada bocado.
-              </p>
-            </div>
+          <div className="relative max-w-[700px] flex flex-col text-end px-4 lg:px-12 gap-4 text-cream">
+            <p className="text-xs font-semibold uppercase tracking-widest text-cream/70">
+              Bocaditos Yomi's · Nuestra historia
+            </p>
+            <h1 className="text-4xl md:text-5xl font-bold leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+              Donde el sabor tiene alma
+            </h1>
+            <p className="text-sm md:text-lg text-cream/90 leading-relaxed">
+              En Bocaditos Yomi's creemos que cada dulce tiene una historia. La
+              nuestra comenzó en una cocina familiar, entre risas, recetas
+              heredadas y el amor por compartir algo hecho con las manos y el
+              corazón.
+            </p>
           </div>
         </div>
 
-        <section className="max-w-[1400px] w-full mx-auto gap-4 lg:gap-10 text-pretty p-6 text-left text-xl sm:px-20 flex flex-col md:flex-row items-center justify-between md:p-8 my-1 lg:my-12">
-          <div
-            id="theater-text"
-            className="md:w-1/2 space-y-4 text-choco dark:text-cream"
-          >
-            <h1 className="mx-auto mb-10 text-balance text-left text-3xl lg:text-5xl font-semibold tracking-wide  drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)]">
-              Nuestra Historia
-            </h1>
-            <p>
-              Todo comenzó con una receta de familia, unas ganas inmensas de
-              crear momentos felices… y el aroma irresistible de un bizcocho
-              recién horneado. Bocaditos Yomi’s nació del amor por lo artesanal,
-              de esas manos que amasan con cariño y de sueños que se cocinan
-              lento, pero con mucho corazón.
-            </p>
-            <Link
-              to={"/about/nuestra-historia"}
-              className="inline-flex items-center gap-2 bg-cocoa/20 px-3 py-1 rounded-md text-sm text-oscuro dark:text-amber-400 dark:hover:text-dorado hover:underline font-medium hover:scale-105 transform-all ease-in-out duration-300"
-            >
-              Leer más
-              <ArrowRight className="size-4" />
-            </Link>
-          </div>
-          <div id="theater" className="mt-6 md:mt-0 md:w-1/2">
-            <img
-              className="object-cover w-full h-full rounded-md shadow-lg"
-              height={500}
-              src="/img/about/historia.avif"
-              style={{
-                aspectRatio: "812/556",
-                objectFit: "cover",
-              }}
-              width={500}
-            />
-          </div>
-        </section>
+        {/* ── Secciones Historia / Misión / Visión ──────────────────── */}
+        <div className="container mx-auto px-4 py-16 flex flex-col gap-20">
+          {Sections.map(
+            ({
+              id,
+              title,
+              text,
+              image,
+              imageAlt,
+              reverse,
+              link,
+              scenery,
+              sceneryText,
+              icon: Icon,
+            }) => (
+              <FadeIn key={id}>
+                <div
+                  className={`flex flex-col ${reverse ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-8 lg:gap-16`}
+                >
+                  {/* Imagen */}
+                  <div id={scenery} className="w-full md:w-1/2">
+                    <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video">
+                      <img
+                        src={image}
+                        alt={imageAlt}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    </div>
+                  </div>
 
-        <section className="max-w-[1400px] w-full mx-auto gap-4 lg:gap-10 text-pretty p-6 text-left text-xl sm:px-20 flex flex-col md:flex-row items-center justify-between md:p-8 my-1 lg:my-12">
-          <div id="trophies" className="mt-6 md:mt-0 md:w-1/2">
-            <img
-              className="object-cover w-full h-full rounded-md shadow-lg"
-              height={556}
-              src="/img/about/mision.avif"
-              style={{
-                aspectRatio: "812/556",
-                objectFit: "cover",
-              }}
-              width={812}
-            />
-          </div>
-          <div
-            id="trophies-text"
-            className="md:w-1/2 space-y-4 text-choco dark:text-cream"
-          >
-            <h1 className="mx-auto mb-10 text-balance text-left text-3xl lg:text-5xl font-semibold tracking-wide  drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)]">
-              Nuestra Misión
-            </h1>
-            <p>
-              Brindar experiencias dulces que generen emociones, elaborando
-              productos horneados con dedicación, tradición y creatividad, para
-              acompañar celebraciones y alegrar los días de quienes confían en
-              nosotros.
-            </p>
-          </div>
-        </section>
+                  {/* Texto */}
+                  <div
+                    id={sceneryText}
+                    className="w-full md:w-1/2 flex flex-col gap-5"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-xl bg-cocoa/15 dark:bg-cream/15 flex items-center justify-center shrink-0">
+                        <Icon className="size-5 text-choco/70 dark:text-cream/70" />
+                      </div>
+                      <p className="text-xs font-semibold uppercase tracking-widest text-cocoa">
+                        {title}
+                      </p>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold leading-snug">
+                      {title}
+                    </h2>
+                    <p className="text-sm md:text-base leading-relaxed text-choco/80 dark:text-cream/80">
+                      {text}
+                    </p>
+                    {link && (
+                      <Link
+                        to={link.to}
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-choco dark:text-cream hover:text-cocoa dark:hover:text-cocoa transition-colors group w-fit"
+                      >
+                        {link.label}
+                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </FadeIn>
+            ),
+          )}
+        </div>
 
-        <section className="max-w-[1400px] w-full mx-auto gap-4 lg:gap-10 text-pretty p-6 text-left text-xl sm:px-20 flex flex-col md:flex-row items-center justify-between md:p-8 my-1 lg:my-12">
-          <div
-            id="theater-text"
-            className="md:w-1/2 space-y-4 text-choco dark:text-cream"
-          >
-            <h1 className="mx-auto mb-10 text-balance text-left text-3xl lg:text-5xl font-semibold tracking-wide drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)]">
-              Nuestra Visión
-            </h1>
-            <p>
-              Ser la pastelería de referencia en la ciudad, reconocida por
-              nuestro compromiso con la calidad, el trato cercano y la
-              innovación en cada creación que sale de nuestro horno.
-            </p>
+        {/* ── Valores ───────────────────────────────────────────────── */}
+        <FadeIn>
+          <div className="bg-cocoa/5 dark:bg-cream/5 border-y border-cocoa/10 dark:border-cream/10 py-12 mt-8">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-10 max-w-2xl mx-auto">
+                <p className="text-xs font-semibold uppercase tracking-widest text-cocoa mb-2">
+                  Lo que nos define
+                </p>
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                  Nuestros Valores
+                </h2>
+                <p className="text-sm md:text-base leading-relaxed text-choco/70 dark:text-cream/70">
+                  En Bocaditos Yomi's, cada dulce que horneamos está lleno de
+                  intención. Nuestros valores son el alma de nuestra marca, y
+                  guían cada paso que damos, desde la selección de ingredientes
+                  hasta la sonrisa del cliente al recibir su pedido.
+                </p>
+              </div>
+
+              {/* Bento Grid de valores */}
+              <div className="w-full max-w-[1400px] grid lg:grid-cols-10 auto-rows-[22rem] gap-5 mx-auto">
+                {BentoAbout.map((item, index) => (
+                  <BentoItem
+                    key={index}
+                    title={item.title}
+                    description={item.description}
+                    url={item.url}
+                    classCol={item.classCol}
+                    classMax={item.classMax}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
-          <div id="theater" className="mt-6 md:mt-0 md:w-1/2">
-            <img
-              className="object-cover w-full h-full rounded-md shadow-lg"
-              height={500}
-              src="/img/about/vision.avif"
-              style={{
-                aspectRatio: "812/556",
-                objectFit: "cover",
-              }}
-              width={500}
-            />
-          </div>
-        </section>
+        </FadeIn>
 
-        <section className="text-xl text-center px-6 lg:px-20 lg:max-w-[70ch] text-pretty mx-auto my-4 mt-10 text-choco dark:text-cream">
-          <h1 className="text-3xl lg:text-5xl font-semibold text-wrap mx-auto mb-5 tracking-wide  drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)]">
-            Nuestros Valores
-          </h1>
-
-          <p>
-            En Bocaditos Yomi's, cada dulce que horneamos está lleno de
-            intención. Nuestros valores son el alma de nuestra marca, y guían
-            cada paso que damos, desde la selección de ingredientes hasta la
-            sonrisa del cliente al recibir su pedido. Creemos que la calidad va
-            más allá del sabor: se siente en el servicio, en los detalles y en
-            la pasión con la que trabajamos cada día.
-          </p>
-        </section>
-
-        <section className="w-full max-w-[1400px] grid lg:grid-cols-10 auto-rows-[35rem] gap-6 mx-auto p-6 md:p-8 lg:p-12">
-          {BentoAbout.map((item, index) => (
-            <BentoItem
-              key={index}
-              title={item.title}
-              description={item.description}
-              url={item.url}
-              classCol={item.classCol}
-              classMax={item.classMax}
-            />
-          ))}
-        </section>
-        <section>
+        {/* ── Números ───────────────────────────────────────────────── */}
+        <FadeIn>
           <Numeros />
-        </section>
+        </FadeIn>
       </div>
     </>
   );

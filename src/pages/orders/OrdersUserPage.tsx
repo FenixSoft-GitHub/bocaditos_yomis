@@ -76,7 +76,7 @@ const OrdersUserPage = () => {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-choco/50 dark:text-cream/50">
-                    Pedido #{(page - 1) * ITEMS_PER_PAGE + index + 1}
+                    Pedido # {(page - 1) * ITEMS_PER_PAGE + index + 1}
                   </p>
                   <StatusBadge status={order.status} />
                 </div>

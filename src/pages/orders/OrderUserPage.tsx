@@ -1,132 +1,165 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useOrder } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
-import { IoChevronBack } from "react-icons/io5";
-import { formatDateLong, formatPrice } from "@/helpers";
+import {
+  ChevronLeft,
+  Package,
+  MapPin,
+  Truck,
+  Tag,
+  DollarSign,
+  Calendar,
+} from "lucide-react";
+import { formatDateLong, formatPrice, formatToTwoDecimals } from "@/helpers";
+import { StatusBadge } from "@/components/dashboard/shared/StatusBadge";
+import { FadeIn } from "@/components/animations";
 
-const tableHeaders = ["Producto", "Cantidad", "Precio Unit.", "Importe"];
-  
 const OrderUserPage = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const orderIndex = location.state?.orderIndex;
-
-  const { data: order, isLoading } = useOrder(id as string);
-
   const navigate = useNavigate();
+  const orderIndex = location.state?.orderIndex;
+  const { data: order, isLoading } = useOrder(id as string);
 
   if (isLoading || !order) return <Loader size={60} />;
 
   return (
-    <div className="">
-      <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4">
-        {/* Botón Volver */}
-        <button
-          className="flex items-center gap-2 text-sm border border-cocoa dark:border-cream/70 rounded-full bg-cream dark:bg-cream/30 shadow-gray-400 shadow-md hover:bg-cocoa/20 hover:font-semibold dark:hover:bg-cocoa/20 px-6 py-1.5"
-          onClick={() => navigate(-1)}
-        >
-          <IoChevronBack size={16} />
-          Volver
-        </button>
-        {/* Título centrado */}
-        <div className="flex flex-col items-center gap-1.5 text-center">
-          <h1 className="text-3xl font-bold">Pedido # {orderIndex ?? id}</h1>
-          <p className="text-sm">{formatDateLong(order.created_at)}</p>
-        </div>
-        {/* Div vacío para alinear visualmente el centro */}
-        <div className="w-[112px] hidden md:block" />{" "}
-        {/* Aproximadamente el ancho del botón */}
-      </div>
-
-      <div className="flex flex-col mt-10 mb-5 gap-5 ">
-        <div className="w-full overflow-x-auto rounded-xl border border-cocoa dark:border-cream/70 shadow-sm">
-          <table className="text-sm w-full caption-bottom overflow-auto">
-            <thead className="w-full bg-cocoa/50 dark:bg-cream/30 text-xs uppercase text-choco dark:text-cream tracking-wide border-b border-cocoa dark:border-cream/70">
-              <tr>
-                {tableHeaders.map((header, index) => (
-                  <th
-                    key={index}
-                    className="h-12 text-center uppercase tracking-wide font-semibold"
-                  >
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {order.orderItems.map((product, index) => (
-                <tr
-                  key={index}
-                  className="border-b border-cocoa/70 dark:border-cream/30 "
-                >
-                  <td className="py-2 px-3 font-medium tracking-tighter flex gap-3 items-center">
-                    <img
-                      src={product.productImage}
-                      alt={product.productName}
-                      className="size-16 object-cover rounded-lg border border-cocoa/70 dark:border-cream/30"
-                    />
-                    <div className="space-y-2">
-                      <h3>{product.productName}</h3>
-                    </div>
-                  </td>
-                  <td className="p-4 font-medium tracking-tighter text-center">
-                    {product.quantity}
-                  </td>
-                  <td className="p-4 font-medium tracking-tighter text-center">
-                    {formatPrice(product.unit_price)}
-                  </td>
-                  <td className="p-4 font-medium tracking-tighter text-right">
-                    {formatPrice(product.subtotal)}
-                    {/* {formatPrice(product.price * product.quantity)} */}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="flex flex-col gap-1.5 text-sm self-end w-md p-4 border border-cocoa dark:border-cream/70 shadow-sm rounded-xl">
-          <div className="flex justify-between">
-            <p>Subtotal</p>
-            <p>{formatPrice(order.totalAmount)}</p>
-          </div>
-          <div className="flex justify-between font-semibold">
-            <p>Total</p>
-            <p>{formatPrice(order.totalAmount)}</p>
-          </div>
-          <div className="flex justify-between">
-            <p>Envío: </p>
-            <p>{order.deliveryOption}</p>
-          </div>
-          <div className="flex justify-between">
-            <p>Promoción: </p>
-            <p>{order.promoCode}</p>
+    <FadeIn>
+      <div className="max-w-3xl mx-auto px-4 py-2 text-choco dark:text-cream">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-lg bg-cocoa/10 dark:bg-cream/10 hover:bg-cocoa/20 dark:hover:bg-cream/20 transition-colors"
+            aria-label="Volver"
+          >
+            <ChevronLeft className="size-5" />
+          </button>
+          <div className="flex-1">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl font-bold">
+                Pedido # {orderIndex ?? id?.slice(0, 8)}
+              </h1>
+              <StatusBadge status={order.status} />
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-choco/50 dark:text-cream/50 mt-1">
+              <Calendar className="size-3" />
+              {formatDateLong(order.created_at)}
+            </div>
           </div>
         </div>
 
         <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-bold">Dirección</h2>
-
-          <div className="w-full overflow-x-auto rounded-xl border border-cocoa dark:border-cream/70 shadow-sm p-3 flex flex-col gap-5">
-            <div className="space-y-1 dark:bg-cream/20 bg-cocoa/20 p-3 rounded-md">
-              <h3 className="font-medium">Cliente:</h3>
-              <p>{order.user.full_name}</p>
+          {/* Productos */}
+          <div className="bg-cream dark:bg-oscuro border border-cocoa/20 dark:border-cream/10 rounded-2xl overflow-hidden shadow-sm">
+            <div className="flex items-center gap-2 px-5 py-3 border-b border-cocoa/10 dark:border-cream/10 bg-cocoa/5 dark:bg-cream/5">
+              <Package className="size-4 text-choco/60 dark:text-cream/60" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-choco/60 dark:text-cream/60">
+                Productos
+              </span>
             </div>
+            <ul className="divide-y divide-cocoa/10 dark:divide-cream/10">
+              {order.orderItems.map((item, index) => (
+                <li key={index} className="flex items-center gap-4 px-5 py-4">
+                  <img
+                    src={item.productImage}
+                    alt={item.productName}
+                    className="w-14 h-14 object-cover rounded-xl border border-cocoa/15 dark:border-cream/10 shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm line-clamp-2">
+                      {item.productName}
+                    </p>
+                    <p className="text-xs text-choco/50 dark:text-cream/50 mt-0.5">
+                      {formatPrice(item.unit_price)} ×{" "}
+                      {formatToTwoDecimals(item.quantity)}
+                    </p>
+                  </div>
+                  <p className="font-bold text-sm shrink-0">
+                    {formatPrice(item.subtotal)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            <div className="flex flex-col gap-1 px-2 text-sm">
-              <h3 className="font-medium text-base">Envío:</h3>
-              <p>{order.address.address_1}</p>
-              <p>{order.address.address_2 && order.address.address_2}</p>
-              <p>{order.address.city}</p>
-              <p>{order.address.state}</p>
-              <p>{order.address.postalCode}</p>
-              <p>{order.address.country}</p>
+          {/* Resumen */}
+          <div className="bg-cream dark:bg-oscuro border border-cocoa/20 dark:border-cream/10 rounded-2xl overflow-hidden shadow-sm">
+            <div className="flex items-center gap-2 px-5 py-3 border-b border-cocoa/10 dark:border-cream/10 bg-cocoa/5 dark:bg-cream/5">
+              <DollarSign className="size-4 text-choco/60 dark:text-cream/60" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-choco/60 dark:text-cream/60">
+                Resumen de pago
+              </span>
+            </div>
+            <div className="px-5 py-4 space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2 text-choco/60 dark:text-cream/60">
+                  <Truck className="size-4" />
+                  <span>Método de envío</span>
+                </div>
+                <span className="font-medium">
+                  {order.deliveryOption || "—"}
+                </span>
+              </div>
+              {order.promoCode && (
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-choco/60 dark:text-cream/60">
+                    <Tag className="size-4" />
+                    <span>Código promocional</span>
+                  </div>
+                  <span className="font-mono font-semibold text-dorado">
+                    {order.promoCode}
+                  </span>
+                </div>
+              )}
+              <div className="border-t border-cocoa/10 dark:border-cream/10 pt-3 flex items-center justify-between font-bold text-base">
+                <span>Total</span>
+                <span className="text-lg">
+                  {formatPrice(order.totalAmount)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Dirección */}
+          <div className="bg-cream dark:bg-oscuro border border-cocoa/20 dark:border-cream/10 rounded-2xl overflow-hidden shadow-sm">
+            <div className="flex items-center gap-2 px-5 py-3 border-b border-cocoa/10 dark:border-cream/10 bg-cocoa/5 dark:bg-cream/5">
+              <MapPin className="size-4 text-choco/60 dark:text-cream/60" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-choco/60 dark:text-cream/60">
+                Dirección de entrega
+              </span>
+            </div>
+            <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-choco/40 dark:text-cream/40 mb-1.5">
+                  Cliente
+                </p>
+                <p className="font-semibold">{order.user.full_name}</p>
+                <p className="text-sm text-choco/60 dark:text-cream/60">
+                  {order.user.email}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-choco/40 dark:text-cream/40 mb-1.5">
+                  Dirección
+                </p>
+                <div className="text-sm text-choco/80 dark:text-cream/80 space-y-0.5">
+                  <p>{order.address.address_1}</p>
+                  {order.address.address_2 && <p>{order.address.address_2}</p>}
+                  <p>
+                    {order.address.city}, {order.address.state}
+                  </p>
+                  {order.address.postalCode && (
+                    <p>CP: {order.address.postalCode}</p>
+                  )}
+                  <p>{order.address.country}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </FadeIn>
   );
 };
 

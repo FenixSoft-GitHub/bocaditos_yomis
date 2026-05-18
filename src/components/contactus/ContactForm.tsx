@@ -1,12 +1,29 @@
 import React, { useState } from "react";
 import emailjs from "@emailjs/browser";
-import { Send } from "lucide-react";
+import {
+  Send,
+  CheckCircle,
+  AlertCircle,
+  User,
+  Mail,
+  Phone,
+  MessageSquare,
+} from "lucide-react";
 import { ContactFormData } from "@components/contactus/types";
-import SuccessMessage from "@components/contactus/SuccessMessage";
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+const inputClass = `w-full px-4 py-3 text-sm rounded-xl border transition-all duration-200
+  bg-fondo dark:bg-fondo-dark text-choco dark:text-cream
+  placeholder:text-choco/40 dark:placeholder:text-cream/40
+  border-cocoa/30 dark:border-cream/20
+  focus:outline-none focus:ring-2 focus:ring-choco/20 dark:focus:ring-cream/20
+  focus:border-choco dark:focus:border-cream/60`;
+
+const labelClass =
+  "block text-xs font-semibold uppercase tracking-wider text-choco/60 dark:text-cream/60 mb-1.5";
 
 export const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -18,7 +35,7 @@ export const ContactForm: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const templateParams = {
     name: formData.name,
@@ -42,7 +59,6 @@ export const ContactForm: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setIsSuccess(false);
-
     try {
       await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
       setIsSuccess(true);
@@ -55,25 +71,45 @@ export const ContactForm: React.FC = () => {
     }
   };
 
-  const handleCloseSuccessMessage = () => {
-    setIsSuccess(false);
-  };
+  if (isSuccess)
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
+        <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+          <CheckCircle className="size-8 text-green-600 dark:text-green-400" />
+        </div>
+        <h3 className="text-xl font-bold text-choco dark:text-cream">
+          ¡Mensaje enviado!
+        </h3>
+        <p className="text-sm text-choco/60 dark:text-cream/60 max-w-xs">
+          Gracias por contactarnos. Te responderemos a la brevedad posible.
+        </p>
+        <button
+          onClick={() => setIsSuccess(false)}
+          className="btn-primary px-6 py-2.5 rounded-full text-sm mt-2"
+        >
+          Enviar otro mensaje
+        </button>
+      </div>
+    );
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-2xl mx-auto space-y-6 text-choco dark:text-cream bg-cream dark:bg-fondo-dark px-8 py-6 rounded-2xl shadow-lg dark:border dark:border-choco/50"
-    >
-      <h2 className="text-2xl font-bold mb-2 text-center drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
-        Contáctanos
-      </h2>
-      <p className="text-sm text-center">
-        Llena el siguiente formulario y te responderemos lo antes posible.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {/* <div>
+        <p className="text-xs font-semibold uppercase tracking-widest text-cocoa mb-1">
+          Contáctanos
+        </p>
+        <h3 className="text-xl font-bold text-choco dark:text-cream">
+          Puedes llegar a nosotros
+        </h3>
+        <p className="text-sm text-choco/60 dark:text-cream/60 mt-1 leading-relaxed">
+          Llena el siguiente formulario y te responderemos lo antes posible
+        </p>
+      </div> */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4.5 gap-x-5">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium ">
-            Nombre completo
+          <label className={labelClass}>
+            <User className="size-3 inline mr-1" />
+            Nombre completo *
           </label>
           <input
             type="text"
@@ -82,13 +118,14 @@ export const ContactForm: React.FC = () => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full mt-1 border text-sm border-cocoa/50 rounded-lg shadow-sm dark:border-cream/30 p-3 focus:border-choco dark:focus:border-cream focus:outline-none transition-colors focus:ring-1 duration-300"
+            placeholder="Tu nombre"
+            className={inputClass}
           />
         </div>
-
         <div>
-          <label htmlFor="email" className="block text-sm font-medium">
-            Correo electrónico
+          <label className={labelClass}>
+            <Mail className="size-3 inline mr-1" />
+            Correo electrónico *
           </label>
           <input
             type="email"
@@ -97,12 +134,13 @@ export const ContactForm: React.FC = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full mt-1 border text-sm border-cocoa/50 rounded-lg shadow-sm dark:border-cream/30 p-3 focus:border-choco dark:focus:border-cream focus:outline-none transition-colors focus:ring-1 duration-300"
+            placeholder="tu@correo.com"
+            className={inputClass}
           />
         </div>
-
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium">
+          <label className={labelClass}>
+            <Phone className="size-3 inline mr-1" />
             Teléfono (opcional)
           </label>
           <input
@@ -111,62 +149,65 @@ export const ContactForm: React.FC = () => {
             autoComplete="tel"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full mt-1 border text-sm border-cocoa/50 rounded-lg shadow-sm dark:border-cream/30 p-3 focus:border-choco dark:focus:border-cream focus:outline-none transition-colors focus:ring-1 duration-300"
+            placeholder="0414-1234567"
+            className={inputClass}
           />
         </div>
-
         <div>
-          <label htmlFor="subject" className="block text-sm font-medium">
-            Asunto
+          <label className={labelClass}>
+            <MessageSquare className="size-3 inline mr-1" />
+            Asunto *
           </label>
           <select
             name="subject"
             value={formData.subject}
             onChange={handleChange}
             required
-            className="w-full mt-1 border text-sm border-cocoa/50 rounded-lg shadow-sm dark:border-cream/30 p-3 focus:border-choco dark:focus:border-cream focus:outline-none transition-colors focus:ring-1 duration-300"
+            className={inputClass}
           >
             <option value="">Selecciona un asunto</option>
             <option value="Consulta sobre un producto">
               Consulta sobre un producto
             </option>
-            <option value="Soporte técnico">Soporte técnico</option>
+            <option value="Pedido especial">Pedido especial</option>
             <option value="Pregunta sobre un pedido">
               Pregunta sobre un pedido
             </option>
             <option value="Devoluciones">Devoluciones</option>
+            <option value="Soporte técnico">Soporte técnico</option>
             <option value="Otro">Otro</option>
           </select>
         </div>
       </div>
+
       <div>
-        <label htmlFor="message" className="block text-sm font-medium">
-          Mensaje
-        </label>
+        <label className={labelClass}>Mensaje *</label>
         <textarea
           name="message"
-          id="message"
           value={formData.message}
           onChange={handleChange}
-          rows={3}
+          rows={4}
           required
-          className="w-full mt-1 border text-sm border-cocoa/50 rounded-lg shadow-sm dark:border-cream/30 p-3 focus:border-choco dark:focus:border-cream focus:outline-none transition-colors focus:ring-1 duration-300"
-        ></textarea>
+          placeholder="Cuéntanos en qué podemos ayudarte..."
+          className={`${inputClass} resize-y`}
+        />
       </div>
+
+      {error && (
+        <div className="flex items-center gap-2 text-red-500 dark:text-red-400 text-sm">
+          <AlertCircle className="size-4 shrink-0" />
+          {error}
+        </div>
+      )}
+
       <button
         type="submit"
         disabled={isLoading}
-        className={`w-full flex justify-center items-center gap-2 mb-4 py-3 px-6 rounded-xl text-cream font-medium transition-all duration-200 cursor-pointer ${
-          isLoading
-            ? "bg-oscuro cursor-wait"
-            : "bg-amber-600 text-white dark:bg-amber-500 dark:text-black hover:bg-amber-700 dark:hover:bg-amber-600 focus:ring-2 focus:ring-amber-400"
-        }`}
+        className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-semibold text-sm bg-choco text-cream dark:bg-cream dark:text-oscuro hover:bg-cocoa dark:hover:bg-butter transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
       >
-        <Send className="text-lg" />
+        <Send className="size-4" />
         {isLoading ? "Enviando..." : "Enviar Mensaje"}
       </button>
-      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-      {isSuccess && <SuccessMessage onClose={handleCloseSuccessMessage} />}
     </form>
   );
 };

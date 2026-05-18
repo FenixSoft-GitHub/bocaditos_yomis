@@ -49,7 +49,7 @@ export const ReviewSection = ({ productId }: Props) => {
   if (!reviews) return null;
 
   return (
-    <div className="px-4 md:px-12 lg:px-24 py-12 text-choco dark:text-cream">
+    <div className="px-4 md:px-12 lg:px-24 py-10 text-choco dark:text-cream">
       <h3 className="text-xl font-semibold mb-6">Reseñas de clientes</h3>
 
       {isLoading ? (

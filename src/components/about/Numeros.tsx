@@ -11,7 +11,7 @@ const Numeros = () => {
   return (
     <section
       ref={ref}
-      className="w-full max-w-[1300px] mx-auto p-6 md:p-8 lg:p-10 bg-cream dark:bg-oscuro/70 rounded-lg mt-4 shadow-md mb-8"
+      className="w-full max-w-[1250px] mx-auto p-6 md:p-8 lg:p-10 bg-cream dark:bg-oscuro/70 rounded-2xl shadow-md my-8"
     >
       <h2 className="text-3xl lg:text-6xl text-center text-balance font-body4 tracking-widest dark:text-dorado mb-2 lg:mb-4 font-semibold font-lexend text-choco  drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)]">
         Bocaditos Yomi's

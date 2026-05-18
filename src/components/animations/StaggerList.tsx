@@ -11,7 +11,7 @@ export const StaggerList = ({ children, className, delay = 0 }: Props) => (
   <motion.div
     initial="hidden"
     whileInView="visible"
-    viewport={{ once: true, margin: "-30px" }}
+    viewport={{ once: false, margin: "-30px" }}
     variants={{
       hidden: {},
       visible: { transition: { staggerChildren: 0.08, delayChildren: delay } },
