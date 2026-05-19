@@ -94,17 +94,7 @@ const DashboardOrderPage = () => {
                   {order.delivery_options || "—"}
                 </span>
               </div>
-              {/* {order.promoCode && (
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2 text-choco/60 dark:text-cream/60">
-                    <Tag className="size-4" />
-                    <span>Código promocional</span>
-                  </div>
-                  <span className="font-mono font-semibold text-dorado">
-                    {order.promoCode}
-                  </span>
-                </div>
-              )} */}
+              
               <div className="border-t border-cocoa/10 dark:border-cream/10 pt-3 flex items-center justify-between font-bold text-base">
                 <span>Total</span>
                 <span className="text-lg">

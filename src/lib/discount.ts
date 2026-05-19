@@ -6,13 +6,6 @@ export type Discount = {
   ends_at: string;
   product_id: string;
   created_at: string;
-  // created_at: string;
-  // discount_type: string;
-  // ends_at: string;
-  // id: string;
-  // product_id: string;
-  // starts_at: string;
-  // value: number;
 };
  
   export const isDiscountActive = (discount?: Discount): boolean => {

@@ -136,14 +136,6 @@ export const Search = () => {
                               {formatPrice(product.price)}
                             </span>
                           )}
-                        {/* </div> */}
-                        {/* <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex justify-between gap-1">
-                          {product.stock && product.stock > 0 ? (
-                            `Stock: ${product.stock}`
-                          ) : (
-                            <span className="text-red-500">Agotado</span>
-                          )}
-                        </div> */}
                       </div>
                     </div>
                   </button>
