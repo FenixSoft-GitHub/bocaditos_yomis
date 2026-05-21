@@ -7,7 +7,10 @@ import {
   Users,
   BarChart3,
   LayoutGrid,
+  CreditCard,
+  Receipt,
 } from "lucide-react";
+
 
 export const DashboardLinks = [
   {
@@ -57,5 +60,17 @@ export const DashboardLinks = [
     title: "Gráficos",
     href: "/dashboard/charts",
     icon: <BarChart3 size={22} />,
+  },
+  {
+    id: 9,
+    title: "Comprobantes",
+    href: "/dashboard/receipts",
+    icon: <Receipt size={22} />,
+  },
+  {
+    id: 10,
+    title: "Métodos de Pago",
+    href: "/dashboard/payment-methods",
+    icon: <CreditCard size={22} />,
   },
 ];

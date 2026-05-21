@@ -6,9 +6,7 @@ export * from "./products/useHomeProducts";
 export * from "./products/useFilteredProducts";
 export * from "./products/useProductsAll";
 export * from "./products/useProductPages";
-export * from "./products/useByIdProduct"
-
-
+export * from "./products/useByIdProduct";
 
 //Auth
 export * from "./auth/useUser";
@@ -20,10 +18,9 @@ export * from "./auth/useCustomer";
 //Orders
 export * from "./orders/useAllOrders";
 export * from "./orders/useChangeStatusOrder";
-export * from "./orders/useCreateOrder";
 export * from "./orders/useOrder";
 export * from "./orders/useOrderAdmin";
-export * from "./orders/useOrders";;
+export * from "./orders/useOrders";
 
 //Deliverys
 export * from "./deliverys/useDeliverys";
@@ -35,26 +32,29 @@ export * from "./promo/useCreatePromo";
 export * from "./promo/useDeletePromo";
 export * from "./promo/useUpdatePromo";
 
-
 //Categorias
-export * from "./categories/useCategories"
-export * from "./categories/useCreateCategory"
-export * from "./categories/useDeleteCategory"
-export * from "./categories/useUpdateCategory"
-export * from "./categories/useCategoryById"
+export * from "./categories/useCategories";
+export * from "./categories/useCreateCategory";
+export * from "./categories/useDeleteCategory";
+export * from "./categories/useUpdateCategory";
+export * from "./categories/useCategoryById";
 
 //Reviews
-export * from "./reviews/useCreateReview"
-export * from "./reviews/useGetReviewsByProduct"
+export * from "./reviews/useCreateReview";
+export * from "./reviews/useGetReviewsByProduct";
 
 //Discounts
-export * from "./discounts/useCreateDiscount"
-export * from "./discounts/useUpdateDiscount"
-export * from "./discounts/useDeleteDiscount"
+export * from "./discounts/useCreateDiscount";
+export * from "./discounts/useUpdateDiscount";
+export * from "./discounts/useDeleteDiscount";
 
+export * from "./charts/useSalesData";
 
-export * from "./charts/useSalesData"
+export * from "./users/useUserData";
 
-export * from "./users/useUserData"
+export * from "./blog/useBlogData";
 
-export * from "./blog/useBlogData"
+export * from "./checkout/useCreateOrder";
+export * from "./checkout/useSubmitReceipt";
+export * from "./checkout/usePaymentMethods";
+export * from "./checkout/useCheckout";

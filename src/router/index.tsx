@@ -33,6 +33,7 @@ import {
   Condiciones,
   DashboardChartsPage,
   DashboardUsersPage,
+  DashboardReceiptsPage, 
   BlogDashboardPage,
   NewBlogPostPage,
   EditBlogPostPage,
@@ -59,7 +60,6 @@ export const AppRoutes = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-      // ── Rutas públicas ──────────────────────────────────────────
       { path: "/", element: s(<HomePage />) },
       { path: "/products", element: s(<ProductsPage />) },
       { path: "/products/:slug", element: s(<ProductPage />) },
@@ -75,7 +75,6 @@ export const AppRoutes = createBrowserRouter([
       { path: "/policies", element: s(<Policies />) },
       { path: "/conditions", element: s(<Condiciones />) },
 
-      // ── Rutas protegidas de cliente (requiere sesión) ───────────
       {
         element: <ProtectedRoute />,
         children: [
@@ -90,12 +89,10 @@ export const AppRoutes = createBrowserRouter([
           },
         ],
       },
-      // ── 404 dentro del Layout (con NavBar y Footer) ─────────
       { path: "*", element: s(<NotFoundPage />) },
     ],
   },
 
-  // ── Checkout protegido (fuera del Layout principal) ─────────────
   {
     element: <ProtectedRoute />,
     children: [
@@ -104,7 +101,6 @@ export const AppRoutes = createBrowserRouter([
     ],
   },
 
-  // ── Dashboard protegido (requiere sesión + rol admin) ────────────
   {
     element: <AdminRoute />,
     children: [
@@ -121,6 +117,7 @@ export const AppRoutes = createBrowserRouter([
           },
           { path: "orders", element: s(<DashboardOrdersPage />) },
           { path: "orders/:id", element: s(<DashboardOrderPage />) },
+          { path: "receipts", element: s(<DashboardReceiptsPage />) },
           { path: "categories", element: s(<DashboardCategoriesPage />) },
           { path: "category/new", element: s(<DashboardCategoryUpdatePage />) },
           {
@@ -152,6 +149,5 @@ export const AppRoutes = createBrowserRouter([
     ],
   },
 
-  // ── Fallback global 404 ──────────────────────────────────────
   { path: "*", element: s(<NotFoundPage />) },
 ]);

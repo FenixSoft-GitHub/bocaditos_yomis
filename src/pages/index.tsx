@@ -81,6 +81,10 @@ export const DashboardChartsPage = lazy(
 export const DashboardUsersPage = lazy(
   () => import("@pages/dashboard/DashboardUsersPage"),
 );
+export const DashboardReceiptsPage = lazy(
+  // ← NUEVO
+  () => import("@pages/dashboard/DashboardReceiptsPage"),
+);
 export const BlogDashboardPage = lazy(
   () => import("@pages/dashboard/blog/BlogDashboardPage"),
 );

@@ -186,3 +186,66 @@ export const promoCodeSchema = z.object({
   });
 
   export type ReviewFormValues = z.infer<typeof reviewSchema>;
+
+  // ─── Checkout ─────────────────────────────────────────────────────────────────
+
+export const checkoutSchema = z.object({
+  // Dirección
+  full_name: z
+    .string()
+    .min(3, "El nombre del destinatario es requerido"),
+  address_1: z
+    .string()
+    .min(5, "La dirección es requerida")
+    .max(100, "La dirección no debe exceder 100 caracteres"),
+  address_2: z
+    .string()
+    .max(100, "No debe exceder 100 caracteres")
+    .optional(),
+  city: z
+    .string()
+    .min(2, "La ciudad es requerida")
+    .max(50, "No debe exceder 50 caracteres"),
+  state: z
+    .string()
+    .min(2, "El estado es requerido")
+    .max(50, "No debe exceder 50 caracteres"),
+  country: z
+    .string()
+    .min(2, "El país es requerido"),
+  postal_code: z
+    .string()
+    .max(10, "No debe exceder 10 caracteres")
+    .optional(),
+  phone: z
+    .string()
+    .min(7, "Ingresa un teléfono de contacto"),
+  // Envío y pago
+  delivery_option_id: z
+    .string()
+    .min(1, "Selecciona un método de envío"),
+  payment_type: z.enum(["pago_movil", "transferencia"], {
+    required_error: "Selecciona un método de pago",
+  }),
+  promo_code: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export type CheckoutFormValues = z.infer<typeof checkoutSchema>;
+
+// Schema para el comprobante de pago
+export const receiptSchema = z.object({
+  payment_method_id: z
+    .string()
+    .min(1, "Selecciona un banco"),
+  reference_number: z
+    .string()
+    .min(1, "El número de referencia es requerido"),
+  payment_date: z
+    .string()
+    .min(1, "La fecha del pago es requerida"),
+  amount: z.number().positive(),
+  order_id: z.string().uuid(),
+});
+
+export type ReceiptFormValues = z.infer<typeof receiptSchema>;

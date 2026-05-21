@@ -1,152 +1,259 @@
-import { supabase } from '@/supabase/client';
+import { supabase } from "@/supabase/client";
 
 interface IAuthLogin {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 interface IAuthRegister {
-	email: string;
-	password: string;
-	fullName: string;
-	phone?: string;
+  email: string;
+  password: string;
+  fullName: string;
+  phone?: string;
 }
 
 export const signUp = async ({
-	email,
-	password,
-	fullName,
-	phone,
+  email,
+  password,
+  fullName,
+  phone,
 }: IAuthRegister) => {
-	try {
-		// 1. Crear o Registrar usuario
-		const { data, error } = await supabase.auth.signUp({
-			email,
-			password,
-		});
+  // 1. Crear usuario en auth — el trigger handle_new_user
+  //    crea automáticamente el registro en public.users
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: fullName, phone }, // el trigger lee raw_user_meta_data
+    },
+  });
 
-		if (error) {
-			throw new Error(error.message);
-		}
+  if (error) throw new Error(error.message);
 
-		const userId = data.user?.id;
+  const userId = data.user?.id;
+  if (!userId) throw new Error("Error al obtener el id del usuario");
 
-		if (!userId) {
-			throw new Error('Error al obtener el id del usuario');
-		}
+  // 2. Autenticar al usuario
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (signInError) throw new Error("Email o contraseña incorrectos");
 
-		// 2. Autenticar al usuario
-		const { error: signInError } =
-			await supabase.auth.signInWithPassword({
-				email,
-				password,
-			});
+  // 3. Insertar rol por defecto
+  // El trigger ya creó el usuario en public.users con el mismo id
+  const { error: roleError } = await supabase
+    .from("user_role")
+    .insert({ user_id: userId, role: "customer" });
 
-		if (signInError) {
-			console.log(signInError);
-			throw new Error('Email o contraseña incorrectos');
-		}
+  if (roleError) throw new Error("Error al registrar el rol del usuario");
 
-		// 3. Insertar el rol por defecto - User (Cliente)
-		const { error: roleError } = await supabase
-			.from('user_role')
-			.insert({
-				user_id: userId,
-				role: 'customer',
-			});
+  // 4. Actualizar phone si se proporcionó
+  // (el trigger inserta full_name y email, phone lo actualizamos aquí)
+  if (phone) {
+    await supabase.from("users").update({ phone }).eq("id", userId);
+  }
 
-		if (roleError) {
-			console.log(roleError);
-			throw new Error('Error al registrar el rol del usuario');
-		}
-
-		// 4. Insertar los datos del usuario en la tabla customers (Clientes)
-		const { error: customerError } = await supabase
-			.from('users')
-			.insert({
-				user_id: userId,
-				full_name: fullName,
-				phone,
-				email,
-			});
-
-		if (customerError) {
-			console.log(customerError);
-			throw new Error('Error al registrar los datos del usuario');
-		}
-
-		return data;
-	} catch (error) {
-		console.log(error);
-		throw new Error('Error al registrar el usuario');
-	}
+  return data;
 };
 
 export const signIn = async ({ email, password }: IAuthLogin) => {
-	const { data, error } = await supabase.auth.signInWithPassword({
-		email,
-		password,
-	});
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-	if (error) {
-		console.log(error);
-		throw new Error('Email o contraseña incorrectos');
-	}
-
-	return { data };
+  if (error) throw new Error("Email o contraseña incorrectos");
+  return { data };
 };
 
 export const signOut = async () => {
-	const { error } = await supabase.auth.signOut();
-
-	if (error) {
-		console.log(error);
-		throw new Error('Error al cerrar sesión');
-	}
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error("Error al cerrar sesión");
 };
 
 export const getSession = async () => {
-	const { data, error } = await supabase.auth.getSession();
-
-	if (error) {
-		console.log(error);
-		throw new Error('Error al obtener la sesión');
-	}
-
-	return data;
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw new Error("Error al obtener la sesión");
+  return data;
 };
 
-// Esta es la función que yo agregue para obtener el nombre del usuario
 export const getUserProfile = async (userId: string) => {
-	try {
-	  const { data, error } = await supabase
-		.from('users')
-		.select('full_name')
-		.eq('user_id', userId)
-		.single();
-  
-	  if (error) {
-		throw error;
-	  }
-  
-	  return data;
-	} catch (error) {
-	  console.error('Error al obtener el perfil del usuario:', error);
-	  return null;
-	}
-  };
+  try {
+    const { data, error } = await supabase
+      .from("users")
+      .select("full_name, email, phone")
+      .eq("id", userId) // ← corregido: era .eq('user_id', userId)
+      .single();
 
-  export const getUserRole = async (userId: string) => {
-	const { data, error } = await supabase
-		.from('user_role')
-		.select('role')
-		.eq('user_id', userId)
-		.single();
-
-	if (error) {
-		console.log(error);
-		throw new Error('Error al obtener los datos del usuario');
-	}
-
-	return data.role;
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error al obtener el perfil del usuario:", error);
+    return null;
+  }
 };
+
+export const getUserRole = async (userId: string) => {
+  const { data, error } = await supabase
+    .from("user_role")
+    .select("role")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) throw new Error("Error al obtener el rol del usuario");
+  return data.role;
+};
+
+// import { supabase } from '@/supabase/client';
+
+// interface IAuthLogin {
+// 	email: string;
+// 	password: string;
+// }
+
+// interface IAuthRegister {
+// 	email: string;
+// 	password: string;
+// 	fullName: string;
+// 	phone?: string;
+// }
+
+// export const signUp = async ({
+// 	email,
+// 	password,
+// 	fullName,
+// 	phone,
+// }: IAuthRegister) => {
+// 	try {
+// 		// 1. Crear o Registrar usuario
+// 		const { data, error } = await supabase.auth.signUp({
+// 			email,
+// 			password,
+// 		});
+
+// 		if (error) {
+// 			throw new Error(error.message);
+// 		}
+
+// 		const userId = data.user?.id;
+
+// 		if (!userId) {
+// 			throw new Error('Error al obtener el id del usuario');
+// 		}
+
+// 		// 2. Autenticar al usuario
+// 		const { error: signInError } =
+// 			await supabase.auth.signInWithPassword({
+// 				email,
+// 				password,
+// 			});
+
+// 		if (signInError) {
+// 			console.log(signInError);
+// 			throw new Error('Email o contraseña incorrectos');
+// 		}
+
+// 		// 3. Insertar el rol por defecto - User (Cliente)
+// 		const { error: roleError } = await supabase
+// 			.from('user_role')
+// 			.insert({
+// 				user_id: userId,
+// 				role: 'customer',
+// 			});
+
+// 		if (roleError) {
+// 			console.log(roleError);
+// 			throw new Error('Error al registrar el rol del usuario');
+// 		}
+
+// 		// 4. Insertar los datos del usuario en la tabla customers (Clientes)
+// 		const { error: customerError } = await supabase
+// 			.from('users')
+// 			.insert({
+// 				user_id: userId,
+// 				full_name: fullName,
+// 				phone,
+// 				email,
+// 			});
+
+// 		if (customerError) {
+// 			console.log(customerError);
+// 			throw new Error('Error al registrar los datos del usuario');
+// 		}
+
+// 		return data;
+// 	} catch (error) {
+// 		console.log(error);
+// 		throw new Error('Error al registrar el usuario');
+// 	}
+// };
+
+// export const signIn = async ({ email, password }: IAuthLogin) => {
+// 	const { data, error } = await supabase.auth.signInWithPassword({
+// 		email,
+// 		password,
+// 	});
+
+// 	if (error) {
+// 		console.log(error);
+// 		throw new Error('Email o contraseña incorrectos');
+// 	}
+
+// 	return { data };
+// };
+
+// export const signOut = async () => {
+// 	const { error } = await supabase.auth.signOut();
+
+// 	if (error) {
+// 		console.log(error);
+// 		throw new Error('Error al cerrar sesión');
+// 	}
+// };
+
+// export const getSession = async () => {
+// 	const { data, error } = await supabase.auth.getSession();
+
+// 	if (error) {
+// 		console.log(error);
+// 		throw new Error('Error al obtener la sesión');
+// 	}
+
+// 	return data;
+// };
+
+// // Esta es la función que yo agregue para obtener el nombre del usuario
+// export const getUserProfile = async (userId: string) => {
+// 	try {
+// 	  const { data, error } = await supabase
+// 		.from('users')
+// 		.select('full_name')
+// 		.eq('user_id', userId)
+// 		.single();
+
+// 	  if (error) {
+// 		throw error;
+// 	  }
+
+// 	  return data;
+// 	} catch (error) {
+// 	  console.error('Error al obtener el perfil del usuario:', error);
+// 	  return null;
+// 	}
+//   };
+
+//   export const getUserRole = async (userId: string) => {
+// 	const { data, error } = await supabase
+// 		.from('user_role')
+// 		.select('role')
+// 		.eq('user_id', userId)
+// 		.single();
+
+// 	if (error) {
+// 		console.log(error);
+// 		throw new Error('Error al obtener los datos del usuario');
+// 	}
+
+// 	return data.role;
+// };

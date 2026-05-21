@@ -3,20 +3,59 @@ import { useCartStore } from "@/store/cart.store";
 import { FormCheckout } from "@/components/checkout/FormCheckout";
 import { ItemsCheckout } from "@/components/checkout/ItemsCheckout";
 import { ShoppingCart } from "lucide-react";
+import { useCheckout } from "@/hooks/checkout/useCheckout";
+import { PaymentInfo } from "@/components/checkout/PaymentInfo";
+import { OrderConfirmed } from "@/components/checkout/OrderConfirmed";
 
 const CheckoutPage = () => {
   const totalItems = useCartStore((state) => state.totalItemsInCart);
+  const {
+    step,
+    loading,
+    error,
+    orderData,
+    handleCreateOrder,
+    handleSubmitReceipt,
+    goToOrders,
+  } = useCheckout();
 
+  // Paso 3 — Confirmación
+  if (step === "confirmed" && orderData) {
+    return (
+      <main className="min-h-screen bg-fondo dark:bg-fondo-dark flex items-center justify-center px-4">
+        <OrderConfirmed
+          orderId={orderData.order_id}
+          onViewOrders={goToOrders}
+        />
+      </main>
+    );
+  }
+
+  // Paso 2 — Datos bancarios + comprobante
+  if (step === "payment" && orderData) {
+    return (
+      <main className="min-h-screen bg-fondo dark:bg-fondo-dark px-4 py-10">
+        <PaymentInfo
+          orderData={orderData}
+          onSubmit={handleSubmitReceipt}
+          loading={loading}
+          error={error}
+        />
+      </main>
+    );
+  }
+
+  // Paso 1 — Formulario
   return (
     <main className="min-h-screen bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
-      {/* Header del checkout */}
+      {/* Header */}
       <div className="border-b border-cocoa/20 dark:border-cream/10 py-1 px-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <img
               src="/LogoBocaditosYomis.avif"
               alt="Bocaditos Yomi's"
-              className="w-18 h-18 object-contain"
+              className="size-18 object-contain"
             />
             <span className="font-semibold text-sm hidden sm:block">
               Bocaditos Yomi's
@@ -31,7 +70,7 @@ const CheckoutPage = () => {
         </div>
       </div>
 
-      {/* Contenido */}
+      {/* Carrito vacío */}
       {totalItems === 0 ? (
         <div className="flex flex-col items-center justify-center gap-6 py-24 px-4 text-center">
           <img
@@ -56,10 +95,14 @@ const CheckoutPage = () => {
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-73px)]">
           {/* Formulario */}
           <div className="p-6 md:p-10 border-r-0 lg:border-r border-cocoa/20 dark:border-cream/10">
-            <FormCheckout />
+            <FormCheckout
+              onOrderCreated={handleCreateOrder}
+              loading={loading}
+              error={error}
+            />
           </div>
 
-          {/* Resumen — solo en desktop */}
+          {/* Resumen desktop */}
           <div className="hidden lg:block p-6 md:p-10">
             <div className="sticky top-6">
               <h2 className="text-lg font-semibold mb-4">Resumen del pedido</h2>
