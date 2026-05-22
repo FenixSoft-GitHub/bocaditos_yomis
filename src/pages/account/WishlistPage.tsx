@@ -45,7 +45,7 @@ const WishlistPage = () => {
           </>
         }
       >
-        <StaggerList className="grid grid-cols-2 xl:grid-cols-3 gap-4 sm:col-span-2 xl:col-span-3">
+        <StaggerList className="grid grid-cols-2 xl:grid-cols-3 gap-4 sm:col-span-2 xl:col-span-3 my-4">
           {wishlistProducts.map((product) => (
             <StaggerItem key={product.id}>
               <CardProduct product={product} />

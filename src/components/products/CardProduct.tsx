@@ -91,9 +91,9 @@ export const CardProduct = ({ product }: CardProductProps) => {
               className="block"
             >
               <Heart
-                className={`size-4 transition-colors ${
+                className={`size-4.5 transition-colors ${
                   favorite
-                    ? "fill-[#C18F7D] text-[#C18F7D]"
+                    ? "fill-orange-400  text-orange-500/90"
                     : "text-choco/50 dark:text-cream/80"
                 }`}
               />

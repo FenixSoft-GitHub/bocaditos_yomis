@@ -329,7 +329,7 @@ const ProductPage = () => {
                       transition={{ duration: 0.15 }}
                     >
                       <Heart
-                        className={`size-5 ${favorite ? "fill-[#C18F7D] text-[#C18F7D]" : ""}`}
+                        className={`size-5 ${favorite ? "fill-orange-400 text-orange-500/90" : ""}`}
                       />
                     </motion.span>
                   </AnimatePresence>

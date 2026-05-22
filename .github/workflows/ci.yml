@@ -1,0 +1,54 @@
+# .github/workflows/ci.yml
+# Bloquea merge si los tests fallan
+
+name: CI — Tests
+
+on:
+  push:
+    branches: [main, develop, staging]
+  pull_request:
+    branches: [main, develop, staging]
+
+jobs:
+  test:
+    name: Vitest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Variables de entorno para tests
+        run: |
+          echo "VITE_PROJECT_URL_SUPABASE=https://test.supabase.co" >> $GITHUB_ENV
+          echo "VITE_SUPABASE_API_KEY=test-key" >> $GITHUB_ENV
+          echo "VITE_VAPID_PUBLIC_KEY=test-vapid-key" >> $GITHUB_ENV
+
+      - name: Correr tests
+        run: pnpm test --run
+
+      - name: Coverage report
+        run: pnpm test --run --coverage
+        continue-on-error: true
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
