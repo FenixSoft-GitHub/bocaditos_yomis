@@ -1,13 +1,15 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { signOut } from "@/actions";
 import { useRoleUser, useUser } from "@/hooks";
-import { LogOut, ExternalLink, FileText, User, ChevronRight } from "lucide-react";
+import { LogOut, ExternalLink, FileText, User, ChevronRight, Heart } from "lucide-react";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import { useQueryClient } from "@tanstack/react-query";
 import { FadeIn } from "@/components/animations";
+import { PushNotificationsBanner } from "@/components/notifications/PushNotificationsBanner";
 
 const navLinks = [
   { to: "/account/pedidos", label: "Mis Pedidos", icon: FileText },
+  { to: "/account/favoritos", label: "Mis Favoritos", icon: Heart },
 ];
 
 const ClientLayout = () => {
@@ -66,10 +68,10 @@ const ClientLayout = () => {
                       key={to}
                       to={to}
                       className={({ isActive }) =>
-                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
+                        `flex items-center justify-between px-3 py-2.5 mb-2 rounded-xl text-sm font-medium transition-all duration-200 group ${
                           isActive
                             ? "bg-choco text-cream dark:bg-cream dark:text-oscuro shadow-sm"
-                            : "text-choco/70 dark:text-cream/70 hover:bg-cocoa/10 dark:hover:bg-cream/10 hover:text-choco dark:hover:text-cream"
+                            : "text-choco/70 dark:text-cream/70 dark:bg-cocoa/10 bg-cocoa/20 hover:bg-cocoa/10 dark:hover:bg-cream/10 hover:text-choco dark:hover:text-cream"
                         }`
                       }
                     >
@@ -88,7 +90,7 @@ const ClientLayout = () => {
                       </p>
                       <NavLink
                         to="/dashboard/products"
-                        className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-choco/70 dark:text-cream/70 hover:bg-cocoa/10 dark:hover:bg-cream/10 hover:text-choco dark:hover:text-cream transition-all duration-200 group"
+                        className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-choco/70 dark:text-cream/70 dark:bg-cocoa/10 bg-cocoa/20 hover:bg-cocoa/10 dark:hover:bg-cream/10 hover:text-choco dark:hover:text-cream transition-all duration-200 group"
                       >
                         <span className="flex items-center gap-2.5">
                           <ExternalLink className="size-4" />
@@ -100,12 +102,12 @@ const ClientLayout = () => {
                   )}
 
                   {/* Separador */}
-                  <div className="border-t border-cocoa/10 dark:border-cream/10 my-2" />
+                  <div className="border-t border-cocoa/50 dark:border-cream/20 my-2" />
 
                   {/* Cerrar sesión */}
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+                    className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 dark:text-red-400 dark:bg-cocoa/10 bg-cocoa/20 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
                   >
                     <LogOut className="size-4" />
                     Cerrar sesión
@@ -128,6 +130,7 @@ const ClientLayout = () => {
             {/* ── Contenido principal ──────────────────────────────── */}
             <main className="flex-1 min-w-0">
               <ScrollToTop />
+              <PushNotificationsBanner />
               <Outlet />
             </main>
           </div>

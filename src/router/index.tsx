@@ -33,7 +33,8 @@ import {
   Condiciones,
   DashboardChartsPage,
   DashboardUsersPage,
-  DashboardReceiptsPage, 
+  DashboardReceiptsPage,
+  DashboardPaymentMethodsPage, 
   BlogDashboardPage,
   NewBlogPostPage,
   EditBlogPostPage,
@@ -43,6 +44,7 @@ import {
   ContactUsPage,
   ProductsPage,
   NotFoundPage,
+  WishlistPage,
 } from "@/pages";
 
 const PageLoader = () => (
@@ -85,6 +87,7 @@ export const AppRoutes = createBrowserRouter([
               { path: "", element: <Navigate to="/account/pedidos" /> },
               { path: "pedidos", element: s(<OrdersUserPage />) },
               { path: "pedidos/:id", element: s(<OrderUserPage />) },
+              { path: "favoritos", element: s(<WishlistPage />) },
             ],
           },
         ],
@@ -118,6 +121,10 @@ export const AppRoutes = createBrowserRouter([
           { path: "orders", element: s(<DashboardOrdersPage />) },
           { path: "orders/:id", element: s(<DashboardOrderPage />) },
           { path: "receipts", element: s(<DashboardReceiptsPage />) },
+          {
+            path: "payment-methods",
+            element: s(<DashboardPaymentMethodsPage />),
+          },
           { path: "categories", element: s(<DashboardCategoriesPage />) },
           { path: "category/new", element: s(<DashboardCategoryUpdatePage />) },
           {

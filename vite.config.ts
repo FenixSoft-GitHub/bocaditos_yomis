@@ -1,4 +1,5 @@
-import { defineConfig } from "vite";
+/// <reference types="vitest" />
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
@@ -6,6 +7,27 @@ import { VitePWA } from "vite-plugin-pwa";
 import mdPlugin from "vite-plugin-md";
 
 export default defineConfig({
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/tests/setup.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      exclude: [
+        "node_modules/",
+        "src/tests/",
+        "src/pages/",
+        "src/router/",
+        "src/main.tsx",
+        "**/*.d.ts",
+        "**/*.config.*",
+      ],
+    },
+    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    exclude: ["node_modules", "dist", "e2e"],
+  },
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -14,6 +36,7 @@ export default defineConfig({
       "@layout": path.resolve(__dirname, "src/layout"),
     },
   },
+
   build: {
     rollupOptions: {
       output: {
@@ -35,12 +58,19 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 500,
   },
+
   plugins: [
     react(),
     tailwindcss(),
     mdPlugin(),
     VitePWA({
       registerType: "autoUpdate",
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
+      injectManifest: {
+        injectionPoint: "self.__WB_MANIFEST",
+      },
       includeAssets: [
         "favicon.svg",
         "robots.txt",
@@ -48,61 +78,6 @@ export default defineConfig({
         "offline.html",
         "LogoBocaditosYomis.avif",
       ],
-      workbox: {
-        navigateFallback: "/offline.html",
-        navigateFallbackDenylist: [/^\/api/, /^\/dashboard/],
-        runtimeCaching: [
-          {
-            // Imágenes de Supabase → CacheFirst 30 días
-            urlPattern: /^https:\/\/.*\.supabase\.co\/storage\/.*/i,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "supabase-images",
-              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            // Fuentes Google → CacheFirst 1 año
-            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "google-fonts",
-              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            // API Supabase → NetworkFirst con fallback 5 min
-            urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/.*/i,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "supabase-api",
-              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 5 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            // Assets JS/CSS → StaleWhileRevalidate 7 días
-            urlPattern: /\.(?:js|css|woff2?)$/i,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "static-assets",
-              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 7 },
-            },
-          },
-          {
-            // Imágenes locales → CacheFirst 30 días
-            urlPattern: /\.(?:png|jpg|jpeg|svg|avif|webp|ico)$/i,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "local-images",
-              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-        ],
-      },
       manifest: {
         name: "Bocaditos Yomi's",
         short_name: "Yomi's",
@@ -154,5 +129,6 @@ export default defineConfig({
       },
     }),
   ],
+
   assetsInclude: ["**/*.md"],
 });

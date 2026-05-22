@@ -1,7 +1,15 @@
 import { extractFilePath } from "@/helpers";
 import { ProductFormValues } from "@/lib/validators";
 import { supabase } from "@/supabase/client";
-import { Product, ProductInput, SupabaseRawProductWithRelations } from "@/interfaces/product.interface";
+import {
+  Product,
+  ProductInput,
+  // SearchCategory,
+  // SearchPost,
+  SearchResults,
+  SupabaseRawProductWithRelations,
+  RpcSearchResult,
+} from "@/interfaces/product.interface";
 import slugify from "slugify";
 import { isDiscountActive } from "@/lib/discount";
 
@@ -74,8 +82,8 @@ const transformProductData = (rawProduct: SupabaseRawProductWithRelations): Prod
     category_id: rawProduct.category_id,
     created_at: rawProduct.created_at,
     updated_at: rawProduct.updated_at,
-    categories: transformedCategories, // Ahora es singular o null
-    discount: activeDiscount,         // Ahora es singular activo o null
+    categories: transformedCategories, 
+    discount: activeDiscount,         
   };
 };
 
@@ -95,7 +103,9 @@ export const getRecentProducts = async (): Promise<Product[]> => {
 
     if (!data) return [];
 
-    return (data as SupabaseRawProductWithRelations[]).map(transformProductData);
+    return (data as unknown as SupabaseRawProductWithRelations[]).map(
+      transformProductData,
+    );
   } catch (error) {
     console.error("Error fetching recent products:", error);
     throw error;
@@ -118,7 +128,7 @@ export const getRandomProducts = async (): Promise<Product[]> => {
 
     if (!data) return [];
 
-    const transformedProducts = (data as SupabaseRawProductWithRelations[]).map(transformProductData);
+    const transformedProducts = (data as unknown as SupabaseRawProductWithRelations[]).map(transformProductData);
 
     const filtered = transformedProducts.filter(
       (p) => p?.image_url?.length > 0 && p?.name
@@ -156,7 +166,9 @@ export const getDiscountedProducts = async (): Promise<Product[]> => {
 
     if (!data) return [];
 
-    const transformedProducts = (data as SupabaseRawProductWithRelations[]).map(transformProductData);
+    const transformedProducts = (
+      data as unknown as SupabaseRawProductWithRelations[]
+    ).map(transformProductData);
 
     // Filtra para asegurar que solo se devuelvan productos con un descuento activo válido
     return transformedProducts.filter(p => p.discount !== null);
@@ -233,7 +245,7 @@ export const getProductsByCategory = async ({
   }
 
   const transformedProducts: Product[] = (
-    data as SupabaseRawProductWithRelations[]
+    data as unknown as SupabaseRawProductWithRelations[]
   ).map(transformProductData);
 
   return { products: transformedProducts, count: count ?? 0 };
@@ -280,7 +292,7 @@ export const searchProducts = async (searchTerm: string): Promise<Product[]> => 
     
     // Mapea la data cruda de Supabase a la interfaz Product unificada
     const transformedProducts: Product[] = (
-      data as SupabaseRawProductWithRelations[]
+      data as unknown as SupabaseRawProductWithRelations[]
     ).map(transformProductData);
 
 
@@ -289,6 +301,33 @@ export const searchProducts = async (searchTerm: string): Promise<Product[]> => 
     console.error("Error searching products:", error);
     throw error;
   }
+};
+
+// Acá está lo nuevo, la función de búsqueda global que llama a la función RPC en Supabase
+
+export const searchAll = async (term: string): Promise<SearchResults> => {
+  const trimmed = term.trim();
+
+  if (trimmed.length < 2) {
+    return { products: [], categories: [], posts: [] };
+  }
+
+  const { data, error } = await supabase.rpc("search_all", {
+    search_term: trimmed,
+  });
+
+  if (error) {
+    console.error("Error en búsqueda FTS:", error.message);
+    throw new Error(error.message);
+  }
+
+  const result = data as unknown as RpcSearchResult | null;
+
+  return {
+    products: result?.products ?? [],
+    categories: result?.categories ?? [],
+    posts: result?.posts ?? [],
+  };
 };
 
 /* ********************************** */

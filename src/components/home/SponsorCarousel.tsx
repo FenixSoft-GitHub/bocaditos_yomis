@@ -54,12 +54,12 @@ export const SponsorCarousel = () => {
           {[...sponsors, ...sponsors].map((logo, i) => (
             <div
               key={i}
-              className="flex items-center justify-center shrink-0 size-24 rounded-full bg-cocoa/50 dark:bg-cream/60 border border-cocoa/10 dark:border-cocoa/10 shadow-sm hover:shadow-md transition-all duration-300 group"
+              className="flex items-center justify-center shrink-0 size-24 rounded-full bg-cocoa/50 dark:bg-cocoa/70 border border-cocoa/10 dark:border-cocoa/10 shadow-sm hover:shadow-md transition-all duration-300 group"
             >
               <img
                 src={logo}
                 alt={`producto-${i}`}
-                className="size-14 object-contain grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-110"
+                className="size-16 object-contain grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-110"
               />
             </div>
           ))}

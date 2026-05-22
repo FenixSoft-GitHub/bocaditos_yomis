@@ -21,6 +21,7 @@ export const OrdersUserPage = lazy(
   () => import("@pages/orders/OrdersUserPage"),
 );
 export const OrderUserPage = lazy(() => import("@pages/orders/OrderUserPage"));
+export const WishlistPage = lazy(() => import("@pages/account/WishlistPage"));
 
 // ── Checkout ──────────────────────────────────────────────────────
 export const CheckoutPage = lazy(() => import("@pages/checkout/CheckoutPage"));
@@ -82,8 +83,10 @@ export const DashboardUsersPage = lazy(
   () => import("@pages/dashboard/DashboardUsersPage"),
 );
 export const DashboardReceiptsPage = lazy(
-  // ← NUEVO
   () => import("@pages/dashboard/DashboardReceiptsPage"),
+);
+export const DashboardPaymentMethodsPage = lazy(
+  () => import("@pages/dashboard/DashboardPaymentMethodsPage"),
 );
 export const BlogDashboardPage = lazy(
   () => import("@pages/dashboard/blog/BlogDashboardPage"),

@@ -9,9 +9,4 @@ export * from './discounts';
 export * from './sales';
 export * from './users';
 export * from './blog';
-
-
-
-
-
-
+export * from './analytics';

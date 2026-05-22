@@ -46,7 +46,10 @@ export type Database = {
           city: string
           country: string
           created_at: string
+          full_name: string | null
           id: string
+          is_default: boolean
+          phone: string | null
           postal_code: string | null
           state: string
           user_id: string
@@ -57,7 +60,10 @@ export type Database = {
           city: string
           country: string
           created_at?: string
+          full_name?: string | null
           id?: string
+          is_default?: boolean
+          phone?: string | null
           postal_code?: string | null
           state: string
           user_id?: string
@@ -68,7 +74,10 @@ export type Database = {
           city?: string
           country?: string
           created_at?: string
+          full_name?: string | null
           id?: string
+          is_default?: boolean
+          phone?: string | null
           postal_code?: string | null
           state?: string
           user_id?: string
@@ -90,6 +99,7 @@ export type Database = {
           created_at: string
           display_author_name: string
           excerpt: string | null
+          fts: unknown
           id: string
           image_url: string | null
           published_at: string | null
@@ -104,6 +114,7 @@ export type Database = {
           created_at?: string
           display_author_name?: string
           excerpt?: string | null
+          fts?: unknown
           id?: string
           image_url?: string | null
           published_at?: string | null
@@ -118,6 +129,7 @@ export type Database = {
           created_at?: string
           display_author_name?: string
           excerpt?: string | null
+          fts?: unknown
           id?: string
           image_url?: string | null
           published_at?: string | null
@@ -126,7 +138,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_author"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categories: {
         Row: {
@@ -486,6 +506,7 @@ export type Database = {
           category_id: string
           created_at: string | null
           description: string
+          fts: unknown
           id: string
           image_url: string[]
           is_active: boolean
@@ -499,6 +520,7 @@ export type Database = {
           category_id: string
           created_at?: string | null
           description: string
+          fts?: unknown
           id?: string
           image_url: string[]
           is_active?: boolean
@@ -512,6 +534,7 @@ export type Database = {
           category_id?: string
           created_at?: string | null
           description?: string
+          fts?: unknown
           id?: string
           image_url?: string[]
           is_active?: boolean
@@ -624,6 +647,7 @@ export type Database = {
           product_id: string
           rating: number | null
           user_id: string
+          verified_purchase: boolean
         }
         Insert: {
           comment?: string | null
@@ -632,6 +656,7 @@ export type Database = {
           product_id: string
           rating?: number | null
           user_id: string
+          verified_purchase?: boolean
         }
         Update: {
           comment?: string | null
@@ -640,6 +665,7 @@ export type Database = {
           product_id?: string
           rating?: number | null
           user_id?: string
+          verified_purchase?: boolean
         }
         Relationships: [
           {
@@ -677,7 +703,15 @@ export type Database = {
           role?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_role_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
@@ -686,7 +720,6 @@ export type Database = {
           full_name: string
           id: string
           phone: string | null
-          user_id: string
         }
         Insert: {
           created_at?: string
@@ -694,7 +727,6 @@ export type Database = {
           full_name: string
           id?: string
           phone?: string | null
-          user_id?: string
         }
         Update: {
           created_at?: string
@@ -702,21 +734,52 @@ export type Database = {
           full_name?: string
           id?: string
           phone?: string | null
-          user_id?: string
         }
         Relationships: []
+      }
+      wishlists: {
+        Row: {
+          created_at: string | null
+          id: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlists_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      can_review: { Args: { p_product_id: string }; Returns: Json }
       decrement_stock: {
         Args: { p_product_id: string; p_quantity: number }
         Returns: undefined
       }
       increment_promo_uses: { Args: { p_promo_id: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
+      search_all: { Args: { search_term: string }; Returns: Json }
+      toggle_wishlist: { Args: { p_product_id: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

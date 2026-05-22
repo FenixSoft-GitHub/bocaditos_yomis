@@ -1,16 +1,19 @@
+// src/components/products/CardProduct.tsx
+
 import { Product } from "@/interfaces/product.interface";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import Tag from "@/components/shared/Tag";
 import { formatPrice } from "@/helpers";
 import { useAddToCart } from "@/hooks/products/useAddToCart";
+import { useWishlist } from "@/hooks/wishlist/useWishlist";
 import ImageWithFallback from "@/components/shared/ImageWithFallback";
 import {
   getDiscountedPrice,
   getDiscountPercentage,
   isDiscountActive,
 } from "@/lib/discount";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CardProductProps {
   product: Product;
@@ -18,6 +21,8 @@ interface CardProductProps {
 
 export const CardProduct = ({ product }: CardProductProps) => {
   const { addToCart } = useAddToCart();
+  const { isFavorite, toggle, isPending } = useWishlist();
+
   const activeDiscount =
     product.discount && isDiscountActive(product.discount)
       ? product.discount
@@ -29,10 +34,16 @@ export const CardProduct = ({ product }: CardProductProps) => {
     ? getDiscountedPrice(product.price, activeDiscount)
     : product.price;
   const isOutOfStock = product.stock === 0;
+  const favorite = isFavorite(product.id);
 
   const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     addToCart(product, finalPrice);
+  };
+
+  const handleFavoriteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    toggle(product.id);
   };
 
   return (
@@ -53,12 +64,42 @@ export const CardProduct = ({ product }: CardProductProps) => {
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
         />
-        <div className="absolute top-2 left-2 right-2 flex justify-between">
+
+        {/* Tags — esquina superior izquierda */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
           {discountPercentage && (
             <Tag contentTag={`${discountPercentage}% OFF`} />
           )}
           {isOutOfStock && <Tag contentTag="Agotado" />}
         </div>
+
+        {/* Botón favorito — esquina superior derecha */}
+        <motion.button
+          whileTap={{ scale: 0.82 }}
+          onClick={handleFavoriteClick}
+          disabled={isPending}
+          aria-label={favorite ? "Quitar de favoritos" : "Añadir a favoritos"}
+          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 dark:bg-oscuro/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform disabled:opacity-60"
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={favorite ? "filled" : "empty"}
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.6, opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="block"
+            >
+              <Heart
+                className={`size-4 transition-colors ${
+                  favorite
+                    ? "fill-[#C18F7D] text-[#C18F7D]"
+                    : "text-choco/50 dark:text-cream/80"
+                }`}
+              />
+            </motion.span>
+          </AnimatePresence>
+        </motion.button>
       </Link>
 
       <div className="flex flex-col gap-3 p-4 flex-1 justify-between">

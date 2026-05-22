@@ -12,5 +12,6 @@
       "@pages/*": ["src/pages/*"],
       "@layout/*": ["src/layout/*"]
     }
-  }
+  },
+  "exclude": ["src/sw.ts"]
 }
