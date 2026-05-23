@@ -39,10 +39,10 @@ jobs:
           echo "VITE_VAPID_PUBLIC_KEY=test-vapid-key" >> $GITHUB_ENV
 
       - name: Correr tests
-        run: pnpm test --run
+        run: pnpm vitest run
 
       - name: Coverage report
-        run: pnpm test --run --coverage
+        run: pnpm vitest run --coverage
         continue-on-error: true
 
       - name: Upload coverage
