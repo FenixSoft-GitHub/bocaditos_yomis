@@ -4,22 +4,6 @@ import { supabase } from "@/supabase/client";
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string;
 
-// Cast seguro para tablas no tipadas en el schema generado
-const db = supabase as unknown as {
-  from: (table: string) => {
-    upsert: (
-      data: object,
-      options?: object,
-    ) => Promise<{ error: { message: string } | null }>;
-    delete: () => {
-      eq: (
-        col: string,
-        val: string,
-      ) => Promise<{ error: { message: string } | null }>;
-    };
-  };
-};
-
 function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -64,7 +48,7 @@ export const subscribeToPush = async (): Promise<boolean> => {
     const userId = userData.user?.id;
     if (!userId) throw new Error("No hay sesión activa");
 
-    const { error } = await db
+    const { error } = await supabase
       .from("push_subscriptions")
       .upsert(
         { user_id: userId, endpoint, p256dh: keys.p256dh, auth: keys.auth },
@@ -90,7 +74,7 @@ export const unsubscribeFromPush = async (): Promise<boolean> => {
     const endpoint = subscription.endpoint;
     await subscription.unsubscribe();
 
-    await db.from("push_subscriptions").delete().eq("endpoint", endpoint);
+    await supabase.from("push_subscriptions").delete().eq("endpoint", endpoint);
 
     return true;
   } catch (err) {

@@ -10,3 +10,5 @@ export * from './sales';
 export * from './users';
 export * from './blog';
 export * from './analytics';
+export * from './push';
+export * from './wishlist';
