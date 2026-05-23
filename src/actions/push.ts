@@ -4,6 +4,22 @@ import { supabase } from "@/supabase/client";
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string;
 
+// Cast seguro para tablas no tipadas en el schema generado
+const db = supabase as unknown as {
+  from: (table: string) => {
+    upsert: (
+      data: object,
+      options?: object,
+    ) => Promise<{ error: { message: string } | null }>;
+    delete: () => {
+      eq: (
+        col: string,
+        val: string,
+      ) => Promise<{ error: { message: string } | null }>;
+    };
+  };
+};
+
 function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -44,11 +60,14 @@ export const subscribeToPush = async (): Promise<boolean> => {
       keys: { p256dh: string; auth: string };
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error } = await (supabase as any)
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) throw new Error("No hay sesión activa");
+
+    const { error } = await db
       .from("push_subscriptions")
       .upsert(
-        { endpoint, p256dh: keys.p256dh, auth: keys.auth },
+        { user_id: userId, endpoint, p256dh: keys.p256dh, auth: keys.auth },
         { onConflict: "user_id,endpoint" },
       );
 
@@ -71,11 +90,7 @@ export const unsubscribeFromPush = async (): Promise<boolean> => {
     const endpoint = subscription.endpoint;
     await subscription.unsubscribe();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
-      .from("push_subscriptions")
-      .delete()
-      .eq("endpoint", endpoint);
+    await db.from("push_subscriptions").delete().eq("endpoint", endpoint);
 
     return true;
   } catch (err) {
