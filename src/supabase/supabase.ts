@@ -288,7 +288,7 @@ export type Database = {
           mp_preference_id: string | null
           notes: string | null
           paid_at: string | null
-          payment_type: string | null
+          payment_type: string
           promo_code_id: string | null
           shipping_cost: number
           status: string

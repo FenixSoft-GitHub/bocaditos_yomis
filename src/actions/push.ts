@@ -93,3 +93,62 @@ export const isAlreadySubscribed = async (): Promise<boolean> => {
     return false;
   }
 };
+
+/**
+ * Sincroniza la suscripción del navegador con Supabase.
+ * Si el endpoint cambió (después de un deploy), actualiza la tabla automáticamente.
+ * Si no hay suscripción en el navegador pero sí en Supabase, la elimina.
+ */
+export const syncPushSubscription = async (): Promise<void> => {
+  if (!isPushSupported()) return;
+  if (getPushPermission() !== "granted") return;
+
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    const browserSub = await registration.pushManager.getSubscription();
+
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) return;
+
+    if (!browserSub) {
+      // No hay suscripción en el navegador — limpiar registros huérfanos en Supabase
+      await supabase
+        .from("push_subscriptions")
+        .delete()
+        .eq("user_id", userId);
+      return;
+    }
+
+    const { endpoint, keys } = browserSub.toJSON() as {
+      endpoint: string;
+      keys: { p256dh: string; auth: string };
+    };
+
+    // Verificar si el endpoint actual ya está en Supabase
+    const { data: existing } = await supabase
+      .from("push_subscriptions")
+      .select("endpoint")
+      .eq("user_id", userId)
+      .eq("endpoint", endpoint)
+      .maybeSingle();
+
+    if (existing) return; // ya está sincronizado
+
+    // El endpoint cambió — eliminar registros viejos y guardar el nuevo
+    await supabase
+      .from("push_subscriptions")
+      .delete()
+      .eq("user_id", userId);
+
+    await supabase
+      .from("push_subscriptions")
+      .upsert(
+        { user_id: userId, endpoint, p256dh: keys.p256dh, auth: keys.auth },
+        { onConflict: "user_id,endpoint" }
+      );
+
+  } catch (err) {
+    console.error("Error sincronizando suscripción push:", err);
+  }
+};

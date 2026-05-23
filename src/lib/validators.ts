@@ -224,7 +224,7 @@ export const checkoutSchema = z.object({
   delivery_option_id: z
     .string()
     .min(1, "Selecciona un método de envío"),
-  payment_type: z.enum(["pago_movil", "transferencia"], {
+  payment_type: z.enum(["pago_movil", "transferencia", "usdt"], {
     required_error: "Selecciona un método de pago",
   }),
   promo_code: z.string().optional(),

@@ -7,7 +7,7 @@ export interface CreateOrderPayload {
   items: CartItemPayload[];
   address_id: string;
   delivery_option_id: string;
-  payment_type: "pago_movil" | "transferencia";
+  payment_type: "pago_movil" | "transferencia" | "usdt";
   promo_code?: string;
   notes?: string;
 }
