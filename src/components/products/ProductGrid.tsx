@@ -1,9 +1,13 @@
-import { useKeenSlider } from "keen-slider/react";
+import {
+  useKeenSlider,
+  KeenSliderInstance,
+  KeenSliderOptions,
+} from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { Product } from "@/interfaces/product.interface";
 import { CardProduct } from "@/components/products/CardProduct";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StaggerList, StaggerItem } from "@/components/animations";
 
 interface Props {
@@ -20,29 +24,50 @@ export const ProductGrid = ({
   icon,
 }: Props) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [perView, setPerView] = useState(1);
   const [maxSlide, setMaxSlide] = useState(0);
-
   const [sliderRef, slider] = useKeenSlider<HTMLDivElement>({
     slides: { perView: 1, spacing: 16 },
     breakpoints: {
       "(min-width: 640px)": { slides: { perView: 2, spacing: 20 } },
       "(min-width: 1024px)": { slides: { perView: 4, spacing: 24 } },
     },
-    slideChanged: (s) => setCurrentSlide(s.track.details.rel),
-    created(s) {
-      let perView = 1;
-      const slidesOption = s.options.slides;
-      if (
-        typeof slidesOption === "object" &&
-        slidesOption !== null &&
-        "perView" in slidesOption
-      ) {
-        const rawPerView = slidesOption.perView;
-        if (typeof rawPerView === "number") perView = rawPerView;
-      }
-      setMaxSlide(s.track.details.slides.length - perView);
+    slideChanged: (s) => {
+      setCurrentSlide(s.track.details.rel);
+    },
+    created: (s) => {
+      // Calcular maxSlide inicialmente
+      updateMaxSlide(s);
+    },
+    updated: (s) => {
+      // Recalcular cuando el slider se actualice (resize, productos cambiados, etc.)
+      updateMaxSlide(s);
     },
   });
+
+  // Función helper para calcular maxSlide correctamente
+  const updateMaxSlide = (s: KeenSliderInstance) => {
+    const slidesOptions = s.options.slides as KeenSliderOptions["slides"];
+
+    const currentPerView =
+      typeof slidesOptions === "object" &&
+      typeof slidesOptions?.perView === "number"
+        ? slidesOptions.perView
+        : 1;
+
+    setPerView(currentPerView); // <--- Guardamos el perView actual
+
+    const totalSlides = s.track.details.slides.length;
+    const max = Math.max(0, totalSlides - currentPerView);
+    setMaxSlide(max);
+  };
+  
+  // Actualizar maxSlide cuando cambien los productos
+  useEffect(() => {
+    if (slider.current) {
+      updateMaxSlide(slider.current);
+    }
+  }, [products, slider]);
 
   return (
     <div className="py-8 relative">
@@ -69,23 +94,53 @@ export const ProductGrid = ({
         ))}
       </div>
 
-      {showNavigation && slider && (
+      {showNavigation && slider && products.length > 0 && (
         <>
+          {/* Botón Anterior con Sombras Mejoradas */}
           <button
-            onClick={() => slider.current?.prev()}
+            onClick={() => {
+              if (!slider.current) return;
+              const targetSlide = Math.max(0, currentSlide - perView);
+              slider.current.moveToIdx(targetSlide);
+            }}
             disabled={currentSlide === 0}
             aria-label="Anterior"
-            className={`absolute top-[50%] -left-4 z-10 p-2 rounded-full transition-all ${currentSlide === 0 ? "hidden" : "bg-choco/80 text-cream hover:bg-oscuro/90 dark:bg-cream/80 dark:text-choco dark:hover:bg-butter/90 hover:scale-110 shadow-md"}`}
+            className={`group absolute top-1/2 -left-4 z-10 p-1.5 rounded-full transform -translate-y-1/2 transition-all duration-300 ease-in-out
+      ${
+        currentSlide === 0
+          ? "opacity-0 pointer-events-none scale-75"
+          : "bg-choco/80 text-cream dark:bg-cream/80 dark:text-choco hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl dark:shadow-md dark:hover:shadow-lg"
+      }`}
           >
-            <ChevronLeft className="size-5" />
+            <ChevronLeft className="size-5" strokeWidth={3.5} />
+
+            {/* Tooltip Desktop */}
+            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 scale-75 opacity-0 pointer-events-none transition-all duration-200 ease-out hidden md:block md:group-hover:opacity-100 md:group-hover:scale-100 px-2.5 py-1 text-[10px] rounded-md whitespace-nowrap shadow-sm bg-oscuro text-cream dark:bg-choco dark:text-cream">
+              Anterior
+            </span>
           </button>
+
+          {/* Botón Siguiente */}
           <button
-            onClick={() => slider.current?.next()}
+            onClick={() => {
+              if (!slider.current) return;
+              const targetSlide = Math.min(maxSlide, currentSlide + perView);
+              slider.current.moveToIdx(targetSlide);
+            }}
             disabled={currentSlide >= maxSlide}
             aria-label="Siguiente"
-            className={`absolute top-[50%] -right-4 z-10 p-2 rounded-full transition-all ${currentSlide >= maxSlide ? "hidden" : "bg-choco/80 text-cream hover:bg-oscuro/90 dark:bg-cream/80 dark:text-choco dark:hover:bg-butter/90 hover:scale-110 shadow-md"}`}
+            className={`group absolute top-1/2 -right-4 z-10 p-1.5 rounded-full transform -translate-y-1/2 transition-all duration-300 ease-in-out
+      ${
+        currentSlide >= maxSlide
+          ? "opacity-0 pointer-events-none scale-75"
+          : "bg-choco/80 text-cream dark:bg-cream/80 dark:text-choco hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl dark:shadow-md dark:hover:shadow-lg"
+      }`}
           >
-            <ChevronRight className="size-5" />
+            <ChevronRight className="size-5" strokeWidth={3.5} />
+            {/* Tooltip Desktop */}
+            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 scale-75 opacity-0 pointer-events-none transition-all duration-200 ease-out hidden md:block md:group-hover:opacity-100 md:group-hover:scale-100 px-2.5 py-1 text-[10px] rounded-md whitespace-nowrap shadow-sm bg-oscuro text-cream dark:bg-choco dark:text-cream">
+              Siguiente
+            </span>
           </button>
         </>
       )}

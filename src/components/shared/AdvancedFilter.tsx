@@ -38,7 +38,7 @@ const ClearButton = ({ onClear, isVisible }: ClearButtonProps) => {
     <button
       type="button" 
       onClick={onClear}
-      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-500 hover:text-amber-700 rounded-full p-1.5 transition-colors duration-200 bg-cream/30 z-10"
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-choco dark:text-cream/50 hover:text-cream rounded-full p-1.5 transition-colors duration-200 bg-cream/10 dark:bg-cream/10 z-10"
       title="Limpiar búsqueda"
     >
       <RotateCcw className="size-4" />

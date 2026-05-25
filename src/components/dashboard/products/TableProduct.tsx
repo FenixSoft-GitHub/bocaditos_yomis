@@ -49,7 +49,7 @@ export const TableProduct = () => {
         />
       }
       filters={
-        <AdvancedFilter
+        <AdvancedFilter 
           searchValue={filters.name}
           onSearchChange={(value) =>
             setFilters((prev) => ({ ...prev, name: value }))

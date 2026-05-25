@@ -1,3 +1,5 @@
+// src/pages/account/OrderUserPage.tsx
+
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useOrder } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
@@ -13,6 +15,7 @@ import {
 import { formatDateLong, formatPrice, formatToTwoDecimals } from "@/helpers";
 import { StatusBadge } from "@/components/dashboard/shared/StatusBadge";
 import { FadeIn } from "@/components/animations";
+import { OrderTimeline } from "@/components/dashboard/orders/OrderTimeline";
 
 const OrderUserPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,7 +28,7 @@ const OrderUserPage = () => {
 
   return (
     <FadeIn>
-      <div className="max-w-3xl mx-auto px-4 py-2 text-choco dark:text-cream">
+      <div className="max-w-3xl mx-auto px-4 py-2 mb-6 text-choco dark:text-cream">
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
           <button
@@ -50,7 +53,10 @@ const OrderUserPage = () => {
         </div>
 
         <div className="flex flex-col gap-3">
-          {/* Productos */}
+          {/* ── Timeline de seguimiento ──────────────────────────── */}
+          <OrderTimeline orderId={id as string} initialStatus={order.status} />
+
+          {/* ── Productos ───────────────────────────────────────── */}
           <div className="bg-cream dark:bg-oscuro border border-cocoa/20 dark:border-cream/10 rounded-2xl overflow-hidden shadow-sm">
             <div className="flex items-center gap-2 px-5 py-3 border-b border-cocoa/10 dark:border-cream/10 bg-cocoa/5 dark:bg-cream/5">
               <Package className="size-4 text-choco/60 dark:text-cream/60" />
@@ -83,7 +89,7 @@ const OrderUserPage = () => {
             </ul>
           </div>
 
-          {/* Resumen */}
+          {/* ── Resumen de pago ──────────────────────────────────── */}
           <div className="bg-cream dark:bg-oscuro border border-cocoa/20 dark:border-cream/10 rounded-2xl overflow-hidden shadow-sm">
             <div className="flex items-center gap-2 px-5 py-3 border-b border-cocoa/10 dark:border-cream/10 bg-cocoa/5 dark:bg-cream/5">
               <DollarSign className="size-4 text-choco/60 dark:text-cream/60" />
@@ -121,7 +127,7 @@ const OrderUserPage = () => {
             </div>
           </div>
 
-          {/* Dirección */}
+          {/* ── Dirección ────────────────────────────────────────── */}
           <div className="bg-cream dark:bg-oscuro border border-cocoa/20 dark:border-cream/10 rounded-2xl overflow-hidden shadow-sm">
             <div className="flex items-center gap-2 px-5 py-3 border-b border-cocoa/10 dark:border-cream/10 bg-cocoa/5 dark:bg-cream/5">
               <MapPin className="size-4 text-choco/60 dark:text-cream/60" />

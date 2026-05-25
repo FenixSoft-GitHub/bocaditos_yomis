@@ -5,16 +5,19 @@ import { useFilteredProducts } from "@/hooks/products/useFilteredProducts";
 import { Pagination } from "@/components/shared/Pagination";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { breadcrumbSchema } from "@/components/seo/schemas";
-import { Loader } from "@/components/shared/Loader";
 import {
   PageTransition,
   StaggerList,
   StaggerItem,
 } from "@/components/animations";
-import { Search, RotateCcw, X, ChevronDown } from "lucide-react";
+import { RotateCcw, ChevronDown, LayoutGrid, List } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AdvancedFilter } from "@/components/shared/AdvancedFilter"; 
+import { ProductGridSkeleton } from "@/components/products/ProductGridSkeleton";
+import { CardProductList } from "@/components/products/CardProductList";
 
 const MAX_VISIBLE_CHIPS = 10;
+type ViewMode = "grid" | "list";
 
 const ProductsPage = () => {
   const [page, setPage] = useState(1);
@@ -22,6 +25,7 @@ const ProductsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [overflowOpen, setOverflowOpen] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const overflowRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -29,6 +33,7 @@ const ProductsPage = () => {
     isLoading: isLoadingCategories,
     isError: isErrorCategories,
   } = useCategories();
+
   const {
     data: products = [],
     isLoading,
@@ -41,11 +46,22 @@ const ProductsPage = () => {
 
   const hasActiveFilters = searchTerm !== "" || selectedCategory !== null;
 
-  const handleReset = () => {
-    setSearchTerm("");
-    setSelectedCategory(null);
+  // 🔹 Handlers separados para claridad
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
     setPage(1);
     setAnimationKey((k) => k + 1);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    setPage(1);
+    setAnimationKey((k) => k + 1);
+  };
+
+  const handleReset = () => {
+    handleClearSearch();
+    setSelectedCategory(null);
   };
 
   const handleCategorySelect = (cat: string | null) => {
@@ -71,7 +87,8 @@ const ProductsPage = () => {
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
-  if (isLoadingCategories) return <Loader size={60} />;
+  if (isLoadingCategories) return <ProductGridSkeleton numberOfProducts={8} />;
+  
   if (isErrorCategories)
     return (
       <div className="flex items-center justify-center min-h-screen text-red-500">
@@ -102,50 +119,67 @@ const ProductsPage = () => {
 
       <PageTransition>
         <div className="container mx-auto px-4 py-8 text-choco dark:text-cream">
-          {/* Header */}
-          <div className="mb-8">
-            <p className="text-xs font-semibold uppercase tracking-widest text-cocoa mb-1">
-              Bocaditos Yomi's
-            </p>
-            <h1 className="text-3xl md:text-4xl font-bold text-choco dark:text-cream">
-              Nuestros Productos
-            </h1>
-            <p className="text-sm text-choco/60 dark:text-cream/60 mt-1">
-              {isLoading ? (
-                "Cargando..."
-              ) : (
-                <>
-                  <span className="font-semibold text-choco dark:text-cream">
-                    {totalProducts ?? 0}
-                  </span>{" "}
-                  {hasActiveFilters
-                    ? "resultados encontrados"
-                    : "productos disponibles"}
-                </>
-              )}
-            </p>
+          {/* ── Header ─────────────────────────────────────────── */}
+          <div className="flex items-end justify-between mb-8 gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-cocoa mb-1">
+                Bocaditos Yomi's
+              </p>
+              <h1 className="text-3xl md:text-4xl font-bold text-choco dark:text-cream">
+                Nuestros Productos
+              </h1>
+              <p className="text-sm text-choco/60 dark:text-cream/60 mt-1">
+                {isLoading ? (
+                  "Cargando..."
+                ) : (
+                  <>
+                    <span className="font-semibold text-choco dark:text-cream">
+                      {totalProducts ?? 0}
+                    </span>{" "}
+                    {hasActiveFilters
+                      ? "resultados encontrados"
+                      : "productos disponibles"}
+                  </>
+                )}
+              </p>
+            </div>
+
+            {/* Toggle vista grid / lista */}
+            <div className="flex items-center gap-1 p-1 rounded-xl border border-cocoa/20 dark:border-cream/10 bg-cream dark:bg-fondo-dark shrink-0">
+              <button
+                onClick={() => setViewMode("grid")}
+                aria-label="Vista cuadrícula"
+                className={`p-2 rounded-lg transition-colors ${
+                  viewMode === "grid"
+                    ? "bg-choco text-cream dark:bg-cream dark:text-oscuro"
+                    : "text-choco/50 dark:text-cream/50 hover:text-choco dark:hover:text-cream"
+                }`}
+              >
+                <LayoutGrid className="size-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                aria-label="Vista lista"
+                className={`p-2 rounded-lg transition-colors ${
+                  viewMode === "list"
+                    ? "bg-choco text-cream dark:bg-cream dark:text-oscuro"
+                    : "text-choco/50 dark:text-cream/50 hover:text-choco dark:hover:text-cream"
+                }`}
+              >
+                <List className="size-4" />
+              </button>
+            </div>
           </div>
 
           {/* Filtros */}
-          <div className="mb-8 flex flex-col gap-3">
-            {/* Buscador */}
-            <div className="relative max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-choco/40 dark:text-cream/40 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Buscar producto..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-9 py-2.5 text-sm border border-cocoa/30 dark:border-cream/20 rounded-xl bg-cream dark:bg-oscuro text-choco dark:text-cream placeholder:text-choco/40 dark:placeholder:text-cream/40 focus:outline-none focus:ring-2 focus:ring-choco/20 dark:focus:ring-cream/20"
+          <div className="mb-4 flex flex-col gap-4 -mt-6">
+            {/* 🔹 Buscador unificado con AdvancedFilter */}
+            <div className="w-full sm:max-w-sm">
+              <AdvancedFilter
+                searchValue={searchTerm}
+                onSearchChange={handleSearchChange}
+                onClear={handleClearSearch}
               />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-choco/40 hover:text-choco dark:text-cream/40 dark:hover:text-cream transition-colors"
-                >
-                  <X className="size-4" />
-                </button>
-              )}
             </div>
 
             {/* Fila 2: Chips de categoría — scroll horizontal sin cortar dropdown */}
@@ -252,20 +286,28 @@ const ProductsPage = () => {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl border border-cocoa/20 dark:border-cream/10 bg-cream dark:bg-fondo-dark overflow-hidden animate-pulse"
-                >
-                  <div className="aspect-square bg-cocoa/10 dark:bg-cream/5" />
-                  <div className="p-4 space-y-2">
-                    <div className="h-4 bg-cocoa/10 dark:bg-cream/10 rounded-full w-3/4" />
-                    <div className="h-4 bg-cocoa/10 dark:bg-cream/10 rounded-full w-1/2" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            // <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+            //   {Array.from({ length: 8 }).map((_, i) => (
+            //     <div
+            //       key={i}
+            //       className="rounded-xl border border-cocoa/20 dark:border-cream/10 bg-cream dark:bg-fondo-dark overflow-hidden animate-pulse"
+            //     >
+            //       <div className="aspect-square bg-cocoa/10 dark:bg-cream/5" />
+            //       <div className="p-4 space-y-2">
+            //         <div className="h-4 bg-cocoa/10 dark:bg-cream/10 rounded-full w-3/4" />
+            //         <div className="h-4 bg-cocoa/10 dark:bg-cream/10 rounded-full w-1/2" />
+            //       </div>
+            //     </div>
+            //   ))}
+            // </div>
+            <ProductGridSkeleton
+              numberOfProducts={8}
+              columns={
+                viewMode === "grid"
+                  ? "grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+                  : "grid-cols-1"
+              }
+            />
           ) : products.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 gap-5 text-choco/40 dark:text-cream/40">
               <img
@@ -289,15 +331,25 @@ const ProductsPage = () => {
                 Ver todos los productos
               </button>
             </div>
-          ) : (
-            
+          ) : viewMode === "grid" ? (
             <StaggerList
-              key={`${page}-${animationKey}`}
+              key={`grid-${page}-${animationKey}`}
               className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6"
             >
               {products.map((product) => (
                 <StaggerItem key={product.id}>
                   <CardProduct product={product} />
+                </StaggerItem>
+              ))}
+            </StaggerList>
+          ) : (
+            <StaggerList
+              key={`list-${page}-${animationKey}`}
+              className="flex flex-col gap-6"
+            >
+              {products.map((product) => (
+                <StaggerItem key={product.id}>
+                  <CardProductList product={product} />
                 </StaggerItem>
               ))}
             </StaggerList>
@@ -317,6 +369,6 @@ const ProductsPage = () => {
       </PageTransition>
     </>
   );
-};
+};;
 
 export default ProductsPage;

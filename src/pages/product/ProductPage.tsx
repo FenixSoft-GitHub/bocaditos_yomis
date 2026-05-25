@@ -1,10 +1,6 @@
 // src/pages/ProductPage.tsx
-// Cambios respecto al original:
-// 1. Import Heart + useWishlist
-// 2. Botón de favorito junto a los CTAs (entre "Añadir al carrito" y "Comprar ahora")
 
 import GridImages from "@/components/products/GridImages";
-import { Loader } from "@/components/shared/Loader";
 import { Separator } from "@/components/shared/Separator";
 import Tag from "@/components/shared/Tag";
 import { formatPrice } from "@/helpers";
@@ -37,6 +33,8 @@ import {
 import { breadcrumbSchema, productSchema } from "@/components/seo/schemas";
 import { motion, AnimatePresence } from "framer-motion";
 import { FadeIn } from "@/components/animations";
+import { RelatedProducts } from "@/components/products/RelatedProducts";
+import { ProductPageSkeleton } from "@/components/shared/skeletons/ProductPageSkeleton";
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -100,7 +98,7 @@ const ProductPage = () => {
     }
   };
 
-  if (isLoading) return <Loader size={60} />;
+  if (isLoading) return <ProductPageSkeleton />;
 
   if (isError)
     return (
@@ -329,7 +327,7 @@ const ProductPage = () => {
                       transition={{ duration: 0.15 }}
                     >
                       <Heart
-                        className={`size-5 ${favorite ? "fill-orange-400 text-orange-500/90" : ""}`}
+                        className={`size-5 ${favorite ? "fill-red-500 text-red-500" : ""}`}
                       />
                     </motion.span>
                   </AnimatePresence>
@@ -371,6 +369,14 @@ const ProductPage = () => {
         <div className="mt-16 border-t border-cocoa/10 dark:border-cream/10">
           {product.id && <ReviewSection productId={product.id} />}
         </div>
+
+        {product.category_id && (
+          <RelatedProducts
+            categoryId={product.category_id}
+            excludeSlug={product.slug}
+            categoryName={product.categories?.name}
+          />
+        )}
       </div>
     </>
   );

@@ -1,33 +1,47 @@
-import { motion } from "framer-motion";
+// src/components/products/ProductGridSkeleton.tsx
+// Skeleton actualizado para coincidir con el nuevo diseño de CardProduct
 
 interface Props {
-  numberOfProducts: number;
+  numberOfProducts?: number;
+  columns?: string;
 }
 
-export const ProductGridSkeleton = ({ numberOfProducts }: Props) => {
-  return (
-    <div className="my-12">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {Array.from({ length: numberOfProducts }).map((_, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: index * 0.05, duration: 0.3 }}
-            className="flex flex-col rounded-xl border border-cocoa/20 dark:border-cream/10 bg-cream dark:bg-fondo-dark overflow-hidden shadow-sm"
-          >
-            <div className="aspect-square bg-cocoa/10 dark:bg-cream/5 animate-pulse" />
-            <div className="p-4 flex flex-col gap-3">
-              <div className="h-4 bg-cocoa/10 dark:bg-cream/10 rounded-full animate-pulse w-3/4" />
-              <div className="h-4 bg-cocoa/10 dark:bg-cream/10 rounded-full animate-pulse w-1/2" />
-              <div className="flex items-center justify-between mt-1">
-                <div className="h-5 bg-cocoa/10 dark:bg-cream/10 rounded-full animate-pulse w-16" />
-                <div className="w-9 h-9 bg-cocoa/10 dark:bg-cream/10 rounded-full animate-pulse" />
-              </div>
+export const ProductGridSkeleton = ({
+  numberOfProducts = 8,
+  columns = "grid-cols-2 md:grid-cols-3 xl:grid-cols-4",
+}: Props) => (
+  <div className={`grid ${columns} gap-4 md:gap-6`}>
+    {Array.from({ length: numberOfProducts }).map((_, i) => (
+      <div
+        key={i}
+        className="rounded-2xl border border-cocoa/15 dark:border-cream/10 bg-cream dark:bg-fondo-dark overflow-hidden animate-pulse"
+      >
+        {/* Imagen */}
+        <div className="aspect-square bg-cocoa/8 dark:bg-cream/5 relative">
+          {/* Badge placeholder */}
+          <div className="absolute top-2.5 left-2.5 h-5 w-16 bg-cocoa/10 dark:bg-cream/10 rounded-lg" />
+          {/* Favorito placeholder */}
+          <div className="absolute top-2.5 right-2.5 size-8 rounded-full bg-cocoa/10 dark:bg-cream/10" />
+        </div>
+        {/* Info */}
+        <div className="px-3.5 pt-3 pb-3.5 space-y-2">
+          {/* Categoría */}
+          <div className="h-2.5 w-16 bg-cocoa/8 dark:bg-cream/8 rounded-full" />
+          {/* Nombre */}
+          <div className="space-y-1.5">
+            <div className="h-3.5 bg-cocoa/10 dark:bg-cream/10 rounded-full w-full" />
+            <div className="h-3.5 bg-cocoa/10 dark:bg-cream/10 rounded-full w-3/4" />
+          </div>
+          {/* Precio + carrito */}
+          <div className="flex items-center justify-between mt-1 pt-0.5">
+            <div className="space-y-1">
+              <div className="h-2.5 w-10 bg-cocoa/8 dark:bg-cream/8 rounded-full" />
+              <div className="h-4 w-16 bg-cocoa/10 dark:bg-cream/10 rounded-full" />
             </div>
-          </motion.div>
-        ))}
+            <div className="size-9 rounded-xl bg-cocoa/8 dark:bg-cream/8" />
+          </div>
+        </div>
       </div>
-    </div>
-  );
-};
+    ))}
+  </div>
+);

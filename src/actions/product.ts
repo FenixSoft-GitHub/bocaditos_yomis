@@ -63,8 +63,10 @@ export const getProductsPages = async (page: number) => {
 
 // Obtener productos recientes
 // Helper para transformar la respuesta cruda de Supabase a la interfaz Product deseada
-const transformProductData = (rawProduct: SupabaseRawProductWithRelations): Product => {
-  const transformedCategories = rawProduct.categories || null; 
+const transformProductData = (
+  rawProduct: SupabaseRawProductWithRelations,
+): Product => {
+  const transformedCategories = rawProduct.categories || null;
 
   // Encuentra el descuento activo (si hay varios, toma el primero activo)
   const activeDiscount = rawProduct.discounts
@@ -82,8 +84,8 @@ const transformProductData = (rawProduct: SupabaseRawProductWithRelations): Prod
     category_id: rawProduct.category_id,
     created_at: rawProduct.created_at,
     updated_at: rawProduct.updated_at,
-    categories: transformedCategories, 
-    discount: activeDiscount,         
+    categories: transformedCategories,
+    discount: activeDiscount,
   };
 };
 
@@ -128,10 +130,12 @@ export const getRandomProducts = async (): Promise<Product[]> => {
 
     if (!data) return [];
 
-    const transformedProducts = (data as unknown as SupabaseRawProductWithRelations[]).map(transformProductData);
+    const transformedProducts = (
+      data as unknown as SupabaseRawProductWithRelations[]
+    ).map(transformProductData);
 
     const filtered = transformedProducts.filter(
-      (p) => p?.image_url?.length > 0 && p?.name
+      (p) => p?.image_url?.length > 0 && p?.name,
     );
 
     const randomProducts = filtered
@@ -171,7 +175,7 @@ export const getDiscountedProducts = async (): Promise<Product[]> => {
     ).map(transformProductData);
 
     // Filtra para asegurar que solo se devuelvan productos con un descuento activo válido
-    return transformedProducts.filter(p => p.discount !== null);
+    return transformedProducts.filter((p) => p.discount !== null);
   } catch (error) {
     console.error("Error fetching discounted products:", error);
     return [];
@@ -188,7 +192,8 @@ export const getByIdProduct = async (id: string): Promise<Product | null> => {
     .single();
 
   if (error) {
-    if (error.code === "PGRST116") { // "No rows found"
+    if (error.code === "PGRST116") {
+      // "No rows found"
       return null;
     }
     console.error("Error al obtener producto con descuento:", error);
@@ -235,7 +240,6 @@ export const getProductsByCategory = async ({
   if (search && search.trim().length >= 2) {
     query = query.ilike("name", `%${search}%`);
   }
-  
 
   const { data, error, count } = await query;
 
@@ -273,7 +277,9 @@ export const getProductBySlug = async (slug: string) => {
   }
 };
 
-export const searchProducts = async (searchTerm: string): Promise<Product[]> => {
+export const searchProducts = async (
+  searchTerm: string,
+): Promise<Product[]> => {
   try {
     const { data, error } = await supabase
       .from("products")
@@ -289,12 +295,11 @@ export const searchProducts = async (searchTerm: string): Promise<Product[]> => 
     if (!data) {
       return []; // Si no hay datos, devuelve un array vacío
     }
-    
+
     // Mapea la data cruda de Supabase a la interfaz Product unificada
     const transformedProducts: Product[] = (
       data as unknown as SupabaseRawProductWithRelations[]
     ).map(transformProductData);
-
 
     return transformedProducts;
   } catch (error) {
@@ -344,7 +349,7 @@ export const createProduct = async (values: ProductInput) => {
     // Generar slug
     const slug =
       values.slug ?? slugify(values.name, { lower: true, strict: true });
-   
+
     const folderName = crypto.randomUUID(); // Nombre único si aún no hay ID
 
     // Subir imágenes
@@ -369,7 +374,7 @@ export const createProduct = async (values: ProductInput) => {
         }
 
         return urlData.publicUrl;
-      })
+      }),
     );
 
     // Crear el producto con las imágenes ya subidas
@@ -435,7 +440,7 @@ export const deleteProduct = async (productId: string) => {
 
   if (productDeleteError)
     throw new Error(
-      "Error al eliminar producto: " + productDeleteError.message
+      "Error al eliminar producto: " + productDeleteError.message,
     );
 
   return true;
@@ -444,7 +449,7 @@ export const deleteProduct = async (productId: string) => {
 //Aca la nueva función la anterior comentada al final
 export const updateProduct = async (
   productId: string,
-  productInput: ProductFormValues
+  productInput: ProductFormValues,
 ) => {
   if (!productId) throw new Error("ID de producto no válido");
   if (!Array.isArray(productInput.image_url))
@@ -470,7 +475,7 @@ export const updateProduct = async (
     | File
   )[];
   const imagesToDelete = existingImages.filter(
-    (image) => !validImages.includes(image)
+    (image) => !validImages.includes(image),
   );
 
   const filesToDelete = imagesToDelete.map(extractFilePath);
@@ -505,7 +510,7 @@ export const updateProduct = async (
       } else {
         return image; // URL existente
       }
-    })
+    }),
   );
 
   const { data: updatedProduct, error: updateError } = await supabase
@@ -526,4 +531,30 @@ export const updateProduct = async (
   if (updateError) throw new Error(updateError.message);
 
   return updatedProduct;
+};
+
+export const getRelatedProducts = async (
+  categoryId: string,
+  excludeSlug: string,
+  limit = 6,
+): Promise<Product[]> => {
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*, categories(*), discounts(*)")
+      .eq("category_id", categoryId)
+      .neq("slug", excludeSlug)
+      .limit(limit)
+      .order("created_at", { ascending: false });
+
+    if (error) throw new Error(error.message);
+    if (!data) return [];
+
+    return (data as unknown as SupabaseRawProductWithRelations[]).map(
+      transformProductData,
+    );
+  } catch (error) {
+    console.error("Error fetching related products:", error);
+    return [];
+  }
 };

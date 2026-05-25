@@ -86,7 +86,7 @@ export const NavBar = memo(() => {
               className="p-2 rounded-lg hover:bg-cream/10 transition-colors"
               aria-label="Buscar"
             >
-              <Search className="w-5 h-5" />
+              <Search className="size-5" />
             </button>
 
             {isLoading ? (
@@ -101,7 +101,7 @@ export const NavBar = memo(() => {
                 }
                 aria-label="Mi cuenta"
               >
-                <User className="w-5 h-5" />
+                <User className="size-5" />
                 <span className="hidden md:inline">Hola, {firstName}</span>
               </NavLink>
             ) : (
@@ -110,7 +110,7 @@ export const NavBar = memo(() => {
                 className="p-2 rounded-lg hover:bg-cream/10 transition-colors"
                 aria-label="Iniciar sesión"
               >
-                <User className="w-5 h-5" />
+                <User className="size-5" />
               </Link>
             )}
 
@@ -132,7 +132,7 @@ export const NavBar = memo(() => {
               onClick={() => setActiveNavMobile(true)}
               aria-label="Abrir menú"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="size-5" />
             </button>
           </div>
         </div>
