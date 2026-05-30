@@ -1,4 +1,4 @@
-import markdownContent from "@/constants/TermsOfUsers.md?raw";
+import markdownContent from "@/constants/markdown/TermsOfUsers.md?raw";
 import MarkdownPage from "@/components/shared/MarkdownPage";
 
 const TermsOfUsers = () => (

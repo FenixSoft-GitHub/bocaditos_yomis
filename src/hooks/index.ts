@@ -58,6 +58,7 @@ export * from "./checkout/useCreateOrder";
 export * from "./checkout/useSubmitReceipt";
 export * from "./checkout/usePaymentMethods";
 export * from "./checkout/useCheckout";
+export * from "./onboarding/useOnboarding";
 
 export {
   useOrdersByHour,

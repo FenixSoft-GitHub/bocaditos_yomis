@@ -14,6 +14,10 @@ type Status =
   | "preparing"
   | "verified"
   | "rejected"
+  | "active"
+  | "inactive"
+  | "used"
+  | "expired"
   | string;
 
 const statusMap: Record<string, { label: string; className: string }> = {
@@ -77,6 +81,24 @@ const statusMap: Record<string, { label: string; className: string }> = {
   },
   rejected: {
     label: "Rechazado",
+    className: "bg-red-500/10 text-red-400 border border-red-500/30",
+  },
+
+  // ── Cupones automáticos ────────────────────────────────────────
+  active: {
+    label: "Activo",
+    className: "bg-green-500/10 text-green-400 border border-green-500/30",
+  },
+  inactive: {
+    label: "Inactivo",
+    className: "bg-stone-500/10 text-stone-400 border border-stone-500/30",
+  },
+  used: {
+    label: "Usado",
+    className: "bg-blue-500/10 text-blue-400 border border-blue-500/30",
+  },
+  expired: {
+    label: "Expirado",
     className: "bg-red-500/10 text-red-400 border border-red-500/30",
   },
 };

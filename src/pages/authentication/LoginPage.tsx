@@ -29,7 +29,7 @@ const LoginPage = () => {
   if (session) return <Navigate to="/" replace />;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
+    <div className="min-h-screen -mt-12 flex flex-col justify-center items-center px-4 bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-3">
           <div className="flex justify-center">
@@ -45,11 +45,11 @@ const LoginPage = () => {
           <Loader size={50} fullScreen={false} />
         ) : (
           <form onSubmit={onLogin} className="space-y-5" noValidate>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
                 Correo electrónico
               </label>
-              <div className="relative">
+              <div className="relative mt-1">
                 <input
                   id="email"
                   type="email"
@@ -64,11 +64,11 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
                 Contraseña
               </label>
-              <div className="relative">
+              <div className="relative mt-1">
                 <input
                   id="password"
                   type={showPass ? "text" : "password"}

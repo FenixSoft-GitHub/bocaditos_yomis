@@ -22,6 +22,9 @@ export const OrdersUserPage = lazy(
 );
 export const OrderUserPage = lazy(() => import("@pages/orders/OrderUserPage"));
 export const WishlistPage = lazy(() => import("@pages/account/WishlistPage"));
+export const UserCouponsPage = lazy(() => import("@pages/account/UserCouponsPage"));
+export const ReferralPage = lazy(() => import("@pages/account/ReferralPage"));
+
 
 // ── Checkout ──────────────────────────────────────────────────────
 export const CheckoutPage = lazy(() => import("@pages/checkout/CheckoutPage"));
@@ -97,6 +100,10 @@ export const NewBlogPostPage = lazy(
 export const EditBlogPostPage = lazy(
   () => import("@pages/dashboard/blog/EditBlogPostPage"),
 );
+export const DashboardCouponsPage = lazy(
+  () => import("@pages/dashboard/DashboardCouponsPage"),
+);
+
 
 // ── Página 404 ───────────────────────────────────────────────────
 export const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));

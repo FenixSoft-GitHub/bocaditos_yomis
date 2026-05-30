@@ -8,6 +8,7 @@ import { useGlobalStore } from "@/store/global.store";
 import { useCartStore } from "@/store/cart.store";
 import { useUser } from "@/hooks";
 import { Loader } from "@/components/shared/Loader";
+import { AvatarUpload } from "@/components/account/AvatarUpload";
 
 const SOLID_BG_ROUTES = new Set([
   "/products",
@@ -48,8 +49,23 @@ export const NavBar = memo(() => {
     (state) => state.setActiveNavMobile,
   );
   const totalItemsInCart = useCartStore((state) => state.totalItemsInCart);
-  const { session, isLoading, userName } = useUser();
-  const firstName = userName?.split(" ")[0];
+  const { session, isLoading, userName, avatarUrl, refreshProfile } = useUser();
+
+  // Extraer solo el primer y tercer nombre para mostrar
+  const parts = userName ? userName.trim().split(/\s+/) : [];
+
+  const firstNameAndLastName =
+    parts.length >= 3 ? `${parts[0]} ${parts[2]}` : userName;
+  const email = session?.user?.email ?? "";
+
+  const initials = userName
+    ? userName
+        .split(" ")
+        .map((n: string) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : email.charAt(0).toUpperCase();
 
   return (
     <header
@@ -95,22 +111,37 @@ export const NavBar = memo(() => {
               <NavLink
                 to="/account"
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-cream/10 hover:bg-cream/20 ${
+                  `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-cream/10 ${
                     isActive ? "text-cream font-semibold" : "text-cream/80"
                   }`
                 }
                 aria-label="Mi cuenta"
               >
-                <User className="size-5" />
-                <span className="hidden md:inline">Hola, {firstName}</span>
+                {/* Avatar con upload */}
+                <AvatarUpload
+                  currentUrl={avatarUrl}
+                  initials={initials}
+                  onSuccess={() => refreshProfile()}
+                  size={8}
+                  isActive
+                />
+                <div className="min-w-0 text-[11px]">
+                  <p className="hidden md:block truncate">
+                    {firstNameAndLastName || "Mi cuenta"}
+                  </p>
+                  <span className="hidden md:inline underline text-[10px] text-cream/80 dark:text-cream/60">
+                    {email}
+                  </span>
+                </div>
               </NavLink>
             ) : (
               <Link
                 to="/login"
-                className="p-2 rounded-lg hover:bg-cream/10 transition-colors"
+                className="p-2 rounded-lg hover:bg-cream/10 transition-colors flex gap-1 items-center text-sm font-medium text-cream/80 hover:text-cream"
                 aria-label="Iniciar sesión"
               >
                 <User className="size-5" />
+                Iniciar sesión
               </Link>
             )}
 
@@ -119,9 +150,9 @@ export const NavBar = memo(() => {
               className="relative p-2 rounded-lg hover:bg-cream/10 transition-colors"
               aria-label={`Carrito — ${totalItemsInCart} artículos`}
             >
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className="size-5" />
               {totalItemsInCart > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center text-[10px] font-bold rounded-full bg-cocoa text-cream">
+                <span className="absolute -top-1 -right-1 size-4 flex items-center justify-center text-[10px] font-bold rounded-full bg-cocoa text-cream">
                   {totalItemsInCart > 9 ? "9+" : totalItemsInCart}
                 </span>
               )}

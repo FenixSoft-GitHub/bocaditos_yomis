@@ -1,4 +1,4 @@
-import markdownContent from "@/constants/NuestraHistoria.md?raw";
+import markdownContent from "@/constants/markdown/NuestraHistoria.md?raw";
 import MarkdownPage from "@/components/shared/MarkdownPage";
 
 const NuestraHistoriaPage = () => (

@@ -45,7 +45,11 @@ import {
   ProductsPage,
   NotFoundPage,
   WishlistPage,
+  DashboardCouponsPage,
+  UserCouponsPage,
+  ReferralPage
 } from "@/pages";
+
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen bg-fondo dark:bg-fondo-dark">
@@ -88,6 +92,8 @@ export const AppRoutes = createBrowserRouter([
               { path: "pedidos", element: s(<OrdersUserPage />) },
               { path: "pedidos/:id", element: s(<OrderUserPage />) },
               { path: "favoritos", element: s(<WishlistPage />) },
+              { path: "cupones", element: s(<UserCouponsPage />) },
+              { path: "referidos", element: s(<ReferralPage />) },
             ],
           },
         ],
@@ -151,6 +157,7 @@ export const AppRoutes = createBrowserRouter([
           { path: "blog", element: s(<BlogDashboardPage />) },
           { path: "blog/new", element: s(<NewBlogPostPage />) },
           { path: "blog/edit/:id", element: s(<EditBlogPostPage />) },
+          { path: "coupons", element: s(<DashboardCouponsPage />) },
         ],
       },
     ],

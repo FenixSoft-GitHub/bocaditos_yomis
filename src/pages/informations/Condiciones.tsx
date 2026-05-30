@@ -1,4 +1,4 @@
-import markdownContent from "@/constants/Condiciones.md?raw";
+import markdownContent from "@/constants/markdown/Condiciones.md?raw";
 import MarkdownPage from "@/components/shared/MarkdownPage";
 
 const Condiciones = () => (

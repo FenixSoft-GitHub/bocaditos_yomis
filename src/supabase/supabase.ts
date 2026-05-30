@@ -39,6 +39,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_carts: {
+        Row: {
+          created_at: string | null
+          id: string
+          items: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          items?: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          items?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       addresses: {
         Row: {
           address_1: string
@@ -88,6 +112,66 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auto_coupons: {
+        Row: {
+          code: string
+          created_at: string | null
+          discount: number
+          email_sent: boolean | null
+          expires_at: string
+          id: string
+          min_order: number | null
+          order_id: string | null
+          template_id: string
+          type: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          discount: number
+          email_sent?: boolean | null
+          expires_at: string
+          id?: string
+          min_order?: number | null
+          order_id?: string | null
+          template_id: string
+          type: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          discount?: number
+          email_sent?: boolean | null
+          expires_at?: string
+          id?: string
+          min_order?: number | null
+          order_id?: string | null
+          template_id?: string
+          type?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auto_coupons_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auto_coupons_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_templates"
             referencedColumns: ["id"]
           },
         ]
@@ -169,6 +253,104 @@ export type Database = {
           id?: string
           name?: string
           slug?: string | null
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          created_at: string | null
+          escalated_at: string | null
+          id: string
+          session_key: string
+          status: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          escalated_at?: string | null
+          id?: string
+          session_key?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          escalated_at?: string | null
+          id?: string
+          session_key?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      coupon_templates: {
+        Row: {
+          code_prefix: string
+          created_at: string | null
+          discount: number
+          expires_in_days: number
+          id: string
+          is_active: boolean | null
+          min_order: number | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          code_prefix: string
+          created_at?: string | null
+          discount: number
+          expires_in_days?: number
+          id?: string
+          is_active?: boolean | null
+          min_order?: number | null
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          code_prefix?: string
+          created_at?: string | null
+          discount?: number
+          expires_in_days?: number
+          id?: string
+          is_active?: boolean | null
+          min_order?: number | null
+          type?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -288,7 +470,7 @@ export type Database = {
           mp_preference_id: string | null
           notes: string | null
           paid_at: string | null
-          payment_type: string
+          payment_type: string | null
           promo_code_id: string | null
           shipping_cost: number
           status: string
@@ -666,6 +848,87 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          ref_code: string
+          referred_coupon_id: string | null
+          referred_id: string
+          referrer_coupon_id: string | null
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          ref_code: string
+          referred_coupon_id?: string | null
+          referred_id: string
+          referrer_coupon_id?: string | null
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          ref_code?: string
+          referred_coupon_id?: string | null
+          referred_id?: string
+          referrer_coupon_id?: string | null
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_coupon_id_fkey"
+            columns: ["referred_coupon_id"]
+            isOneToOne: false
+            referencedRelation: "auto_coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_coupon_id_fkey"
+            columns: ["referrer_coupon_id"]
+            isOneToOne: false
+            referencedRelation: "auto_coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      retention_emails: {
+        Row: {
+          clicked_at: string | null
+          id: string
+          opened_at: string | null
+          reference_id: string | null
+          sent_at: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          clicked_at?: string | null
+          id?: string
+          opened_at?: string | null
+          reference_id?: string | null
+          sent_at?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          clicked_at?: string | null
+          id?: string
+          opened_at?: string | null
+          reference_id?: string | null
+          sent_at?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -742,25 +1005,34 @@ export type Database = {
       }
       users: {
         Row: {
+          avatar_url: string | null
+          birth_date: string | null
           created_at: string
           email: string
           full_name: string
           id: string
           phone: string | null
+          ref_code: string | null
         }
         Insert: {
+          avatar_url?: string | null
+          birth_date?: string | null
           created_at?: string
           email: string
           full_name: string
           id?: string
           phone?: string | null
+          ref_code?: string | null
         }
         Update: {
+          avatar_url?: string | null
+          birth_date?: string | null
           created_at?: string
           email?: string
           full_name?: string
           id?: string
           phone?: string | null
+          ref_code?: string | null
         }
         Relationships: []
       }
@@ -799,14 +1071,55 @@ export type Database = {
     }
     Functions: {
       can_review: { Args: { p_product_id: string }; Returns: Json }
+      complete_referral: { Args: { p_referred_id: string }; Returns: undefined }
+      create_auto_coupon: {
+        Args: { p_type: string; p_user_id: string }
+        Returns: {
+          code: string
+          created_at: string | null
+          discount: number
+          email_sent: boolean | null
+          expires_at: string
+          id: string
+          min_order: number | null
+          order_id: string | null
+          template_id: string
+          type: string
+          used_at: string | null
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "auto_coupons"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       decrement_stock: {
         Args: { p_product_id: string; p_quantity: number }
         Returns: undefined
       }
+      generate_coupon_code: { Args: { prefix: string }; Returns: string }
+      generate_ref_code: { Args: { p_name: string }; Returns: string }
+      get_chat_business_context: { Args: { p_user_id?: string }; Returns: Json }
+      get_referral_stats: { Args: { p_user_id: string }; Returns: Json }
       increment_promo_uses: { Args: { p_promo_id: string }; Returns: undefined }
-      is_admin: { Args: never; Returns: boolean }
+      is_admin:
+        | { Args: never; Returns: boolean }
+        | { Args: { p_user_id: string }; Returns: boolean }
+      register_referral: {
+        Args: { p_ref_code: string; p_referred_id: string }
+        Returns: Json
+      }
       search_all: { Args: { search_term: string }; Returns: Json }
+      send_abandoned_cart_emails: { Args: never; Returns: undefined }
+      send_birthday_coupons: { Args: never; Returns: undefined }
+      send_reactivation_emails: { Args: never; Returns: undefined }
       toggle_wishlist: { Args: { p_product_id: string }; Returns: Json }
+      validate_auto_coupon: {
+        Args: { p_code: string; p_subtotal: number; p_user_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

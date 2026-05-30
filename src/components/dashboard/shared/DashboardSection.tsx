@@ -5,6 +5,8 @@ interface Props {
   title: string;
   description: string;
   count?: number;
+  icon?: ReactNode;
+  isLoading?: boolean;
   action?: ReactNode;
   filters?: ReactNode;
   children: ReactNode;
@@ -13,14 +15,12 @@ interface Props {
   className?: string;
 }
 
-/**
- * Layout base para todas las secciones del Dashboard.
- * Provee encabezado, filtros y grid de cards consistente.
- */
 export const DashboardSection = ({
   title,
   description,
   count,
+  icon,
+  isLoading = false,
   action,
   filters,
   children,
@@ -28,11 +28,12 @@ export const DashboardSection = ({
   className,
   isEmpty = false,
 }: Props) => (
-  <div className={`flex flex-col gap-4.5`}>
+  <div className="flex flex-col gap-4.5">
     {/* Header */}
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 -mb-5">
-      <div className={`${className}`}>
+      <div className={className}>
         <div className="flex items-center gap-2">
+          {icon && <div className="p-1.5 rounded-lg bg-cocoa/10">{icon}</div>}
           <h1 className="text-2xl font-bold text-choco dark:text-cream">
             {title}
           </h1>
@@ -52,8 +53,17 @@ export const DashboardSection = ({
     {/* Filtros */}
     {filters && <div>{filters}</div>}
 
-    {/* Contenido */}
-    {isEmpty && empty ? (
+    {/* Loading */}
+    {isLoading ? (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="h-40 rounded-xl bg-cocoa/5 dark:bg-cream/5 animate-pulse"
+          />
+        ))}
+      </div>
+    ) : isEmpty && empty ? (
       <div className="flex flex-col items-center justify-center py-10 gap-4 text-choco/40 dark:text-cream/40">
         {empty}
       </div>

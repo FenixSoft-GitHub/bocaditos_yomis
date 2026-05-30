@@ -1,26 +1,44 @@
+// src/layout/ClientLayout.tsx
+
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { signOut } from "@/actions";
 import { useRoleUser, useUser } from "@/hooks";
-import { LogOut, ExternalLink, FileText, User, ChevronRight, Heart } from "lucide-react";
+import {
+  LogOut,
+  ExternalLink,
+  FileText,
+  ChevronRight,
+  Heart,
+  Tag,
+  Users,
+} from "lucide-react";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import { useQueryClient } from "@tanstack/react-query";
 import { FadeIn } from "@/components/animations";
 import { PushNotificationsBanner } from "@/components/notifications/PushNotificationsBanner";
+import { AvatarUpload } from "@/components/account/AvatarUpload";
 
 const navLinks = [
   { to: "/account/pedidos", label: "Mis Pedidos", icon: FileText },
   { to: "/account/favoritos", label: "Mis Favoritos", icon: Heart },
+  { to: "/account/cupones", label: "Mis Cupones", icon: Tag },
+  { to: "/account/referidos", label: "Referidos", icon: Users },
 ];
 
 const ClientLayout = () => {
-  const { session, userName } = useUser();
+  const { session, userName, avatarUrl, refreshProfile } = useUser();
   const { data: role } = useRoleUser(session?.user.id as string);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const email     = session?.user?.email ?? "";
-  const initials  = userName
-    ? userName.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase()
+  const email = session?.user?.email ?? "";
+  const initials = userName
+    ? userName
+        .split(" ") 
+        .map((n: string) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
     : email.charAt(0).toUpperCase();
   const firstName = userName?.split(" ")[0] ?? "Mi cuenta";
 
@@ -42,16 +60,21 @@ const ClientLayout = () => {
                 {/* Perfil del usuario */}
                 <div className="p-5 border-b border-cocoa/10 dark:border-cream/10">
                   <div className="flex items-center gap-3">
-                    {/* Avatar con iniciales */}
-                    <div className="w-12 h-12 rounded-full bg-choco dark:bg-cream flex items-center justify-center shrink-0 text-cream dark:text-oscuro font-bold text-lg shadow-sm">
-                      {initials || <User className="size-5" />}
-                    </div>
+                    {/* Avatar con upload */}
+                    <AvatarUpload
+                      currentUrl={avatarUrl}
+                      initials={initials}
+                      onSuccess={() => refreshProfile()}
+                    />
                     <div className="min-w-0">
                       <p className="font-semibold text-sm truncate">
                         {userName || "Mi cuenta"}
                       </p>
                       <p className="text-xs text-choco/50 dark:text-cream/50 truncate">
                         {email}
+                      </p>
+                      <p className="text-[10px] text-cocoa/70 dark:text-cream/40 mt-0.5">
+                        Toca la foto para cambiarla
                       </p>
                     </div>
                   </div>
@@ -101,10 +124,8 @@ const ClientLayout = () => {
                     </>
                   )}
 
-                  {/* Separador */}
                   <div className="border-t border-cocoa/50 dark:border-cream/20 my-2" />
 
-                  {/* Cerrar sesión */}
                   <button
                     onClick={handleLogout}
                     className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 dark:text-red-400 dark:bg-cocoa/10 bg-cocoa/20 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"

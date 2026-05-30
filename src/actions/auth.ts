@@ -1,3 +1,6 @@
+// src/actions/auth.ts
+// Cambio: agregar avatar_url al select de getUserProfile
+
 import { supabase } from "@/supabase/client";
 
 interface IAuthLogin {
@@ -10,6 +13,7 @@ interface IAuthRegister {
   password: string;
   fullName: string;
   phone?: string;
+  refCode?: string;
 }
 
 export const signUp = async ({
@@ -18,14 +22,10 @@ export const signUp = async ({
   fullName,
   phone,
 }: IAuthRegister) => {
-  // 1. Crear usuario en auth — el trigger handle_new_user
-  //    crea automáticamente el registro en public.users
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: { full_name: fullName, phone }, // el trigger lee raw_user_meta_data
-    },
+    options: { data: { full_name: fullName, phone } },
   });
 
   if (error) throw new Error(error.message);
@@ -33,23 +33,17 @@ export const signUp = async ({
   const userId = data.user?.id;
   if (!userId) throw new Error("Error al obtener el id del usuario");
 
-  // 2. Autenticar al usuario
   const { error: signInError } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
   if (signInError) throw new Error("Email o contraseña incorrectos");
 
-  // 3. Insertar rol por defecto
-  // El trigger ya creó el usuario en public.users con el mismo id
   const { error: roleError } = await supabase
     .from("user_role")
     .insert({ user_id: userId, role: "customer" });
-
   if (roleError) throw new Error("Error al registrar el rol del usuario");
 
-  // 4. Actualizar phone si se proporcionó
-  // (el trigger inserta full_name y email, phone lo actualizamos aquí)
   if (phone) {
     await supabase.from("users").update({ phone }).eq("id", userId);
   }
@@ -62,7 +56,6 @@ export const signIn = async ({ email, password }: IAuthLogin) => {
     email,
     password,
   });
-
   if (error) throw new Error("Email o contraseña incorrectos");
   return { data };
 };
@@ -82,8 +75,8 @@ export const getUserProfile = async (userId: string) => {
   try {
     const { data, error } = await supabase
       .from("users")
-      .select("full_name, email, phone")
-      .eq("id", userId) // ← corregido: era .eq('user_id', userId)
+      .select("full_name, email, phone, avatar_url") // ← avatar_url agregado
+      .eq("id", userId)
       .single();
 
     if (error) throw error;

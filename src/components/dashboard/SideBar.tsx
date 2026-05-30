@@ -45,10 +45,10 @@ export const SideBar = () => {
   };
 
   return (
-    <div className="w-[120px] h-screen fixed bg-fondo-dark text-cream flex flex-col gap-4 items-center p-3 lg:w-[250px] border-r border-cream/30">
+    <div className="w-[120px] h-screen fixed bg-fondo-dark text-cream flex flex-col gap-2 items-center p-3 lg:w-[250px] border-r border-cream/30">
       <Logo />
 
-      <nav className="w-full space-y-4 flex-1">
+      <nav className="w-full space-y-2 flex-1">
         {DashboardLinks.map((link) => {
           const badgeCount = badges[link.href] ?? 0;
 

@@ -47,4 +47,6 @@ Si tienes preguntas sobre nuestra política de privacidad, puedes comunicarte co
 📞 **[Número de contacto]**  
 📍 **Urb. Las Cayenas, Calle 3, Casa 129, Manzana 7**
 
----
+--- 
+
+¡Gracias por confiar en **Bocaditos Yomi's**! Estamos aquí para que tu experiencia sea tan dulce como nuestros productos.

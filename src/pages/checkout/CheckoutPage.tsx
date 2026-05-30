@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCartStore } from "@/store/cart.store";
 import { FormCheckout } from "@/components/checkout/FormCheckout";
@@ -6,9 +7,12 @@ import { ShoppingCart } from "lucide-react";
 import { useCheckout } from "@/hooks/checkout/useCheckout";
 import { PaymentInfo } from "@/components/checkout/PaymentInfo";
 import { OrderConfirmed } from "@/components/checkout/OrderConfirmed";
+import { AutoCouponInput } from "@/components/dashboard/coupons/AutoCouponInput";
 
 const CheckoutPage = () => {
   const totalItems = useCartStore((state) => state.totalItemsInCart);
+  const cartItems = useCartStore((state) => state.items);
+
   const {
     step,
     loading,
@@ -18,6 +22,22 @@ const CheckoutPage = () => {
     handleSubmitReceipt,
     goToOrders,
   } = useCheckout();
+
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    id: string;
+    code: string;
+    discount: number;
+  } | null>(null);
+
+  // El store ya calcula totalAmount, pero lo recalculamos
+  // con el descuento del cupón para mostrarlo en el resumen
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+  );
+  const couponDiscount = appliedCoupon
+    ? (subtotal * appliedCoupon.discount) / 100
+    : 0;
 
   // Paso 3 — Confirmación
   if (step === "confirmed" && orderData) {
@@ -94,9 +114,25 @@ const CheckoutPage = () => {
       ) : (
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-73px)]">
           {/* Formulario */}
-          <div className="p-6 md:p-10 border-r-0 lg:border-r border-cocoa/20 dark:border-cream/10">
+          <div className="p-6 md:p-10 border-r-0 lg:border-r border-cocoa/20 dark:border-cream/10 space-y-6">
+            {/* Cupón — solo móvil */}
+            <div className="lg:hidden">
+              <AutoCouponInput
+                subtotal={subtotal}
+                onCouponApplied={(discount, couponId, code) =>
+                  setAppliedCoupon({ id: couponId, code, discount })
+                }
+                onCouponRemoved={() => setAppliedCoupon(null)}
+              />
+            </div>
+
             <FormCheckout
-              onOrderCreated={handleCreateOrder}
+              onOrderCreated={(data) =>
+                handleCreateOrder({
+                  ...data,
+                  auto_coupon_id: appliedCoupon?.id ?? null,
+                })
+              }
               loading={loading}
               error={error}
             />
@@ -104,9 +140,38 @@ const CheckoutPage = () => {
 
           {/* Resumen desktop */}
           <div className="hidden lg:block p-6 md:p-10">
-            <div className="sticky top-6">
-              <h2 className="text-lg font-semibold mb-4">Resumen del pedido</h2>
+            <div className="sticky top-6 space-y-6">
+              <h2 className="text-lg font-semibold">Resumen del pedido</h2>
+
               <ItemsCheckout />
+
+              {/* Cupón — desktop */}
+              <AutoCouponInput
+                subtotal={subtotal}
+                onCouponApplied={(discount, couponId, code) =>
+                  setAppliedCoupon({ id: couponId, code, discount })
+                }
+                onCouponRemoved={() => setAppliedCoupon(null)}
+              />
+
+              {/* Desglose */}
+              <div className="space-y-2 border-t border-cocoa/20 dark:border-cream/10 pt-4">
+                <div className="flex justify-between text-sm text-choco/60 dark:text-cream/60">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+
+                {appliedCoupon && (
+                  <div className="flex justify-between text-sm text-green-600 dark:text-green-400">
+                    <span>Cupón {appliedCoupon.code}</span>
+                    <span>-${couponDiscount.toFixed(2)}</span>
+                  </div>
+                )}
+
+                <p className="text-xs text-choco/40 dark:text-cream/40">
+                  El costo de envío se calcula en el formulario
+                </p>
+              </div>
             </div>
           </div>
         </div>

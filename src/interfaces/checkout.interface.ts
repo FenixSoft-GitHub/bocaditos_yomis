@@ -9,6 +9,7 @@ export interface CreateOrderPayload {
   delivery_option_id: string;
   payment_type: "pago_movil" | "transferencia" | "usdt";
   promo_code?: string;
+  auto_coupon_id?: string | null; // ← agregado
   notes?: string;
 }
 

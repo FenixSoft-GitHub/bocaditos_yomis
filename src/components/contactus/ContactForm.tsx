@@ -94,17 +94,6 @@ export const ContactForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      {/* <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-cocoa mb-1">
-          Contáctanos
-        </p>
-        <h3 className="text-xl font-bold text-choco dark:text-cream">
-          Puedes llegar a nosotros
-        </h3>
-        <p className="text-sm text-choco/60 dark:text-cream/60 mt-1 leading-relaxed">
-          Llena el siguiente formulario y te responderemos lo antes posible
-        </p>
-      </div> */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4.5 gap-x-5">
         <div>
           <label className={labelClass}>
@@ -186,10 +175,9 @@ export const ContactForm: React.FC = () => {
           name="message"
           value={formData.message}
           onChange={handleChange}
-          rows={4}
           required
           placeholder="Cuéntanos en qué podemos ayudarte..."
-          className={`${inputClass} resize-y`}
+          className={`${inputClass} resize-none w-full h-full block min-h-[120px] sm:min-h-[240px]`}
         />
       </div>
 

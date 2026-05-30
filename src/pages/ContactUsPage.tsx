@@ -33,15 +33,17 @@ const ContactUsPage = () => (
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-fondo dark:from-fondo-dark to-transparent" />
 
         <div className="relative max-w-[680px] text-cream flex flex-col gap-5 text-end py-20 px-4 lg:py-40 lg:px-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-cream/70">
-            Bocaditos Yomi's · Contacto
+          <p className="text-sm font-semibold uppercase tracking-widest text-cream/70">
+            Bocaditos Yomi's
           </p>
           <h1 className="text-4xl md:text-5xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] leading-tight">
-            Estamos aquí para ayudarte
+            Estamos aquí para brindarte nuestra mejor atención
           </h1>
           <p className="text-sm md:text-lg text-cream/90 leading-relaxed">
             ¿Tienes una pregunta, un pedido especial o simplemente quieres
-            saludar? Escríbenos y te responderemos a la brevedad.
+            saludar? Escríbenos y te responderemos a la mayor brevedad. Siempre
+            estamos felices de escuchar a nuestros clientes y ayudarlos en lo
+            que necesiten.
           </p>
         </div>
       </div>
@@ -61,7 +63,8 @@ const ContactUsPage = () => (
                   Completa el formulario y nos pondremos en contacto contigo.
                 </p>
               </div>
-              <div className="bg-cream dark:bg-oscuro border border-cocoa/20 dark:border-cream/10 rounded-2xl p-6 shadow-sm">
+              {/* Columna del Formulario */}
+              <div className="lg:col-span-3 flex flex-col items-stretch h-full border border-cocoa/20 dark:border-cream/10 rounded-xl p-6 shadow-sm">
                 <ContactForm />
               </div>
             </div>

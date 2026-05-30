@@ -73,4 +73,10 @@ export const DashboardLinks = [
     href: "/dashboard/charts",
     icon: <BarChart3 size={22} />,
   },
+  {
+    id: 11,
+    title: "Cupones",
+    href: "/dashboard/coupons",
+    icon: <Tag size={22} />,
+  },
 ];

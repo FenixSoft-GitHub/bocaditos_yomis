@@ -1,4 +1,4 @@
-import markdownContent from "@/constants/Soporte.md?raw";
+import markdownContent from "@/constants/markdown/Soporte.md?raw";
 import MarkdownPage from "@/components/shared/MarkdownPage";
 
 const Soporte = () => (

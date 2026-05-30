@@ -1,4 +1,4 @@
-import markdownContent from "@/constants/Policies.md?raw";
+import markdownContent from "@/constants/markdown/Policies.md?raw";
 import MarkdownPage from "@/components/shared/MarkdownPage";
 
 const Policies = () => (

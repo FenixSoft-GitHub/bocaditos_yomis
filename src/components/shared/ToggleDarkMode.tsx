@@ -13,9 +13,9 @@ export const ToggleDarkMode = () => {
       title={isDark ? "Modo claro" : "Modo oscuro"}
     >
       {isDark ? (
-        <Sun className="w-5 h-5 text-cream" />
+        <Sun className="size-5 text-cream" />
       ) : (
-        <Moon className="w-5 h-5 text-cream" />
+        <Moon className="size-5 text-cream" />
       )}
     </button>
   );

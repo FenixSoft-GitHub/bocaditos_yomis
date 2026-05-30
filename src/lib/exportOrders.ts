@@ -8,7 +8,7 @@ interface OrderRow {
   id: string;
   total_amount: number;
   status: string;
-  payment_type: string;
+  payment_type: string | null;
   created_at: string;
   users: { full_name: string | null; email: string | null } | null;
   promo_codes: { code: string } | null;
@@ -47,7 +47,8 @@ export const exportOrdersToExcel = (
     Cliente: order.users?.full_name ?? "—",
     Email: order.users?.email ?? "—",
     Estado: STATUS_LABELS[order.status] ?? order.status,
-    "Método de pago": PAYMENT_LABELS[order.payment_type] ?? order.payment_type,
+    "Método de pago":
+      PAYMENT_LABELS[order.payment_type ?? ""] ?? order.payment_type ?? "—",
     Envío: order.delivery_options?.name ?? "—",
     Promo: order.promo_codes?.code ?? "—",
     Total: formatPrice(order.total_amount),

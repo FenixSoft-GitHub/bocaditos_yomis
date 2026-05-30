@@ -1,5 +1,4 @@
 // src/components/dashboard/orders/TableOrders.tsx
-// Cambio: agregar botón exportar a Excel en el header
 
 import { Loader } from "@/components/shared/Loader";
 import { useAllOrders, useChangeStatusOrder } from "@/hooks";
@@ -34,10 +33,13 @@ const statusOptions = [
 
 export const TableOrders = () => {
   const navigate = useNavigate();
+
+  // 1. Agregamos 'status' al estado inicial de los filtros
   const [filters, setFilters] = useState({
     name: "",
     fromDate: "",
     toDate: "",
+    status: "", // "" significa "Todos los estatus"
   });
   const [page, setPage] = useState(1);
   const [isExporting, setIsExporting] = useState(false);
@@ -45,17 +47,26 @@ export const TableOrders = () => {
   const { mutate } = useChangeStatusOrder();
   const { data: orders, isLoading } = useAllOrders();
 
+  // 2. Modificamos el filtrado para incluir la validación de estatus
   const filteredOrders = useMemo(() => {
     if (!orders) return [];
     return orders.filter((order) => {
       const nameMatch = order.users?.full_name
         ?.toLowerCase()
         .includes(filters.name.toLowerCase());
+
+      // Compara el estatus si hay uno seleccionado (ignora mayúsculas/minúsculas por seguridad)
+      const statusMatch =
+        !filters.status ||
+        order.status?.toLowerCase() === filters.status.toLowerCase();
+
       const orderDate = new Date(order.created_at);
       const fromDate = filters.fromDate ? new Date(filters.fromDate) : null;
       const toDate = filters.toDate ? new Date(filters.toDate) : null;
+
       return (
         nameMatch &&
+        statusMatch && // <-- Nueva condición
         (!fromDate || orderDate >= fromDate) &&
         (!toDate || orderDate <= toDate)
       );
@@ -93,13 +104,23 @@ export const TableOrders = () => {
       description="Gestiona y actualiza el estado de los pedidos"
       count={filteredOrders.length}
       filters={
-        <div className="flex items-center gap-2 w-full">
-          <div className="flex-1">
+        <div className="flex flex-col lg:flex-row items-end gap-3 w-full">
+          {/* Filtro Avanzado con Buscador, Estatus y Fechas integrados nativamente */}
+          <div className="flex-1 w-full">
             <AdvancedFilter
               searchValue={filters.name}
               onSearchChange={(value) =>
                 handleFilterChange({ ...filters, name: value })
               }
+              selects={[
+                {
+                  label: "Todos los estatus",
+                  value: filters.status,
+                  onChange: (value) =>
+                    handleFilterChange({ ...filters, status: value }),
+                  options: statusOptions,
+                },
+              ]}
               dateRange={{ from: filters.fromDate, to: filters.toDate }}
               onDateChange={(range) =>
                 handleFilterChange({
@@ -109,20 +130,25 @@ export const TableOrders = () => {
                 })
               }
               onClear={() =>
-                handleFilterChange({ name: "", fromDate: "", toDate: "" })
+                handleFilterChange({
+                  name: "",
+                  fromDate: "",
+                  toDate: "",
+                  status: "",
+                })
               }
             />
           </div>
 
-          <div className="flex flex-col gap-2 items-end ml-2">
-            <span className="text-sm font-medium text-choco dark:text-cream invisible md:block">
+          {/* Contenedor Único y Limpio para el Botón Excel */}
+          <div className="flex flex-col gap-1 w-full lg:w-auto text-right">
+            <span className="text-sm font-medium opacity-0 hidden lg:block select-none">
               &nbsp;
             </span>
-            {/* Botón exportar */}
             <button
               onClick={handleExport}
               disabled={isExporting || filteredOrders.length === 0}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent text-choco/70 dark:text-cream/70 hover:bg-cocoa/5 dark:hover:bg-cream/5 hover:text-choco dark:hover:text-cream transition-colors text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+              className="flex items-center justify-center gap-2 px-4 rounded-lg border border-cocoa/30 dark:border-cream/30 bg-transparent text-choco/70 dark:text-cream/70 hover:bg-cocoa/5 dark:hover:bg-cream/5 hover:text-choco dark:hover:text-cream transition-colors text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed shrink-0 h-[38px] w-full lg:w-auto"
               title={`Exportar ${filteredOrders.length} pedidos a Excel`}
             >
               <Download className="size-4 text-green-500" />
