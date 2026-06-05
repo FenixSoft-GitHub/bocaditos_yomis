@@ -85,8 +85,6 @@ export function SalesChart() {
 
   const { data, isLoading, xKey } = dataMap[period];
   const isBar = period === "weekly12" || period === "annual";
-//   const isBar =
-//     period === "weekly4" || period === "weekly12" || period === "annual";
 
   return (
     <div className="bg-cream/50 dark:bg-cream/5 border border-cocoa/20 dark:border-cream/10 rounded-2xl p-6">

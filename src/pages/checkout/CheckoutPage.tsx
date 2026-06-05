@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useCartStore } from "@/store/cart.store";
 import { FormCheckout } from "@/components/checkout/FormCheckout";
 import { ItemsCheckout } from "@/components/checkout/ItemsCheckout";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 import { useCheckout } from "@/hooks/checkout/useCheckout";
 import { PaymentInfo } from "@/components/checkout/PaymentInfo";
 import { OrderConfirmed } from "@/components/checkout/OrderConfirmed";
@@ -153,6 +153,22 @@ const CheckoutPage = () => {
                 }
                 onCouponRemoved={() => setAppliedCoupon(null)}
               />
+
+              {/* Puntos que ganará */}
+              <div
+                className="flex items-center gap-2 text-xs text-choco/50 dark:text-cream/50
+  bg-cocoa/5 rounded-lg px-3 py-2"
+              >
+                <Star size={13} className="text-cocoa shrink-0" />
+                <span>
+                  Ganarás ~
+                  <strong className="text-choco dark:text-cream">
+                    {" "}
+                    {Math.floor(subtotal)}
+                  </strong>{" "}
+                  puntos con este pedido
+                </span>
+              </div>
 
               {/* Desglose */}
               <div className="space-y-2 border-t border-cocoa/20 dark:border-cream/10 pt-4">

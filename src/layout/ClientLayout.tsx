@@ -11,6 +11,8 @@ import {
   Heart,
   Tag,
   Users,
+  User,
+  Trophy,
 } from "lucide-react";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import { useQueryClient } from "@tanstack/react-query";
@@ -23,6 +25,8 @@ const navLinks = [
   { to: "/account/favoritos", label: "Mis Favoritos", icon: Heart },
   { to: "/account/cupones", label: "Mis Cupones", icon: Tag },
   { to: "/account/referidos", label: "Referidos", icon: Users },
+  { to: "/account/perfil", label: "Mi perfil", icon: User },
+  { to: "/account/fidelidad", label: "Fidelidad", icon: Trophy },
 ];
 
 const ClientLayout = () => {

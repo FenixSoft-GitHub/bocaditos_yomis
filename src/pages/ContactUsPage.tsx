@@ -33,8 +33,8 @@ const ContactUsPage = () => (
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-fondo dark:from-fondo-dark to-transparent" />
 
         <div className="relative max-w-[680px] text-cream flex flex-col gap-5 text-end py-20 px-4 lg:py-40 lg:px-10">
-          <p className="text-sm font-semibold uppercase tracking-widest text-cream/70">
-            Bocaditos Yomi's
+          <p className="text-sm font-semibold uppercase tracking-widest text-cream/70 italic">
+            Bocaditos Yomi's . Contáctanos
           </p>
           <h1 className="text-4xl md:text-5xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] leading-tight">
             Estamos aquí para brindarte nuestra mejor atención

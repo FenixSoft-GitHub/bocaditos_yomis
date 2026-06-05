@@ -46,8 +46,12 @@ import {
   NotFoundPage,
   WishlistPage,
   DashboardCouponsPage,
+  DashboardReferralsPage,
   UserCouponsPage,
-  ReferralPage
+  ReferralPage,
+  ProfilePage,
+  LoyaltyPage,
+  DashboardLoyaltyPage,
 } from "@/pages";
 
 
@@ -94,6 +98,8 @@ export const AppRoutes = createBrowserRouter([
               { path: "favoritos", element: s(<WishlistPage />) },
               { path: "cupones", element: s(<UserCouponsPage />) },
               { path: "referidos", element: s(<ReferralPage />) },
+              { path: "perfil", element: s(<ProfilePage />) },
+              { path: "fidelidad", element: s(<LoyaltyPage />) },
             ],
           },
         ],
@@ -158,6 +164,8 @@ export const AppRoutes = createBrowserRouter([
           { path: "blog/new", element: s(<NewBlogPostPage />) },
           { path: "blog/edit/:id", element: s(<EditBlogPostPage />) },
           { path: "coupons", element: s(<DashboardCouponsPage />) },
+          { path: "referrals", element: s(<DashboardReferralsPage />) },
+          { path: "loyalty", element: s(<DashboardLoyaltyPage />) },
         ],
       },
     ],

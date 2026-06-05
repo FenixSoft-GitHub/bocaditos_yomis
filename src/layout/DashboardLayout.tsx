@@ -1,14 +1,16 @@
+// src/layout/DashboardLayout.tsx
 import { SideBar } from "@/components/dashboard";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import { Outlet } from "react-router-dom";
-// import { useUser } from "@/hooks"; // Importa tu hook recién creado
 
 export const DashboardLayout = () => {
-  
   return (
-    <div className="flex min-h-screen bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
+    <div
+      className="flex min-h-screen bg-fondo dark:bg-fondo-dark
+      text-choco dark:text-cream"
+    >
       <SideBar />
-      <main className="m-5 flex-1 ml-[140px] lg:ml-[270px]">
+      <main className="flex-1 min-w-0 p-5">
         <ScrollToTop />
         <Outlet />
       </main>

@@ -24,6 +24,8 @@ export const OrderUserPage = lazy(() => import("@pages/orders/OrderUserPage"));
 export const WishlistPage = lazy(() => import("@pages/account/WishlistPage"));
 export const UserCouponsPage = lazy(() => import("@pages/account/UserCouponsPage"));
 export const ReferralPage = lazy(() => import("@pages/account/ReferralPage"));
+export const ProfilePage = lazy(() => import("@pages/account/ProfilePage"));
+export const LoyaltyPage = lazy(() => import("@pages/account/LoyaltyPage"));
 
 
 // ── Checkout ──────────────────────────────────────────────────────
@@ -39,13 +41,13 @@ export const BlogPostDetailPage = lazy(
 );
 
 // ── Información legal ─────────────────────────────────────────────
-export const Policies = lazy(() => import("@/pages/informations/Policies"));
-export const Soporte = lazy(() => import("@/pages/informations/Soporte"));
+export const Policies = lazy(() => import("@/pages/informations/PoliciesPage"));
+export const Soporte = lazy(() => import("@/pages/informations/SoportePage"));
 export const TermsOfUsers = lazy(
-  () => import("@/pages/informations/TermsOfUsers"),
+  () => import("@/pages/informations/TermsOfUsersPage"),
 );
 export const Condiciones = lazy(
-  () => import("@/pages/informations/Condiciones"),
+  () => import("@/pages/informations/CondicionesPage"),
 );
 
 // ── Dashboard (solo se carga cuando el admin accede) ──────────────
@@ -103,6 +105,14 @@ export const EditBlogPostPage = lazy(
 export const DashboardCouponsPage = lazy(
   () => import("@pages/dashboard/DashboardCouponsPage"),
 );
+export const DashboardReferralsPage = lazy(
+  () => import("@pages/dashboard/DashboardReferralsPage"),
+);
+export const DashboardLoyaltyPage = lazy(
+  () => import("@pages/dashboard/DashboardLoyaltyPage"),
+);
+
+
 
 
 // ── Página 404 ───────────────────────────────────────────────────

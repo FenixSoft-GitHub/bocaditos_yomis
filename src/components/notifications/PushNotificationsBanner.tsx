@@ -1,5 +1,4 @@
 // src/components/notifications/PushNotificationsBanner.tsx
-// Coloca este componente en ClientLayout o en OrdersUserPage
 
 import { Bell, BellOff, BellRing, X, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

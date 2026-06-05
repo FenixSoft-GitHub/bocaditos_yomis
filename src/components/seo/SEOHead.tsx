@@ -25,10 +25,10 @@ export const SEOHead = ({
 }: SEOHeadProps) => {
   const fullTitle = title
     ? `${title} | ${SITE_NAME}`
-    : `${SITE_NAME} — Snacks y Golosinas Artesanales`;
+    : `${SITE_NAME} — Panadería, Pastelería y Snacks Artesanales`;
   const metaDescription =
     description ||
-    "Bocaditos Yomi's: la mejor selección de snacks, golosinas y bocaditos artesanales. Envíos a todo el país. ¡Descubre nuestros productos frescos!";
+    "Bocaditos Yomi's: la mejor selección de panes, pasteles, tortas, snacks, golosinas y bocaditos artesanales. Envíos a todo el país. ¡Descubre nuestros productos frescos!";
   const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : SITE_URL;
 
   return (

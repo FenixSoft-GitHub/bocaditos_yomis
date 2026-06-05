@@ -4,13 +4,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/supabase/client";
 import { DashboardSection } from "@/components/dashboard/shared/DashboardSection";
 import { StatusBadge } from "@/components/dashboard/shared/StatusBadge";
-import { Pencil, Tag, Gift, Cake, Star } from "lucide-react";
+import { Pencil, Tag, Gift, Cake, Star, Users, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 
 interface CouponTemplate {
   id: string;
-  type: "welcome" | "birthday" | "review";
+  type: "welcome" | "birthday" | "review" | "referral" | "loyalty";
   code_prefix: string;
   discount: number;
   expires_in_days: number;
@@ -22,6 +22,8 @@ const typeConfig = {
   welcome: { label: "Bienvenida", icon: Gift, color: "text-amber-600" },
   birthday: { label: "Cumpleaños", icon: Cake, color: "text-purple-600" },
   review: { label: "Reseña", icon: Star, color: "text-green-600" },
+  referral: { label: "Referido", icon: Users, color: "text-blue-500" },
+  loyalty: { label: "Fidelidad", icon: Trophy, color: "text-yellow-500" },
 };
 
 function TemplateCard({

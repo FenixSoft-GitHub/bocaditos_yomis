@@ -1,7 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useBlogPostBySlug } from "@/hooks";
-import { Loader } from "@/components/shared/Loader";
+import { useBlogPostBySlug, useBlogPosts } from "@/hooks";
 import { BackButton } from "@/components/shared/BackButton";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -9,6 +8,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm"; // Añadido para mejor soporte de sintaxis MD
 import { SEOHead } from "@/components/seo/SEOHead";
 import { blogPostSchema, breadcrumbSchema } from "@/components/seo/schemas";
+import { BlogPostSkeleton } from "@/components/shared/skeletons/BlogPostSkeleton";
+import { RelatedPosts } from "@/components/blog/RelatedPosts";
 
 const BlogPostDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -20,12 +21,11 @@ const BlogPostDetailPage: React.FC = () => {
     error,
   } = useBlogPostBySlug(slug || "");
 
+  // 2. Traer todos los posts para poder filtrar los relacionados
+  const { blogPosts } = useBlogPosts();
+
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <Loader size={60} />
-      </div>
-    );
+    return <BlogPostSkeleton />;
   }
 
   if (isError) {
@@ -52,6 +52,40 @@ const BlogPostDetailPage: React.FC = () => {
       </div>
     );
   }
+
+  // Coloca esto en tu BlogPostDetailPage.tsx
+  const postsRelacionados = blogPosts
+    ? blogPosts
+        .filter((p) => p.id !== post.id) // 1. Excluimos el post actual
+        .map((p) => {
+          // 2. Contamos cuántas palabras del título actual coinciden con los otros títulos
+          const palabrasActuales = post.title.toLowerCase().split(" ");
+          const coincidencias = p.title
+            .toLowerCase()
+            .split(" ")
+            .filter(
+              (palabra) =>
+                palabra.length > 3 && palabrasActuales.includes(palabra), // Evitamos conectores cortos como "de", "con", "para"
+            ).length;
+
+          return { post: p, coincidencias };
+        })
+        .filter((item) => item.coincidencias > 0) // 3. Solo dejamos los que tengan al menos una coincidencia
+        .sort((a, b) => b.coincidencias - a.coincidencias) // 4. Ordenamos de mayor a menor relevancia
+        .map((item) => item.post)
+    : [];
+
+  // 5. Si no hay suficientes coincidencias por palabras clave, completamos con los más recientes
+  const postsA_Mostrar =
+    postsRelacionados.length >= 3
+      ? postsRelacionados.slice(0, 3)
+      : [
+          ...postsRelacionados,
+          ...(blogPosts?.filter(
+            (p) =>
+              p.id !== post.id && !postsRelacionados.some((r) => r.id === p.id),
+          ) || []),
+        ].slice(0, 3);
 
   const formattedDate = post.published_at
     ? format(new Date(post.published_at), "PPP", { locale: es })
@@ -126,8 +160,10 @@ const BlogPostDetailPage: React.FC = () => {
           </ReactMarkdown>
         </div>
 
+        <RelatedPosts posts={postsA_Mostrar || []} />
+
         {/* Footer del Post / Navegación */}
-        <footer className="flex items-center justify-end py-4 border-t border-cocoa/10 dark:border-cream/10">
+        <footer className="flex items-center justify-end py-4 border-t border-cocoa/10 dark:border-cream/10 mt-4">
           <BackButton />
         </footer>
       </article>

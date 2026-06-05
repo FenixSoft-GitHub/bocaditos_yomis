@@ -35,16 +35,27 @@ export const useBlogPosts = () => {
     },
   });
 
-  // Mutación para actualizar una publicación
+  // Mutación para actualizar una publicación (100% libre de 'any' y variables muertas)
   const updatePostMutation = useMutation<
     BlogPost,
     Error,
     { id: string; data: UpdateBlogPost }
   >({
-    mutationFn: ({ id, data }) => updateBlogPost(id, data),
+    mutationFn: ({ id, data }) => {
+      // 1. Clonamos el objeto y lo transformamos a Record<string, unknown>
+      // Esto le dice a TS: "Es un objeto con llaves string y valores que no conozco aún"
+      const cleanData = { ...data } as Record<string, unknown>;
+
+      // 2. Ahora sí podemos borrar 'fts' de forma segura.
+      // Al no asignarse a ninguna variable, el linter de variables sin usar no se activa.
+      delete cleanData.fts;
+
+      // 3. Devolvemos el objeto limpio transformándolo de vuelta al tipo que espera tu acción
+      return updateBlogPost(id, cleanData as unknown as UpdateBlogPost);
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["blogPosts"] });
-      queryClient.invalidateQueries({ queryKey: ["blogPost", variables.id] }); // También invalida el post individual
+      queryClient.invalidateQueries({ queryKey: ["blogPost", variables.id] });
       toast.success("Publicación actualizada exitosamente!");
     },
     onError: (error) => {
@@ -75,7 +86,7 @@ export const useBlogPosts = () => {
     deletePost: deletePostMutation.mutate,
     isDeletingPost: deletePostMutation.isPending,
   };
-};
+};;
 
 // Hook para obtener una sola publicación por ID
 export const useBlogPost = (id: string) => {

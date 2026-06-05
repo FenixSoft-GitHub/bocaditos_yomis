@@ -416,6 +416,114 @@ export type Database = {
           },
         ]
       }
+      loyalty_points: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_activity: string | null
+          level: Database["public"]["Enums"]["loyalty_level"]
+          lifetime_points: number
+          points: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_activity?: string | null
+          level?: Database["public"]["Enums"]["loyalty_level"]
+          lifetime_points?: number
+          points?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_activity?: string | null
+          level?: Database["public"]["Enums"]["loyalty_level"]
+          lifetime_points?: number
+          points?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      loyalty_rewards: {
+        Row: {
+          created_at: string | null
+          discount: number
+          id: string
+          is_active: boolean | null
+          name: string
+          points_required: number
+        }
+        Insert: {
+          created_at?: string | null
+          discount: number
+          id?: string
+          is_active?: boolean | null
+          name: string
+          points_required: number
+        }
+        Update: {
+          created_at?: string | null
+          discount?: number
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          points_required?: number
+        }
+        Relationships: []
+      }
+      loyalty_transactions: {
+        Row: {
+          coupon_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          order_id: string | null
+          points: number
+          type: string
+          user_id: string
+        }
+        Insert: {
+          coupon_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_id?: string | null
+          points: number
+          type: string
+          user_id: string
+        }
+        Update: {
+          coupon_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_id?: string | null
+          points?: number
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_transactions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "auto_coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           id: string
@@ -974,6 +1082,30 @@ export type Database = {
           },
         ]
       }
+      search_logs: {
+        Row: {
+          created_at: string | null
+          id: string
+          query: string
+          results: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          query: string
+          results?: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          query?: string
+          results?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_role: {
         Row: {
           created_at: string
@@ -1070,6 +1202,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_loyalty_points: {
+        Args: {
+          p_description?: string
+          p_order_id: string
+          p_points: number
+          p_user_id: string
+        }
+        Returns: undefined
+      }
+      calculate_loyalty_level: {
+        Args: { p_lifetime_points: number }
+        Returns: Database["public"]["Enums"]["loyalty_level"]
+      }
       can_review: { Args: { p_product_id: string }; Returns: Json }
       complete_referral: { Args: { p_referred_id: string }; Returns: undefined }
       create_auto_coupon: {
@@ -1102,14 +1247,26 @@ export type Database = {
       generate_coupon_code: { Args: { prefix: string }; Returns: string }
       generate_ref_code: { Args: { p_name: string }; Returns: string }
       get_chat_business_context: { Args: { p_user_id?: string }; Returns: Json }
+      get_loyalty_dashboard_stats: { Args: never; Returns: Json }
+      get_loyalty_stats: { Args: { p_user_id: string }; Returns: Json }
+      get_popular_searches: { Args: never; Returns: Json }
+      get_referral_dashboard_stats: { Args: never; Returns: Json }
       get_referral_stats: { Args: { p_user_id: string }; Returns: Json }
       increment_promo_uses: { Args: { p_promo_id: string }; Returns: undefined }
       is_admin:
         | { Args: never; Returns: boolean }
         | { Args: { p_user_id: string }; Returns: boolean }
+      redeem_loyalty_points: {
+        Args: { p_reward_id: string; p_user_id: string }
+        Returns: Json
+      }
       register_referral: {
         Args: { p_ref_code: string; p_referred_id: string }
         Returns: Json
+      }
+      reverse_loyalty_points: {
+        Args: { p_order_id: string; p_user_id: string }
+        Returns: undefined
       }
       search_all: { Args: { search_term: string }; Returns: Json }
       send_abandoned_cart_emails: { Args: never; Returns: undefined }
@@ -1122,7 +1279,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      loyalty_level: "bronze" | "silver" | "gold"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1252,6 +1409,8 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      loyalty_level: ["bronze", "silver", "gold"],
+    },
   },
 } as const

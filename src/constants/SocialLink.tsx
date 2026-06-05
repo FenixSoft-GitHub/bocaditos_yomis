@@ -15,7 +15,7 @@ export const socialLinks = [
     className:
       "flex items-center justify-center p-3 text-xl text-cream/70 bg-cream/20 rounded-full hover:text-gray-200 hover:text-gray-100 hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#3b5998]",
     className2:
-      "flex items-center justify-center p-4 text-5xl bg-choco text-cream dark:bg-cream/70 dark:text-choco rounded-full shadow-gray-700 shadow-md hover:text-cream hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#3b5998]",
+      "flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-md bg-cocoa/5 dark:bg-cream/5 border border-cocoa/10 dark:border-cream/10  shadow-choco/30 dark:shadow-cream/10 shadow-md hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#3b5998] hover:text-cream",
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ export const socialLinks = [
     className:
       "flex items-center justify-center p-3 text-xl text-cream/70 bg-cream/20 rounded-full hover:text-gray-200 hover:scale-110 hover:transition ease-in-out duration-1000 hover:bg-[#00acee]",
     className2:
-      "flex items-center justify-center p-4 text-5xl bg-choco text-cream dark:bg-cream/70 dark:text-choco rounded-full shadow-gray-700 shadow-md hover:text-cream hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#00acee]",
+      "flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-md bg-cocoa/5 dark:bg-cream/5 border border-cocoa/10 dark:border-cream/10  shadow-choco/30 dark:shadow-cream/10 shadow-md hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#00acee] hover:text-cream",
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ export const socialLinks = [
     className:
       "icon flex items-center justify-center p-3 text-xl text-cream/70 bg-cream/20 rounded-full hover:text-gray-200 hover:scale-110",
     className2:
-      "icon flex items-center justify-center p-4 text-5xl bg-choco text-cream dark:bg-cream/70 dark:text-choco rounded-full shadow-gray-700 shadow-md hover:text-cream hover:transition ease-in-out duration-1000 hover:scale-110 hover:text-cream hover:scale-110",
+      "icon flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-md bg-cocoa/5 dark:bg-cream/5 border border-cocoa/10 dark:border-cream/10 shadow-choco/30 dark:shadow-cream/10 shadow-md hover:transition ease-in-out duration-1000 hover:scale-110 hover:text-cream",
   },
   {
     id: 4,
@@ -45,7 +45,7 @@ export const socialLinks = [
     className:
       "flex items-center justify-center p-3 text-xl text-cream/70 bg-cream/20 rounded-full hover:text-gray-200 hover:scale-110 hover:transition ease-in-out duration-1000 hover:bg-[#00f2ea]",
     className2:
-      "flex items-center justify-center p-4 text-5xl bg-choco text-cream dark:bg-cream/70 dark:text-choco rounded-full shadow-gray-700 shadow-md hover:text-oscuro hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#00f2ea]",
+      "flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-md bg-cocoa/5 dark:bg-cream/5 border border-cocoa/10 dark:border-cream/10  shadow-choco/30 dark:shadow-cream/10 shadow-md hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#00f2ea] hover:text-cream",
   },
   {
     id: 5,
@@ -55,6 +55,6 @@ export const socialLinks = [
     className:
       "flex items-center justify-center p-3 text-xl text-cream/70 bg-cream/20 rounded-full hover:text-gray-200 hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#c4302b]",
     className2:
-      "flex items-center justify-center p-4 text-5xl bg-choco text-cream dark:bg-cream/70 dark:text-choco rounded-full shadow-gray-700 shadow-md hover:text-cream hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#c4302b]",
+      "flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-md bg-cocoa/5 dark:bg-cream/5 border border-cocoa/10 dark:border-cream/10  shadow-choco/30 dark:shadow-cream/10 shadow-md hover:transition ease-in-out duration-1000 hover:scale-110 hover:bg-[#c4302b] hover:text-cream",
   },
 ];

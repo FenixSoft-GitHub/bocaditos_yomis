@@ -3,7 +3,7 @@
 export const ProductPageSkeleton = () => (
   <div className="container mx-auto px-4 py-6 text-choco dark:text-cream animate-pulse">
     {/* Breadcrumb */}
-    <div className="flex items-center gap-2 mb-6">
+    <div className="flex items-center gap-2 mb-10">
       <div className="h-3.5 w-12 bg-cocoa/10 dark:bg-cream/10 rounded-full" />
       <div className="h-3 w-2 bg-cocoa/10 dark:bg-cream/10 rounded-full" />
       <div className="h-3.5 w-16 bg-cocoa/10 dark:bg-cream/10 rounded-full" />

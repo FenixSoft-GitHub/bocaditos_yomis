@@ -1,5 +1,4 @@
 // src/pages/ProductPage.tsx
-
 import GridImages from "@/components/products/GridImages";
 import { Separator } from "@/components/shared/Separator";
 import Tag from "@/components/shared/Tag";
@@ -29,6 +28,7 @@ import {
   ArrowLeft,
   Tag as TagIcon,
   Heart,
+  Star,
 } from "lucide-react";
 import { breadcrumbSchema, productSchema } from "@/components/seo/schemas";
 import { motion, AnimatePresence } from "framer-motion";
@@ -163,7 +163,7 @@ const ProductPage = () => {
       <div className="container mx-auto px-4 py-6 text-choco dark:text-cream">
         {/* Breadcrumb */}
         <FadeIn>
-          <nav className="flex items-center gap-2 text-xs text-choco/50 dark:text-cream/50 mb-6">
+          <nav className="flex items-center gap-2 text-xs text-choco/50 dark:text-cream/50 mt-8 mb-4">
             <button
               onClick={() => navigate(-1)}
               className="flex items-center gap-1 hover:text-choco dark:hover:text-cream transition-colors"
@@ -171,6 +171,7 @@ const ProductPage = () => {
               <ArrowLeft className="size-3.5" />
               Volver
             </button>
+
             <span>/</span>
             <Link
               to="/products"
@@ -237,9 +238,19 @@ const ProductPage = () => {
                     </span>
                   </>
                 ) : (
-                  <span className="text-3xl font-bold">
-                    {formatPrice(product.price)}
-                  </span>
+                  <>
+                    <span className="text-3xl font-bold">
+                      {formatPrice(product.price)}
+                    </span>
+
+                    <p className="text-xs text-choco/50 dark:text-cream/50 flex items-center gap-1">
+                      <Star size={12} className="text-cocoa" />
+                      Ganarías ~<strong>
+                        {Math.floor(product.price)}
+                      </strong>{" "}
+                      puntos con esta compra
+                    </p>
+                  </>
                 )}
                 {isOutOfStock && <Tag contentTag="Agotado" />}
               </div>

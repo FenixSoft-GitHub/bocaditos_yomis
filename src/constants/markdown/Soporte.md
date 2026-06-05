@@ -34,8 +34,8 @@ Aquí te indicamos las áreas comunes donde podemos ofrecerte asistencia:
 
 Puedes comunicarte con nuestro equipo de soporte a través de los siguientes medios:
 
-📧 **Correo electrónico:** [soporte@bocaditosyomis.com]  
-📞 **Teléfono o WhatsApp:** [Número de contacto]  
+📧 **Correo electrónico:** [bocaditosyomis@gmail.com]  
+📞 **Teléfono o WhatsApp:** [+58 (412) 499.88.11]  
 📍 **Dirección física:** Urb. Las Cayenas, Calle 3, Casa 129, Manzana 7  
 ⏰ **Horario de atención:** Lunes a sábado, de 8:00 a.m. a 6:00 p.m.
 

@@ -33,7 +33,10 @@ export const ProductGrid = ({
       "(min-width: 1024px)": { slides: { perView: 4, spacing: 24 } },
     },
     slideChanged: (s) => {
-      setCurrentSlide(s.track.details.rel);
+      // setCurrentSlide(s.track.details.rel);
+      if (s.track?.details) {
+        setCurrentSlide(s.track.details.rel);
+      }
     },
     created: (s) => {
       // Calcular maxSlide inicialmente
@@ -47,6 +50,11 @@ export const ProductGrid = ({
 
   // Función helper para calcular maxSlide correctamente
   const updateMaxSlide = (s: KeenSliderInstance) => {
+    if (!s.track?.details?.slides) {
+      setMaxSlide(0);
+      return;
+    }
+
     const slidesOptions = s.options.slides as KeenSliderOptions["slides"];
 
     const currentPerView =
@@ -57,14 +65,14 @@ export const ProductGrid = ({
 
     setPerView(currentPerView); // <--- Guardamos el perView actual
 
-    const totalSlides = s.track.details.slides.length;
+    const totalSlides = s.track.details.slides?.length || 0;
     const max = Math.max(0, totalSlides - currentPerView);
     setMaxSlide(max);
   };
   
   // Actualizar maxSlide cuando cambien los productos
   useEffect(() => {
-    if (slider.current) {
+    if (slider.current && products && products.length > 0) {
       updateMaxSlide(slider.current);
     }
   }, [products, slider]);

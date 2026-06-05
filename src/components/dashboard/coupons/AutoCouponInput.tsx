@@ -14,6 +14,8 @@ const typeLabels = {
   welcome: "🎉 Cupón de bienvenida",
   birthday: "🎂 Cupón de cumpleaños",
   review: "⭐ Cupón por reseña",
+  referral: "🤝 Referido",
+  loyalty: "🏆 Fidelidad",
 };
 
 export function AutoCouponInput({

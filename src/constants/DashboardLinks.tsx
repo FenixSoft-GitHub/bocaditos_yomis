@@ -9,6 +9,7 @@ import {
   LayoutGrid,
   CreditCard,
   Receipt,
+  Trophy,
 } from "lucide-react";
 
 
@@ -78,5 +79,17 @@ export const DashboardLinks = [
     title: "Cupones",
     href: "/dashboard/coupons",
     icon: <Tag size={22} />,
+  },
+  {
+    id: 12,
+    title: "Referidos",
+    href: "/dashboard/referrals",
+    icon: <Users size={22} />,
+  },
+  {
+    id: 13,
+    title: "Fidelidad",
+    href: "/dashboard/loyalty",
+    icon: <Trophy size={22} />,
   },
 ];

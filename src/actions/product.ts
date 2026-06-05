@@ -4,8 +4,6 @@ import { supabase } from "@/supabase/client";
 import {
   Product,
   ProductInput,
-  // SearchCategory,
-  // SearchPost,
   SearchResults,
   SupabaseRawProductWithRelations,
   RpcSearchResult,

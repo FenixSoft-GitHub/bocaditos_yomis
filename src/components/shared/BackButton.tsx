@@ -12,7 +12,7 @@ export function BackButton({ label = "Regresar" }: Props) {
     <button
       onClick={() => navigate(-1)}
       className="
-        inline-flex items-center gap-2.5 px-4 py-2 rounded-md
+        inline-flex items-center gap-2.5 px-4 py-2 rounded-lg
         text-sm font-medium tracking-wide
         text-choco/70 dark:text-cream/70
         bg-transparent hover:bg-cocoa/5 dark:hover:bg-cream/5

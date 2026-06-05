@@ -35,17 +35,17 @@ const AboutPage = () => {
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-fondo dark:from-fondo-dark to-transparent" />
 
           <div className="relative max-w-[700px] flex flex-col text-end px-4 lg:px-12 gap-4 text-cream">
-            <p className="text-xs font-semibold uppercase tracking-widest text-cream/70">
-              Bocaditos Yomi's · Nuestra historia
+            <p className="text-xs font-semibold uppercase tracking-widest text-cream/70 italic">
+              Bocaditos Yomi's · Sobre Nosotros
             </p>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
               Donde el sabor tiene alma
             </h1>
             <p className="text-sm md:text-lg text-cream/90 leading-relaxed">
-              En Bocaditos Yomi's creemos que cada dulce tiene una historia. La
-              nuestra comenzó en una cocina familiar, entre risas, recetas
-              heredadas y el amor por compartir algo hecho con las manos y el
-              corazón.
+              En <strong>Bocaditos Yomi's</strong> creemos que cada dulce tiene
+              una historia. La nuestra comenzó en una cocina familiar, entre
+              risas, recetas heredadas y el amor por compartir algo hecho con
+              las manos y el corazón.
             </p>
           </div>
         </div>
@@ -133,10 +133,11 @@ const AboutPage = () => {
                   Nuestros Valores
                 </h2>
                 <p className="text-sm md:text-base leading-relaxed text-choco/70 dark:text-cream/70">
-                  En Bocaditos Yomi's, cada dulce que horneamos está lleno de
-                  intención. Nuestros valores son el alma de nuestra marca, y
-                  guían cada paso que damos, desde la selección de ingredientes
-                  hasta la sonrisa del cliente al recibir su pedido.
+                  En <strong>Bocaditos Yomi's</strong>, cada dulce que horneamos
+                  está lleno de intención. Nuestros valores son el alma de
+                  nuestra marca, y guían cada paso que damos, desde la selección
+                  de ingredientes hasta la sonrisa del cliente al recibir su
+                  pedido.
                 </p>
               </div>
 

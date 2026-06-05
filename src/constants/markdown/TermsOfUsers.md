@@ -54,8 +54,8 @@ Nos reservamos el derecho de modificar estos términos en cualquier momento. Las
 
 Si tienes alguna pregunta sobre estos Términos y Condiciones, puedes contactarnos a través de:
 
-📧 [correo@bocaditosyomis.com]  
-📞 [Número de contacto]  
+📧 [bocaditosyomis@gmail.com]  
+📞 [+58 (412) 499.88.11]  
 📍 **Urb. Las Cayenas, Calle 3, Casa 129, Manzana 7**
 
 ---

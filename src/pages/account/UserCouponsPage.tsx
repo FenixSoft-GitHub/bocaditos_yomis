@@ -2,16 +2,18 @@
 import { useState } from 'react'
 import { useUserCoupons, type UserCoupon, type CouponStatus } from '@/hooks/autocoupon/useUserCoupons'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Tag, Copy, CheckCheck, Gift, Cake, Star, Clock, PackageCheck, Ban } from 'lucide-react'
+import { Tag, Copy, CheckCheck, Gift, Cake, Star, Clock, PackageCheck, Ban, Users, Trophy } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
 // ─── Helpers ────────────────────────────────────────────────
 
 const typeConfig = {
-  welcome:  { label: 'Bienvenida',  icon: Gift, color: 'text-amber-500'  },
-  birthday: { label: 'Cumpleaños',  icon: Cake, color: 'text-purple-500' },
-  review:   { label: 'Reseña',      icon: Star, color: 'text-green-500'  },
-}
+  welcome: { label: "Bienvenida", icon: Gift, color: "text-amber-500" },
+  birthday: { label: "Cumpleaños", icon: Cake, color: "text-purple-500" },
+  review: { label: "Reseña", icon: Star, color: "text-green-500" },
+  referral: { label: "Referido", icon: Users, color: "text-blue-500" },
+  loyalty: { label: "Fidelidad", icon: Trophy, color: "text-yellow-500" },
+};
 
 const statusConfig: Record<CouponStatus, {
   label: string

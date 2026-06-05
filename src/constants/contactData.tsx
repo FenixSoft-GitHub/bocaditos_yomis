@@ -18,8 +18,8 @@ export const contactItems: ContactItem[] = [
   {
     icon: <Mail className="size-6" />,
     label: "Correo",
-    value: "atencion@fenixtechnology.com",
-    link: "mailto:atencion@fenixtechnology.com",
+    value: "bocaditosyomis@gmail.com",
+    link: "mailto:bocaditosyomis@gmail.com",
   },
   {
     icon: <Phone className="size-6" />,
@@ -30,6 +30,6 @@ export const contactItems: ContactItem[] = [
   {
     icon: <Clock className="size-6" />,
     label: "Horario",
-    value: "Lunes a Viernes, 8:00 AM - 7:00 PM (VET)",
+    value: "Lunes a Viernes, 8:00 AM - 8:00 PM (VET)",
   },
 ];

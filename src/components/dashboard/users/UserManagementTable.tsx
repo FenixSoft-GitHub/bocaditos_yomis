@@ -126,7 +126,6 @@ export const UserManagementTable = ({ users }: Props) => {
                   <User className="size-4" />
                 </div>
               </div>
-
               {/* Info */}
               <div className="space-y-1.5 pt-2 border-t border-cocoa/10 dark:border-cream/10 text-xs text-choco/70 dark:text-cream/70">
                 <div className="flex items-center gap-1.5">
@@ -139,6 +138,7 @@ export const UserManagementTable = ({ users }: Props) => {
                     <span>{user.phone}</span>
                   </div>
                 )}
+                {/* Fecha de registro */}
                 <div className="flex items-center gap-1.5">
                   <Calendar className="size-3 shrink-0" />
                   <span>
@@ -149,8 +149,19 @@ export const UserManagementTable = ({ users }: Props) => {
                     })}
                   </span>
                 </div>
+                {/* Cumpleaños */}
+                {user.birth_date && (
+                  <div className="flex items-center gap-1.5 text-amber-500">
+                    <span className="text-xs">🎂</span>
+                    <span>
+                      {new Date(user.birth_date).toLocaleDateString("es-ES", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </span>
+                  </div>
+                )}
               </div>
-
               {/* Cambio de rol */}
               <select
                 value={role}

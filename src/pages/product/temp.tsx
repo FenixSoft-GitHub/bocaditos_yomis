@@ -116,7 +116,9 @@ const ProductsPage = () => {
       />
 
       <PageTransition>
+        {/* 🔹 SE AÑADIÓ pt-24 (Padding Top) para empujar el contenido abajo de la NavBar fija */}
         <div className="container mx-auto px-4 pt-24 pb-8 text-choco dark:text-cream">
+          
           <div className="flex items-end justify-between mt-6 mb-2 gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-cocoa mb-1">
@@ -168,9 +170,9 @@ const ProductsPage = () => {
             </div>
           </div>
 
-          {/* Filtros */}
-          <div className="mb-4 flex flex-col gap-4 -mt-4">
-            {/* 🔹 Buscador unificado con AdvancedFilter */}
+          {/* ── Filtros y Buscador ────────────────────────────── */}
+          {/* 🔹 SE ELIMINÓ el -mt-6 para evitar que los filtros colisionen hacia arriba */}
+          <div className="mb-6 flex flex-col gap-4">
             <div className="w-full sm:max-w-sm">
               <AdvancedFilter
                 searchValue={searchTerm}
@@ -179,9 +181,8 @@ const ProductsPage = () => {
               />
             </div>
 
-            {/* Fila 2: Chips de categoría — scroll horizontal sin cortar dropdown */}
+            {/* Chips de categoría */}
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 relative">
-              {/* Chip "Todos" */}
               <button
                 onClick={() => handleCategorySelect(null)}
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 whitespace-nowrap ${
@@ -193,7 +194,6 @@ const ProductsPage = () => {
                 Todos
               </button>
 
-              {/* Chips visibles */}
               {isLoadingCategories
                 ? Array.from({ length: 5 }).map((_, i) => (
                     <div
@@ -215,7 +215,6 @@ const ProductsPage = () => {
                     </button>
                   ))}
 
-              {/* Botón "..." para el overflow */}
               {hasOverflow && !isLoadingCategories && (
                 <div className="relative shrink-0" ref={overflowRef}>
                   <button
@@ -235,7 +234,6 @@ const ProductsPage = () => {
                     />
                   </button>
 
-                  {/* Dropdown con position:fixed para escapar de overflow */}
                   <AnimatePresence>
                     {overflowOpen && (
                       <motion.div
@@ -275,7 +273,6 @@ const ProductsPage = () => {
                 </div>
               )}
 
-              {/* Limpiar */}
               {hasActiveFilters && (
                 <button
                   onClick={handleReset}
@@ -288,7 +285,7 @@ const ProductsPage = () => {
             </div>
           </div>
 
-          {/* Grid */}
+          {/* ── Contenido Principal (Resultados o Skeleton) ───── */}
           {showSkeleton ? (
             <ProductGridSkeleton numberOfProducts={8} />
           ) : products.length === 0 ? (

@@ -8,7 +8,7 @@ export type CouponStatus = "active" | "used" | "expired";
 export interface UserCoupon {
   id: string;
   code: string;
-  type: "welcome" | "birthday" | "review";
+  type: "welcome" | "birthday" | "review" | "referral" | "loyalty";
   discount: number;
   min_order: number;
   expires_at: string;

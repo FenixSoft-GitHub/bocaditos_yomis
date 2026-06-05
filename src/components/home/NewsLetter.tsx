@@ -42,7 +42,7 @@ const NewsLetter = () => {
       aria-labelledby="newsletter-heading"
     >
       <img
-        src="/img/banner/imgNew.avif"
+        src="/img/banner/img4.avif"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover"

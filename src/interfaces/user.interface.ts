@@ -6,6 +6,7 @@ export interface UserProfile {
   created_at: string; //
   phone?: string | null; // Campo opcional, puede ser null
   role?: string; // Agregaremos este campo al combinar con user_role
+  birth_date?: string | null; // Campo opcional, puede ser null
 }
 
 export interface UserRole {

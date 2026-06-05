@@ -13,6 +13,8 @@ import {
   Trash2,
   ChevronRight,
   TrendingUp,
+  Mic,
+  MicOff,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -25,17 +27,15 @@ import {
   isDiscountActive,
 } from "@/lib/discount";
 
-// ── Highlight: resalta el término buscado en el texto ─────────────────────
+// ── Highlight ─────────────────────────────────────────────────────────────
 
 const Highlight = ({ text, term }: { text: string; term: string }) => {
   if (!term.trim()) return <>{text}</>;
-
   const regex = new RegExp(
     `(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
     "gi",
   );
   const parts = text.split(regex);
-
   return (
     <>
       {parts.map((part, i) =>
@@ -73,11 +73,19 @@ export const Search = () => {
     selectFromHistory,
     removeFromHistory,
     clearHistory,
+    popularSearches,
+    isLoadingPopular,
+    selectFromPopular,
+    isListening,
+    voiceSupported,
+    startListening,
+    stopListening,
     reset,
   } = useSearch();
 
   const isTyping = inputValue.trim().length >= 2;
   const showHistory = !isTyping && history.length > 0;
+  const showPopular = !isTyping && popularSearches.length > 0;
   const showEmpty = isTyping && !isLoading && !hasResults && debouncedTerm;
 
   const handleClose = () => {
@@ -90,10 +98,14 @@ export const Search = () => {
     handleClose();
   };
 
-  // ── Render ───────────────────────────────────────────────────────────────
+  const handleVoice = () => {
+    if (isListening) stopListening();
+    else startListening();
+  };
+
   return (
     <div className="flex flex-col h-full bg-fondo dark:bg-fondo-dark text-choco dark:text-cream">
-      {/* ── HEADER / Input ─────────────────────────────────────────────── */}
+      {/* ── HEADER ─────────────────────────────────────────────────────── */}
       <div className="py-4 px-4 flex gap-3 items-center border-b border-cocoa/20 dark:border-cream/10 shrink-0">
         <div className="flex gap-3 items-center flex-1 bg-cocoa/10 dark:bg-cream/10 rounded-full px-4 py-2.5">
           <SearchIcon className="size-4 text-choco/50 dark:text-cream/50 shrink-0" />
@@ -134,6 +146,26 @@ export const Search = () => {
               </motion.button>
             ) : null}
           </AnimatePresence>
+
+          {/* Botón de voz — solo si el navegador lo soporta */}
+          {voiceSupported && (
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={handleVoice}
+              className={`shrink-0 transition-colors ${
+                isListening
+                  ? "text-red-500 animate-pulse"
+                  : "text-choco/40 dark:text-cream/40 hover:text-cocoa"
+              }`}
+              aria-label={isListening ? "Detener grabación" : "Buscar por voz"}
+            >
+              {isListening ? (
+                <MicOff className="size-4" />
+              ) : (
+                <Mic className="size-4" />
+              )}
+            </motion.button>
+          )}
         </div>
 
         <motion.button
@@ -147,10 +179,28 @@ export const Search = () => {
         </motion.button>
       </div>
 
-      {/* ── BODY / Resultados ──────────────────────────────────────────── */}
+      {/* Indicador de escucha */}
+      <AnimatePresence>
+        {isListening && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-red-500/10 border-b border-red-500/20 px-4 py-2
+              flex items-center justify-center gap-2"
+          >
+            <span className="size-2 rounded-full bg-red-500 animate-pulse" />
+            <p className="text-xs text-red-500 font-medium">
+              Escuchando... habla ahora
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── BODY ───────────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto pb-24">
         <AnimatePresence mode="wait">
-          {/* Estado inicial — historial o sugerencias */}
+          {/* Estado inicial — historial + populares */}
           {!isTyping && (
             <motion.div
               key="initial"
@@ -180,15 +230,15 @@ export const Search = () => {
                       <li key={term} className="flex items-center gap-2 group">
                         <button
                           onClick={() => selectFromHistory(term)}
-                          className="flex items-center gap-2.5 flex-1 py-2 px-3 rounded-xl hover:bg-cocoa/10 dark:hover:bg-cream/10 transition-colors text-left"
+                          className="flex items-center gap-3 flex-1 text-left p-2.5 rounded-xl hover:bg-cocoa/10 dark:hover:bg-cream/10 transition-colors"
                         >
-                          <Clock className="size-3.5 text-choco/30 dark:text-cream/30 shrink-0" />
+                          <Clock className="size-4 text-choco/30 dark:text-cream/30 shrink-0" />
                           <span className="text-sm">{term}</span>
                         </button>
                         <button
                           onClick={() => removeFromHistory(term)}
-                          className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity text-choco/30 hover:text-choco dark:text-cream/30 dark:hover:text-cream"
-                          aria-label={`Eliminar "${term}" del historial`}
+                          className="p-1.5 opacity-0 group-hover:opacity-100 text-choco/30 dark:text-cream/30 hover:text-choco dark:hover:text-cream transition-all"
+                          aria-label={`Eliminar ${term} del historial`}
                         >
                           <X className="size-3" />
                         </button>
@@ -198,15 +248,86 @@ export const Search = () => {
                 </section>
               )}
 
-              {/* Sugerencia inicial cuando no hay historial */}
-              {!showHistory && (
-                <div className="flex flex-col items-center justify-center py-16 gap-3 text-choco/30 dark:text-cream/30">
-                  <TrendingUp className="size-10" />
-                  <p className="text-sm text-center">
-                    Busca productos, categorías o artículos del blog
+              {/* Búsquedas populares */}
+              {showPopular && (
+                <section>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp className="size-3.5 text-choco/40 dark:text-cream/40" />
+                    <span className="text-xs font-semibold uppercase tracking-wider text-choco/40 dark:text-cream/40">
+                      Tendencias
+                    </span>
+                  </div>
+
+                  {isLoadingPopular ? (
+                    <div className="flex gap-2 flex-wrap">
+                      {[...Array(4)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="h-7 w-20 rounded-full bg-cocoa/10 animate-pulse"
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 flex-wrap">
+                      {popularSearches.map((item) => (
+                        <button
+                          key={item.query}
+                          onClick={() => selectFromPopular(item.query)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                            bg-cocoa/10 dark:bg-cream/10 text-sm
+                            hover:bg-cocoa/20 dark:hover:bg-cream/20
+                            transition-colors text-choco/70 dark:text-cream/70"
+                        >
+                          <TrendingUp className="size-3 text-cocoa" />
+                          {item.query}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {/* Estado vacío sin historial ni populares */}
+              {!showHistory && !showPopular && !isLoadingPopular && (
+                <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
+                  <SearchIcon className="size-10 text-choco/20 dark:text-cream/20" />
+                  <p className="text-sm text-choco/40 dark:text-cream/40">
+                    Escribe para buscar productos, categorías o artículos
                   </p>
+                  {voiceSupported && (
+                    <button
+                      onClick={startListening}
+                      className="flex items-center gap-2 px-4 py-2 rounded-full
+                        bg-cocoa/10 text-cocoa text-sm font-medium
+                        hover:bg-cocoa/20 transition-colors mt-2"
+                    >
+                      <Mic className="size-4" />
+                      Buscar por voz
+                    </button>
+                  )}
                 </div>
               )}
+            </motion.div>
+          )}
+
+          {/* Loading */}
+          {isTyping && isLoading && (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="p-4 space-y-3"
+            >
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3 p-2.5">
+                  <div className="size-12 rounded-lg bg-cocoa/10 animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3.5 w-3/4 rounded bg-cocoa/10 animate-pulse" />
+                    <div className="h-3 w-1/2 rounded bg-cocoa/10 animate-pulse" />
+                  </div>
+                </div>
+              ))}
             </motion.div>
           )}
 
@@ -214,29 +335,23 @@ export const Search = () => {
           {showEmpty && (
             <motion.div
               key="empty"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center py-16 gap-4 px-4"
+              className="flex flex-col items-center justify-center py-16 gap-3 text-center px-4"
             >
-              <img
-                src="/img/misc/Search2.webp"
-                alt="Sin resultados"
-                className="w-1/2 rounded-lg opacity-80"
-              />
-              <div className="text-center">
-                <p className="text-sm text-choco/60 dark:text-cream/60">
-                  No encontramos resultados para
-                </p>
-                <p className="text-sm font-semibold mt-0.5">
-                  "{debouncedTerm}"
-                </p>
-              </div>
+              <SearchIcon className="size-10 text-choco/20 dark:text-cream/20" />
+              <p className="font-semibold text-choco/60 dark:text-cream/60">
+                Sin resultados para "{debouncedTerm}"
+              </p>
+              <p className="text-sm text-choco/40 dark:text-cream/40">
+                Intenta con otro término o revisa la ortografía
+              </p>
             </motion.div>
           )}
 
-          {/* Resultados agrupados */}
-          {isTyping && hasResults && !isLoading && (
+          {/* Resultados */}
+          {isTyping && !isLoading && hasResults && (
             <motion.div
               key="results"
               initial={{ opacity: 0 }}
@@ -245,15 +360,15 @@ export const Search = () => {
               transition={{ duration: 0.15 }}
               className="p-4 space-y-6"
             >
-              {/* Contador total */}
+              {/* Contador */}
               <p className="text-xs text-choco/40 dark:text-cream/40">
                 {totalCount} resultado{totalCount !== 1 ? "s" : ""} para{" "}
-                <strong className="text-choco/60 dark:text-cream/60">
+                <span className="font-semibold text-choco/60 dark:text-cream/60">
                   "{debouncedTerm}"
-                </strong>
+                </span>
               </p>
 
-              {/* ── PRODUCTOS ──────────────────────────────────────── */}
+              {/* Productos */}
               {results.products.length > 0 && (
                 <section>
                   <div className="flex items-center gap-2 mb-3">
@@ -265,7 +380,6 @@ export const Search = () => {
                       {results.products.length}
                     </span>
                   </div>
-
                   <ul className="space-y-1">
                     {results.products.map((product) => {
                       const activeDiscount =
@@ -336,7 +450,7 @@ export const Search = () => {
                 </section>
               )}
 
-              {/* ── CATEGORÍAS ─────────────────────────────────────── */}
+              {/* Categorías */}
               {results.categories.length > 0 && (
                 <section>
                   <div className="flex items-center gap-2 mb-3">
@@ -348,7 +462,6 @@ export const Search = () => {
                       {results.categories.length}
                     </span>
                   </div>
-
                   <ul className="space-y-1">
                     {results.categories.map((cat) => (
                       <li key={cat.id}>
@@ -381,7 +494,7 @@ export const Search = () => {
                 </section>
               )}
 
-              {/* ── BLOG POSTS ─────────────────────────────────────── */}
+              {/* Blog */}
               {results.posts.length > 0 && (
                 <section>
                   <div className="flex items-center gap-2 mb-3">
@@ -393,7 +506,6 @@ export const Search = () => {
                       {results.posts.length}
                     </span>
                   </div>
-
                   <ul className="space-y-1">
                     {results.posts.map((post) => (
                       <li key={post.id}>

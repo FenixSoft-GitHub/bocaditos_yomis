@@ -43,8 +43,8 @@ Puedes acceder, corregir o solicitar la eliminación de tus datos personales en 
 
 Si tienes preguntas sobre nuestra política de privacidad, puedes comunicarte con nosotros:
 
-📧 **[correo@bocaditosyomis.com]**  
-📞 **[Número de contacto]**  
+📧 **[bocaditosyomis@gmail.com]**  
+📞 **[+58 (412) 499.88.11]**  
 📍 **Urb. Las Cayenas, Calle 3, Casa 129, Manzana 7**
 
 --- 

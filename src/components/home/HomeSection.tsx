@@ -21,7 +21,6 @@ export const HomeSection = ({
   return (
     <FadeIn delay={0.1}>
       {isLoading ? (
-        // Mostramos el skeleton específico para esta sección
         <ProductGridSkeleton numberOfProducts={4} />
       ) : (
         <ProductGrid

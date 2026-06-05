@@ -25,8 +25,7 @@ const HomePage = () => {
     <>
       <SEOHead canonical="/" schema={[organizationSchema, websiteSchema]} />
       <PageTransition>
-        {/* ... Tu Hero / Franja Introductoria ... */}
-
+        
         <section className="container mx-auto px-4 text-choco dark:text-cream dark:bg-fondo-dark">
           {/* Sección 1: Nuevos */}
           <HomeSection

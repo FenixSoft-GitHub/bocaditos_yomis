@@ -7,7 +7,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-type CouponType = "welcome" | "birthday" | "review";
+type CouponType = "welcome" | "birthday" | "review" | "referral" | "loyalty";
 
 interface EmailPayload {
   to: string;
@@ -72,42 +72,62 @@ function getEmailContent(payload: EmailPayload): {
     welcome: "linear-gradient(135deg, #92400e, #d97706)",
     birthday: "linear-gradient(135deg, #7c3aed, #db2777)",
     review: "linear-gradient(135deg, #065f46, #059669)",
+    referral: "linear-gradient(135deg, #1d4ed8, #0891b2)",
+    loyalty: "linear-gradient(135deg, #854d0e, #ca8a04)",
   };
 
   const emojis: Record<CouponType, string> = {
     welcome: "🎉",
     birthday: "🎂",
     review: "⭐",
+    referral: "🤝",
+    loyalty: "🏆",
   };
 
   const subjects: Record<CouponType, string> = {
     welcome: `¡Bienvenido/a ${firstName}! Aquí está tu regalo de primera compra`,
     birthday: `¡Feliz cumpleaños ${firstName}! 🎂 Un regalo especial para ti`,
     review: `¡Gracias por tu reseña ${firstName}! Te ganaste un descuento`,
+    referral: `¡Tu referido completó su compra ${firstName}! 🤝 Aquí está tu recompensa`,
+    loyalty: `🏆 ¡Canjeaste tus puntos ${firstName}! Tu cupón está listo`,
   };
 
   const headlines: Record<CouponType, string> = {
     welcome: `¡Gracias por tu primera compra, ${firstName}!`,
     birthday: `¡Feliz cumpleaños, ${firstName}!`,
     review: `¡Gracias por compartir tu opinión, ${firstName}!`,
+    referral: `¡Tu recomendación dio frutos, ${firstName}!`,
+    loyalty: `¡Felicidades, ${firstName}! Canjeaste tus puntos`,
   };
 
   const messages: Record<CouponType, string> = {
     welcome: `
-      Nos alegra que hayas confiado en nosotros. Como agradecimiento por ser parte 
-      de la familia Bocaditos Yomi's, te regalamos un <strong>${discountFormatted} de descuento</strong> 
-      en tu próxima compra.
-    `,
+    Nos alegra que hayas confiado en nosotros. Como agradecimiento por ser parte
+    de la familia Bocaditos Yomi's, te regalamos un <strong>${discountFormatted} de descuento</strong>
+    en tu próxima compra.
+  `,
     birthday: `
-      En este día tan especial queremos celebrarlo contigo. Te regalamos un 
-      <strong>${discountFormatted} de descuento</strong> para que te des un gusto 
-      con tus bocaditos favoritos. ¡Que lo disfrutes!
-    `,
+    En este día tan especial queremos celebrarlo contigo. Te regalamos un
+    <strong>${discountFormatted} de descuento</strong> para que te des un gusto
+    con tus bocaditos favoritos. ¡Que lo disfrutes!
+  `,
     review: `
-      Tu opinión nos ayuda a mejorar y a que otros clientes tomen mejores decisiones. 
-      Como agradecimiento, aquí tienes un <strong>${discountFormatted} de descuento</strong> 
-      en tu próxima compra.
-    `,
+    Tu opinión nos ayuda a mejorar y a que otros clientes tomen mejores decisiones.
+    Como agradecimiento, aquí tienes un <strong>${discountFormatted} de descuento</strong>
+    en tu próxima compra.
+  `,
+    referral: `
+    Gracias a tu recomendación, un amigo acaba de hacer su primera compra en
+    Bocaditos Yomi's. Como agradecimiento por compartir el amor por nuestros
+    bocaditos, aquí tienes un <strong>${discountFormatted} de descuento</strong>
+    en tu próxima compra.
+  `,
+    loyalty: `
+    Has canjeado tus puntos de fidelidad por un
+    <strong>${discountFormatted} de descuento</strong>.
+    Este es el resultado de tu lealtad y confianza en Bocaditos Yomi's.
+    ¡Sigue comprando para ganar más puntos y subir de nivel!
+  `,
   };
 
   const subject = subjects[coupon_type];
