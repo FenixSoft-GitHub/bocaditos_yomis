@@ -46,13 +46,7 @@ export default defineConfig({
           "vendor-ui": ["framer-motion", "react-hot-toast"],
           "vendor-charts": ["recharts", "d3"],
           "vendor-supabase": ["@supabase/supabase-js"],
-          "vendor-markdown": [
-            "react-markdown",
-            "unified",
-            "remark-parse",
-            "remark-rehype",
-            "rehype-stringify",
-          ],
+          "vendor-markdown": ["react-markdown", "remark-gfm"], // ← solo estas dos quedan
         },
       },
     },

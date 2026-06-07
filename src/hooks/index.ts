@@ -13,7 +13,7 @@ export * from "./auth/useUser";
 export * from "./auth/useLogin";
 export * from "./auth/useRegister";
 export * from "./auth/useRoleUser";
-export * from "./auth/useCustomer";
+// export * from "./auth/useCustomer";
 
 //Orders
 export * from "./orders/useAllOrders";
@@ -56,16 +56,7 @@ export * from "./blog/useBlogData";
 
 export * from "./checkout/useCreateOrder";
 export * from "./checkout/useSubmitReceipt";
-export * from "./checkout/usePaymentMethods";
+
 export * from "./checkout/useCheckout";
 export * from "./onboarding/useOnboarding";
 
-export {
-  useOrdersByHour,
-  useNewVsReturning,
-  useTopCustomers,
-  useSalesByCategory,
-  useLowStockProducts,
-  useOrdersByDayOfWeek,
-  useYearOverYear,
-} from "./analytics/useAnalytics";

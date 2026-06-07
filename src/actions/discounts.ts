@@ -80,14 +80,14 @@ export async function getActiveDiscountByProduct(productId: string) {
     .eq("product_id", productId)
     .lte("starts_at", now)
     .gte("ends_at", now)
-    .maybeSingle(); // Usar maybeSingle() en lugar de single() para manejar el caso donde no hay descuento sin lanzar un error PGRST116
+    .maybeSingle(); 
 
   if (error && error.code !== "PGRST116") { // PGRST116 es "No rows found"
     console.error("Error al obtener descuento en Supabase:", error);
     throw new Error("Error al obtener descuento: " + error.message);
   }
 
-  return data; // Retorna null si no se encuentra ningún descuento activo
+  return data; 
 }
 
 export async function deleteDiscount(discountId: string) {
@@ -100,5 +100,5 @@ export async function deleteDiscount(discountId: string) {
     console.error("Error al eliminar descuento en Supabase:", error);
     throw new Error("Error al eliminar descuento: " + error.message);
   }
-  return { success: true }; // Retorna algo para indicar éxito
+  return { success: true }; 
 }

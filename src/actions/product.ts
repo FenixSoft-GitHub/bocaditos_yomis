@@ -275,37 +275,6 @@ export const getProductBySlug = async (slug: string) => {
   }
 };
 
-export const searchProducts = async (
-  searchTerm: string,
-): Promise<Product[]> => {
-  try {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*, categories(*), discounts(*)")
-      .ilike("name", `%${searchTerm}%`)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error searching products:", error.message);
-      throw new Error(error.message);
-    }
-
-    if (!data) {
-      return []; // Si no hay datos, devuelve un array vacío
-    }
-
-    // Mapea la data cruda de Supabase a la interfaz Product unificada
-    const transformedProducts: Product[] = (
-      data as unknown as SupabaseRawProductWithRelations[]
-    ).map(transformProductData);
-
-    return transformedProducts;
-  } catch (error) {
-    console.error("Error searching products:", error);
-    throw error;
-  }
-};
-
 // Acá está lo nuevo, la función de búsqueda global que llama a la función RPC en Supabase
 
 export const searchAll = async (term: string): Promise<SearchResults> => {
@@ -401,8 +370,6 @@ export const createProduct = async (values: ProductInput) => {
     throw error;
   }
 };
-
-// const extractFilePath = (url: string) => url.split("/").slice(-2).join("/");
 
 export const deleteProduct = async (productId: string) => {
   if (!productId) throw new Error("ID de producto no válido");

@@ -13,7 +13,7 @@ const MIN_CHARS = 2;
 
 // ── Historial local ────────────────────────────────────────────────────────
 
-export const getSearchHistory = (): string[] => {
+const getSearchHistory = (): string[] => {
   try {
     return JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]");
   } catch {
@@ -33,14 +33,14 @@ const addToHistory = (term: string) => {
   );
 };
 
-export const removeFromHistory = (term: string) => {
+const removeFromHistory = (term: string) => {
   localStorage.setItem(
     HISTORY_KEY,
     JSON.stringify(getSearchHistory().filter((h) => h !== term)),
   );
 };
 
-export const clearHistory = () => localStorage.removeItem(HISTORY_KEY);
+const clearHistory = () => localStorage.removeItem(HISTORY_KEY);
 
 // ── Registrar búsqueda en Supabase ─────────────────────────────────────────
 

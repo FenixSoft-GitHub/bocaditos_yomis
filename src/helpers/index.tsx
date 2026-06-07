@@ -39,22 +39,6 @@ export const formatDate = (date: string): string => {
   });
 };
 
-// Función para obtener el estado del pedido en español
-export const getStatus = (status: string): string => {
-	switch (status) {
-		case 'Pending':
-			return 'Pendiente';
-		case 'Paid':
-			return 'Pagado';
-		case 'Shipped':
-			return 'Enviado';
-		case 'Delivered':
-			return 'Entregado';
-		default:
-			return status;
-	}
-};
-
 // Función para generar el slug de un producto
 export const generateSlug = (name: string): string => {
 	return name

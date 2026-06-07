@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignoreExportsUsedInFile": true,
+  "ignore": [
+    "next-app/**",
+    "src/sw.ts",
+    "src/types/**",
+    "supabase/functions/**"
+  ],
+  "ignoreDependencies": [
+    "vite-plugin-pwa",
+    "vite-plugin-md",
+    "workbox-precaching",
+    "workbox-routing",
+    "workbox-strategies",
+    "workbox-expiration",
+    "workbox-cacheable-response"
+  ]
+}

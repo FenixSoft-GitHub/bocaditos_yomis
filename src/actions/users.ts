@@ -1,7 +1,7 @@
 import { supabase } from "@/supabase/client";
 import { UserProfile, UserRole } from "@/interfaces/user.interface";
 
-export const _getUsers = async (): Promise<UserProfile[]> => {
+const _getUsers = async (): Promise<UserProfile[]> => {
   const { data, error } = await supabase
     .from("users")
     .select("id, full_name, email, phone, created_at")
@@ -18,7 +18,7 @@ export const _getUsers = async (): Promise<UserProfile[]> => {
   })) as UserProfile[];
 };
 
-export const _getUserRoles = async (): Promise<UserRole[]> => {
+const _getUserRoles = async (): Promise<UserRole[]> => {
   const { data, error } = await supabase
     .from("user_role")
     .select("id, user_id, role, created_at");
